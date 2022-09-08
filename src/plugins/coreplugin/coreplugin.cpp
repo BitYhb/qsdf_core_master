@@ -11,13 +11,11 @@
 #include <utils/theme/theme_p.h>
 
 #include <QJsonObject>
-#include <QMessageBox>
 #include <QMetaEnum>
 
 using namespace Utils;
 
-namespace Core {
-namespace Internal {
+namespace Core::Internal {
 
 static CorePlugin *m_instance = nullptr;
 
@@ -28,7 +26,6 @@ CorePlugin::CorePlugin()
 
 CorePlugin::~CorePlugin()
 {
-    delete m_instance;
     setApplicationTheme(nullptr);
 }
 
@@ -138,5 +135,4 @@ void CorePlugin::fileOpenRequest(const QString &strFile)
 
 void CorePlugin::checkSettings() {}
 
-} // namespace Internal
-} // namespace Core
+} // namespace Core::Internal

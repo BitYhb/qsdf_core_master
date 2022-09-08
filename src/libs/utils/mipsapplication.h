@@ -15,10 +15,9 @@ class MIPSApplicationPrivate;
 #endif
 #define mipsApp (dynamic_cast<Utils::MIPSApplication *>(QCoreApplication::instance()))
 
-class MIPS_UTILS_EXPORT MIPSApplication final : public SingleGuiApplication
+class MIPS_UTILS_EXPORT MIPSApplication final : public SingleApplication
 {
     Q_OBJECT
-    Q_PROPERTY(int category READ category WRITE setCategory)
 public:
     MIPSApplication(const QString &appId, int &argc, char **argv);
     ~MIPSApplication() override;

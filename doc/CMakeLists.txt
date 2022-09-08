@@ -47,7 +47,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.cmakein")
         COMMAND ${DOXYGEN_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY ${DOXYGEN_EXECUTABLE_PATH}
         VERBATIM)
-    add_custom_target(doc ALL DEPENDS doc_build)
+    add_custom_target(doc DEPENDS doc_build)
 else()
     message(STATUS "The Doxygen configuration file is missing, and the doc generation step will be ignored")
 endif()

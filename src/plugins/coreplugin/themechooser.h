@@ -15,7 +15,7 @@ class ThemeEntry
 {
 public:
     ThemeEntry() = default;
-    ThemeEntry(Utils::Id id, const QString &filePath);
+    ThemeEntry(Utils::Id id, QString filePath);
 
     Utils::Id id() const;
     QString filePath() const;

@@ -27,7 +27,7 @@ private:
  */
 
 MIPSApplication::MIPSApplication(const QString &appId, int &argc, char **argv)
-    : SingleBaseApplication(appId, argc, argv)
+    : SingleApplication(appId, argc, argv)
     , d_ptr(new MIPSApplicationPrivate(*this))
 {}
 

@@ -13,13 +13,13 @@ namespace Internal {
 class LocalPeer;
 }
 
-class MIPS_UTILS_EXPORT SingleBaseApplication : public QApplication
+class MIPS_UTILS_EXPORT SingleApplication : public QApplication
 {
     Q_OBJECT
 
 public:
-    SingleBaseApplication(const QString &strAppId, int &argc, char **argv);
-    ~SingleBaseApplication() override;
+    SingleApplication(const QString &strAppId, int &argc, char **argv);
+    ~SingleApplication() override;
 
     bool isRunning(qint64 nPid = -1);
 

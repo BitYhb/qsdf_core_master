@@ -10,7 +10,7 @@ namespace Utils {
 
 static const int instancesSize = 1024;
 
-SingleBaseApplication::SingleBaseApplication(const QString &strAppId, int &argc, char **argv)
+SingleApplication::SingleApplication(const QString &strAppId, int &argc, char **argv)
     : QApplication(argc, argv)
 {
     m_strAppId = strAppId;
@@ -49,12 +49,12 @@ SingleBaseApplication::SingleBaseApplication(const QString &strAppId, int &argc,
     m_pPidPeer = new Internal::LocalPeer(this,
                                          strAppId + QLatin1Char('-')
                                              + QString::number(QCoreApplication::applicationPid()));
-    connect(m_pPidPeer, &Internal::LocalPeer::messageReceived, this, &SingleBaseApplication::messageReceived);
+    connect(m_pPidPeer, &Internal::LocalPeer::messageReceived, this, &SingleApplication::messageReceived);
     m_pPidPeer->isClient();
     lockfile.unlock();
 }
 
-SingleBaseApplication::~SingleBaseApplication()
+SingleApplication::~SingleApplication()
 {
     if (!m_pInstances)
         return;
@@ -73,7 +73,7 @@ SingleBaseApplication::~SingleBaseApplication()
     lockfile.unlock();
 }
 
-bool SingleBaseApplication::isRunning(qint64 nPid)
+bool SingleApplication::isRunning(qint64 nPid)
 {
     if (nPid == -1) {
         nPid = m_bBlock;
@@ -85,23 +85,23 @@ bool SingleBaseApplication::isRunning(qint64 nPid)
     return peer.isClient();
 }
 
-void SingleBaseApplication::setActivationWindow(QWidget *pActiveWidget, bool bActivateOnMessage)
+void SingleApplication::setActivationWindow(QWidget *pActiveWidget, bool bActivateOnMessage)
 {
     m_pActiveWidget = pActiveWidget;
     if (!m_pPidPeer)
         return;
     if (bActivateOnMessage)
-        connect(m_pPidPeer, &Internal::LocalPeer::messageReceived, this, &SingleBaseApplication::activateWindow);
+        connect(m_pPidPeer, &Internal::LocalPeer::messageReceived, this, &SingleApplication::activateWindow);
     else
-        disconnect(m_pPidPeer, &Internal::LocalPeer::messageReceived, this, &SingleBaseApplication::activateWindow);
+        disconnect(m_pPidPeer, &Internal::LocalPeer::messageReceived, this, &SingleApplication::activateWindow);
 }
 
-QWidget *SingleBaseApplication::activationWindow() const
+QWidget *SingleApplication::activationWindow() const
 {
     return m_pActiveWidget;
 }
 
-bool SingleBaseApplication::event(QEvent *event)
+bool SingleApplication::event(QEvent *event)
 {
     if (event->type() == QEvent::FileOpen) {
         QFileOpenEvent *pFileOpenEvent = static_cast<QFileOpenEvent *>(event);
@@ -112,17 +112,17 @@ bool SingleBaseApplication::event(QEvent *event)
     return QApplication::event(event);
 }
 
-QString SingleBaseApplication::applicationId() const
+QString SingleApplication::applicationId() const
 {
     return m_strAppId;
 }
 
-void SingleBaseApplication::setBlock(bool bValue)
+void SingleApplication::setBlock(bool bValue)
 {
     m_bBlock = bValue;
 }
 
-bool SingleBaseApplication::sendMessage(const QString &strMessage, int timeout, qint64 pid)
+bool SingleApplication::sendMessage(const QString &strMessage, int timeout, qint64 pid)
 {
     if (pid == -1) {
         pid = m_nFirstPeer;
@@ -134,7 +134,7 @@ bool SingleBaseApplication::sendMessage(const QString &strMessage, int timeout, 
     return peer.sendMessage(strMessage, timeout, m_bBlock);
 }
 
-void SingleBaseApplication::activateWindow()
+void SingleApplication::activateWindow()
 {
     if (m_pActiveWidget) {
         m_pActiveWidget->setWindowState(m_pActiveWidget->windowState() & ~Qt::WindowMinimized);
@@ -143,7 +143,7 @@ void SingleBaseApplication::activateWindow()
     }
 }
 
-QString SingleBaseApplication::instancesLockFileName(const QString &strAppSessionId)
+QString SingleApplication::instancesLockFileName(const QString &strAppSessionId)
 {
     const QChar cSlash(QLatin1Char('/'));
     QString res = QDir::tempPath();

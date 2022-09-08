@@ -4,6 +4,8 @@
 
 #include <utils/algorithm.h>
 
+#include <utility>
+
 using namespace Utils;
 
 namespace Core {
@@ -35,9 +37,9 @@ static void addThemesFromPath(const QString &path, QList<ThemeEntry> *themes)
     }
 }
 
-Internal::ThemeEntry::ThemeEntry(Utils::Id id, const QString &filePath)
+Internal::ThemeEntry::ThemeEntry(Utils::Id id, QString filePath)
     : m_id(id)
-    , m_filePath(filePath)
+    , m_filePath(std::move(filePath))
 {}
 
 Utils::Id Internal::ThemeEntry::id() const
@@ -58,7 +60,7 @@ QList<ThemeEntry> ThemeEntry::availableThemes()
     static const QFileInfo userThemeDir = ICore::userResourcePath("themes");
     addThemesFromPath(installThemeDir.absoluteFilePath(), &themes);
     if (themes.isEmpty())
-        qWarning() << "Warning: No themes found in installation: " << installThemeDir.absoluteFilePath();
+        qWarning() << "Warning: No themes found in installation:" << installThemeDir.absoluteFilePath();
 
     int defaultIndex = Utils::indexOf(themes, Utils::equal(&ThemeEntry::id, Id(Constants::DEFAULT_THEME)));
     if (defaultIndex > 0) {

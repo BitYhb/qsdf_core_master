@@ -22,7 +22,6 @@ public:
     static const char *PROFILE_OPTION;
     static const char *PATIENT_ID_OPTION;
     static const char *CASE_ID_OPTION;
-    static const char *CATEGORY_OPTION;
 
 private:
     // 返回值指示是否已处理该选项
@@ -32,7 +31,6 @@ private:
     bool checkForCaseIdOption();
     bool checkForAppOption();
     bool checkForProfilingOption();
-    bool checkForCategoryOption();
     bool checkForUnknownOption();
 
     enum TokenType { OptionalToken, RequiredToken };

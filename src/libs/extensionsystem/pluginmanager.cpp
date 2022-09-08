@@ -16,6 +16,7 @@
 #include <QMetaEnum>
 #include <QTimer>
 #include <QWriteLocker>
+#include <memory>
 
 Q_LOGGING_CATEGORY(pluginLog, "mips.extensionsystem", QtWarningMsg)
 
@@ -281,20 +282,14 @@ void PluginManager::formatOptions(QTextStream &str, int optionIndentation, int d
                  descriptionIndentation);
     formatOption(str,
                  QLatin1String(OptionsParser::PATIENT_ID_OPTION),
-                 QLatin1String("patientid"),
+                 QLatin1String("patient-id"),
                  QLatin1String("Specify the Patient ID information for the DICOM to load"),
                  optionIndentation,
                  descriptionIndentation);
     formatOption(str,
                  QLatin1String(OptionsParser::CASE_ID_OPTION),
-                 QLatin1String("caseid"),
+                 QLatin1String("case-id"),
                  QLatin1String("Specifies the instance of the data to load"),
-                 optionIndentation,
-                 descriptionIndentation);
-    formatOption(str,
-                 QLatin1String(OptionsParser::CATEGORY_OPTION),
-                 QLatin1String("category"),
-                 QLatin1String("The category of the system that needs to process data"),
                  optionIndentation,
                  descriptionIndentation);
 }
@@ -492,7 +487,7 @@ void PluginManagerPrivate::loadPlugin(PluginSpec *spec, PluginSpec::State destSt
 
     std::unique_ptr<LockFile> lockFile;
     if (m_bEnableCrashCheck && destState < PluginSpec::Stopped)
-        lockFile.reset(new LockFile(this, spec));
+        lockFile = std::make_unique<LockFile>(this, spec);
 
     switch (destState) {
     case PluginSpec::Running:

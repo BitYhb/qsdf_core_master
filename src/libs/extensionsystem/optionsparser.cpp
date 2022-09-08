@@ -13,7 +13,6 @@ const char *END_OF_OPTIONS = "--";
 const char *OptionsParser::PROFILE_OPTION = "-profile";
 const char *OptionsParser::PATIENT_ID_OPTION = "-patient-id";
 const char *OptionsParser::CASE_ID_OPTION = "-case-id";
-const char *OptionsParser::CATEGORY_OPTION = "-category";
 
 OptionsParser::OptionsParser(QStringList lstArgs,
                              const QMap<QString, bool> &appOptions,
@@ -51,8 +50,6 @@ bool OptionsParser::parse()
         if (checkForPatientIdOption())
             continue;
         if (checkForCaseIdOption())
-            continue;
-        if (checkForCategoryOption())
             continue;
         if (checkForUnknownOption())
             break;
@@ -121,25 +118,6 @@ bool OptionsParser::checkForProfilingOption()
     if (m_currentArg != QLatin1String(PROFILE_OPTION))
         return false;
     m_pmPrivate->initProfiling();
-    return true;
-}
-
-bool OptionsParser::checkForCategoryOption()
-{
-    if (m_currentArg != QLatin1String(CATEGORY_OPTION))
-        return false;
-    if (nextToken(RequiredToken)) {
-        m_pmPrivate->argumentsForRestart << QLatin1String(CASE_ID_OPTION) << m_currentArg;
-
-        // 启动参数解析系统 Category
-        const QMetaObject &mo = *mipsApp->metaObject();
-        const QMetaEnum me = mo.enumerator(mo.indexOfEnumerator("CategoryType"));
-        for (int i = 0; i < me.keyCount(); ++i) {
-            if (const QString key = QLatin1String(me.key(i)); key.compare(m_currentArg, Qt::CaseSensitive) == 0) {
-                mipsApp->setCategory(i);
-            }
-        }
-    }
     return true;
 }
 
