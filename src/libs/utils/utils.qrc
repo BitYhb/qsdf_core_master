@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+<file>icons/dark/index.theme</file>
+<file>icons/dark/actions/40/test.png</file>
+</qresource>
+</RCC>

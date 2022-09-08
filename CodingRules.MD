@@ -1,0 +1,1 @@
+# MIPSoftware编码规则

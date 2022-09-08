@@ -1,0 +1,22 @@
+#pragma once
+
+namespace Core {
+namespace Constants {
+
+const char MIPS_VERSION_LONG[] = "${PROJECT_VERSION}";
+const char MIPS_AUTHOR[] = "${MIPS_AUTHOR}";
+const char MIPS_YEAR[] = "${MIPS_YEAR}";
+
+const char MIPS_DISPLAY_NAME[] = "${MIPS_DISPLAY_NAME}";
+const char MIPS_ID[] = "${MIPS_ID}";
+const char MIPS_CASED_ID[] = "${MIPS_CASED_ID}";
+
+const char MIPS_VERSION_DISPLAY[] = "${MIPS_VERSION_DISPLAY}";
+const char MIPS_VERSION_COMPAT[] = "${MIPS_VERSION_COMPAT}";
+const char MIPS_VERSION_STRING[] = "${MIPS_VERSION_STRING}";
+const char MIPS_VERSION_URL[] = "${MIPS_VERSION_URL}";
+
+const char MIPS_SETTINGSVARIANT_STR[] = "${MIPS_SETTINGSVARIANT}";
+
+} // Constants
+} // Core

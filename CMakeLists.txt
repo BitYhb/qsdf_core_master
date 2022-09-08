@@ -1,0 +1,76 @@
+﻿cmake_minimum_required(VERSION 3.21)
+
+## Add paths to check for cmake modules:
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/super_build")
+
+include(FeatureSummary)
+include(ExternalProject)
+include(ExternalProjectDependency)
+include(MIPSoftwareAPI)
+
+project(MIPSoftware VERSION ${MIPS_VERSION})
+
+# Force C++ standard, do not fall back, do not use compiler extensions
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+mips_handle_sccache_support()
+
+# merge binary directories of sub projects into top level
+set(MIPS_MERGE_BINARY_DIR ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# SuperBuild Option - Enabled by default
+option(${PROJECT_NAME}_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
+mark_as_advanced(${PROJECT_NAME}_SUPERBUILD)
+
+# Internal SuperBuild Option - Enabled by default
+option(${PROJECT_NAME}_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
+mark_as_advanced(${PROJECT_NAME}_INTERNAL_SUPERBUILD)
+
+option(WITH_TESTS "Build Tests" OFF)
+add_feature_info("Build Tests" ${WITH_TESTS} "")
+option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
+if(MSVC)
+    option(WITH_USE_SOLUTION_FOLDERS "Use the VS solution folder" ON)
+endif()
+
+# Set up Qt stuff:
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+if(WITH_USE_SOLUTION_FOLDERS)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+endif()
+
+if(WITH_TESTS)
+    set(QT_TEST_COMPONENT Test)
+    set(IMPLICIT_DEPENDS Qt6::Test)
+endif()
+
+find_package(Qt6 ${MIPS_QT_VERSION_MIN} REQUIRED COMPONENTS
+    Core Widgets Network Qml Quick QuickWidgets LinguistTools ${QT_TEST_COMPONENT})
+
+if(WITH_TESTS)
+    enable_testing()
+endif()
+
+# SuperBuild script
+if(${PROJECT_NAME}_SUPERBUILD)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
+endif()
+
+# Internal SuperBuild script
+if(${PROJECT_NAME}_INTERNAL_SUPERBUILD)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/InternalSuperBuild.cmake")
+endif()
+
+add_subdirectory(src)
+add_subdirectory(share)
+add_subdirectory(doc)
+
+if(WITH_TESTS)
+    add_subdirectory(tests)
+endif()

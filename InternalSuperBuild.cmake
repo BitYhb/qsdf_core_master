@@ -1,0 +1,2 @@
+set(INTERNAL_SUPERBUILD_PREFIX "External_")
+set(INTERNAL_SUPERBUILD_FOLDER_NAME "superbuild/internal")

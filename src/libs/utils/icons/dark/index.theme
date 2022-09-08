@@ -1,0 +1,10 @@
+[Icon Theme]
+Name=Dark
+Comment=a dark theme
+
+Directories=actions/40
+
+[actions/40]
+Size=40
+Context=Actions
+Type=Fixed

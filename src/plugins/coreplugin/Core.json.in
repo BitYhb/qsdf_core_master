@@ -1,0 +1,7 @@
+{
+    \"Name\": \"Core\",
+    \"Version\": \"$$MIPS_VERSION\",
+    \"Category\": \"Core\",
+
+    $$dependencyList
+}
