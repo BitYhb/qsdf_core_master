@@ -1,10 +1,10 @@
 #include "mipsapplication.h"
 
-namespace Utils {
+using namespace Utils;
 
 /// \cond INTERNAL
 
-class MIPSApplicationPrivate
+class Utils::MIPSApplicationPrivate
 {
 public:
     explicit MIPSApplicationPrivate(MIPSApplication &object)
@@ -22,8 +22,6 @@ private:
 /*!
  * \class Utils::MIPSApplication
  * \brief The MIPSApplication class manages the message distribution and primary setup of the platform.
- *
- * BBB
  */
 
 MIPSApplication::MIPSApplication(const QString &appId, int &argc, char **argv)
@@ -32,5 +30,3 @@ MIPSApplication::MIPSApplication(const QString &appId, int &argc, char **argv)
 {}
 
 MIPSApplication::~MIPSApplication() = default;
-
-} // namespace Utils

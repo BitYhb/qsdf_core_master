@@ -1,7 +1,7 @@
 #ifndef CORE_MAIN_WINDOW_H
 #define CORE_MAIN_WINDOW_H
 
-#include <QMainWindow>
+#include <QQmlApplicationEngine>
 
 namespace Core {
 
@@ -9,11 +9,11 @@ class ICore;
 
 namespace Internal {
 
-class MainWindow final : public QMainWindow
+class MainWindow final : public QQmlApplicationEngine
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QObject *parent = nullptr);
     ~MainWindow() override;
 
 private:

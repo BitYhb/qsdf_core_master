@@ -28,7 +28,7 @@ set(CORE_PRIVATE_HEADERS_AND_SOURCES
 qt_add_resources(CORE_RESOURCES qml.qrc)
 
 add_mips_plugin(Core
-    DEPENDS Qt6::Core Qt6::Widgets Qt6::QuickWidgets
+    DEPENDS Qt6::Qml
     PUBLIC_DEPENDS ExtensionSystem Utils
     MSVC_SOLUTION_FOLDER "${PLUGINS_SOLUTION_FOLDER}"
     SOURCES

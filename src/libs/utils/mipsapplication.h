@@ -5,7 +5,7 @@
 
 #include <QScopedPointer>
 
-namespace Utils {
+MIPS_UTILS_BEGIN_NAMESPACE
 
 class MIPSApplication;
 class MIPSApplicationPrivate;
@@ -13,7 +13,7 @@ class MIPSApplicationPrivate;
 #if defined(mipsApp)
 #undef mipsApp
 #endif
-#define mipsApp (dynamic_cast<Utils::MIPSApplication *>(QCoreApplication::instance()))
+#define mipsApp (dynamic_cast<Utils::MIPSApplication *>(Utils::MIPSApplication::instance()))
 
 class MIPS_UTILS_EXPORT MIPSApplication final : public SingleApplication
 {
@@ -26,8 +26,8 @@ protected:
     QScopedPointer<MIPSApplicationPrivate> d_ptr;
 
 private:
+    Q_DISABLE_COPY(MIPSApplication)
     Q_DECLARE_PRIVATE(MIPSApplication)
-    Q_DISABLE_COPY_MOVE(MIPSApplication)
 };
 
-} // namespace Utils
+MIPS_UTILS_END_NAMESPACE

@@ -6,16 +6,12 @@
 
 Q_LOGGING_CATEGORY(mainWindow, "mips.coreplugin", QtWarningMsg)
 
-namespace Core {
-namespace Internal {
+using namespace Core::Internal;
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QObject *parent)
+    : QQmlApplicationEngine(parent)
 {
-    setWindowTitle(QLatin1String(Constants::MIPS_DISPLAY_NAME));
+    // setWindowTitle(QLatin1String(Constants::MIPS_DISPLAY_NAME));
 }
 
-MainWindow::~MainWindow() {}
-
-} // namespace Internal
-} // namespace Core
+MainWindow::~MainWindow() = default;

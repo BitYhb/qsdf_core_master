@@ -50,11 +50,11 @@ CoreArguments parseArguments(const QStringList &arguments)
     using PMAttr = PluginManager::PluginManagerAttribute;
 
     CoreArguments args;
-    const QMetaObject pmmo = PluginManager::staticMetaObject;
-    const QMetaEnum pmme = pmmo.enumerator(pmmo.indexOfEnumerator("PluginManagerAttribute"));
+    const QMetaObject metaObject = PluginManager::staticMetaObject;
+    const QMetaEnum metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("PluginManagerAttribute"));
     for (int i = 0; i < arguments.size(); ++i) {
         if (arguments.at(i) == QLatin1String("-plugin-manager-attribute")) {
-            static const QString abridged = QLatin1String(pmme.valueToKey(static_cast<int>(PMAttr::LM_ABRIDGED)));
+            static const QString abridged = QLatin1String(metaEnum.valueToKey(static_cast<int>(PMAttr::LM_ABRIDGED)));
             args.designerMode = QString::compare(arguments.at(i + 1), abridged, Qt::CaseInsensitive) == 0;
             i++; // skip
         }

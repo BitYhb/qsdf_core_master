@@ -34,18 +34,18 @@ SingleApplication::SingleApplication(const QString &strAppId, int &argc, char **
     Internal::LockedFile lockfile(instancesLockFileName(strAppSessionId));
     lockfile.open(QIODeviceBase::ReadWrite);
     lockfile.lock(Internal::LockedFile::WriteLock);
-    qint64 *pids = static_cast<qint64 *>(m_pInstances->data());
+    auto ids = static_cast<qint64 *>(m_pInstances->data());
     if (!bCreated) {
         // Find the first instance that it still running
         // The whole list needs to be iterated in order to append to it
-        for (; *pids; ++pids) {
-            if (m_nFirstPeer == -1 && isRunning(*pids))
-                m_nFirstPeer = *pids;
+        for (; *ids; ++ids) {
+            if (m_nFirstPeer == -1 && isRunning(*ids))
+                m_nFirstPeer = *ids;
         }
     }
     // Add current pid to list and terminate it
-    *pids++ = QCoreApplication::applicationPid();
-    *pids = 0;
+    *ids++ = QCoreApplication::applicationPid();
+    *ids = 0;
     m_pPidPeer = new Internal::LocalPeer(this,
                                          strAppId + QLatin1Char('-')
                                              + QString::number(QCoreApplication::applicationPid()));
@@ -63,13 +63,13 @@ SingleApplication::~SingleApplication()
     lockfile.open(QIODeviceBase::ReadWrite);
     lockfile.lock(Internal::LockedFile::WriteLock);
     // Rewrite array, removing current pid and previously crashed ones
-    qint64 *pids = static_cast<qint64 *>(m_pInstances->data());
-    qint64 *newpids = pids;
-    for (; *pids; ++pids) {
-        if (*pids != nAppId && isRunning(*pids))
-            *newpids++ = *pids;
+    auto ids = static_cast<qint64 *>(m_pInstances->data());
+    qint64 *newIds = ids;
+    for (; *ids; ++ids) {
+        if (*ids != nAppId && isRunning(*ids))
+            *newIds++ = *ids;
     }
-    *newpids = 0;
+    *newIds = 0;
     lockfile.unlock();
 }
 
@@ -104,9 +104,9 @@ QWidget *SingleApplication::activationWindow() const
 bool SingleApplication::event(QEvent *event)
 {
     if (event->type() == QEvent::FileOpen) {
-        QFileOpenEvent *pFileOpenEvent = static_cast<QFileOpenEvent *>(event);
-        qDebug() << pFileOpenEvent->file();
-        emit fileOpenRequest(pFileOpenEvent->file());
+        auto fileOpenEvent = dynamic_cast<QFileOpenEvent *>(event);
+        qDebug() << fileOpenEvent->file();
+        emit fileOpenRequest(fileOpenEvent->file());
         return true;
     }
     return QApplication::event(event);
