@@ -1,7 +1,7 @@
 #ifndef CORE_ICORE_H
 #define CORE_ICORE_H
 
-#include "core_global.h"
+#include "core_export.h"
 
 #include <utils/mipssettings.h>
 
@@ -14,14 +14,14 @@ class IContext;
 class ICorePrivate;
 
 namespace Internal {
-class MainWindow;
+class MainQmlApplicationEngine;
 }
 
 /// <summary>
 /// ICore 类用于访问组成 MIP Software 系统基本功能的不同部分.
 /// 永远不要创建这个类的子类以及实例, 这个类唯一的实例由 Core Plugin 创建, 可以通过 ICore::instance() 获取.
 /// </summary>
-class MIPS_COREPLUGIN_EXPORT ICore : public QObject
+class MIPS_PLUGIN_CORE_EXPORT ICore : public QObject
 {
     Q_OBJECT
     explicit ICore(QObject *parent = nullptr);
@@ -29,7 +29,7 @@ class MIPS_COREPLUGIN_EXPORT ICore : public QObject
 public:
     ~ICore() override;
 
-    void setMainWindow(Internal::MainWindow *mainWindow);
+    void setMainWindow(Internal::MainQmlApplicationEngine *mainWindow);
 
     // 返回指向 ICore 实例的指针, 可用于信号的连接
     static ICore *instance();

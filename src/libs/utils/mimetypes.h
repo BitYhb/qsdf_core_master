@@ -1,7 +1,9 @@
 #ifndef MIMETYPES_H
 #define MIMETYPES_H
 
-#include "utils_global.h"
+#include "utils_export.h"
+
+#include <QString>
 
 namespace Utils {
 

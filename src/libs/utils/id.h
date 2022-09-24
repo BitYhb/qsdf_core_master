@@ -1,7 +1,7 @@
 #ifndef CORE_ID_H
 #define CORE_ID_H
 
-#include "utils_global.h"
+#include "utils_export.h"
 
 #include <QByteArray>
 #include <QList>

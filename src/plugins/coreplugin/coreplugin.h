@@ -1,7 +1,4 @@
-#ifndef CORE_COREPLUGIN_H
-#define CORE_COREPLUGIN_H
-
-#include "core_global.h"
+#pragma once
 
 #include <extensionsystem/iplugin.h>
 
@@ -11,12 +8,12 @@ class ActionManager;
 
 namespace Internal {
 
-class MainWindow;
+class MainQmlApplicationEngine;
 
 class CorePlugin final : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.truesight.MIPS.MIPSoftwarePlugin" FILE "Core.json")
+    Q_PLUGIN_METADATA(IID "org.MIPS.MIPSoftwarePlugin" FILE "Core.json")
 public:
     CorePlugin();
     ~CorePlugin() override;
@@ -38,10 +35,9 @@ private:
     void checkSettings();
 
     ActionManager *m_actionManager = nullptr;
-    MainWindow *m_mainWindow = nullptr;
+    MainQmlApplicationEngine *m_mainQmlEngine = nullptr;
 };
 
 } // namespace Internal
 } // namespace Core
 
-#endif // CORE_COREPLUGIN_H

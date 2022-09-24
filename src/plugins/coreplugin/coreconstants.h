@@ -18,7 +18,7 @@ const int UNIVERSAL_TOOLBAR_WIDTH = 54;            // 通用工具栏宽度
 const int SYSTEM_TOOLBAR_WIDTH = 328;              // 系统工具栏宽度
 const int TOOLSPANEL_WIDTH = SYSTEM_TOOLBAR_WIDTH; // 工具面板宽度
 
-// tool bar
+// toolbar
 const char G_GENERAL[] = "MIPSoftware.General";
 const char G_SYSTEM[] = "MIPSoftware.System";
 

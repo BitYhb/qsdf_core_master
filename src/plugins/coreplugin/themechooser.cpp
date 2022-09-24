@@ -4,7 +4,7 @@
 
 #include <utils/algorithm.h>
 
-#include <utility>
+#include <QIcon>
 
 using namespace Utils;
 
@@ -109,19 +109,6 @@ Theme *ThemeEntry::createTheme(Id id)
 
     return theme;
 }
-
-ThemeChooser::ThemeChooser(QWidget *parent)
-    : QWidget(parent)
-{
-    d = new ThemeChooserPrivate(this);
-}
-
-ThemeChooser::~ThemeChooser()
-{
-    delete d;
-}
-
-void ThemeChooser::apply() {}
 
 } // namespace Internal
 } // namespace Core

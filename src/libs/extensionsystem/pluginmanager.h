@@ -1,7 +1,7 @@
 #ifndef EXTENSIONSYSTEM_PLUGINMANAGER_H
 #define EXTENSIONSYSTEM_PLUGINMANAGER_H
 
-#include "extensionsystem_global.h"
+#include "extensionsystem_export.h"
 
 #include <utils/mipssettings.h>
 

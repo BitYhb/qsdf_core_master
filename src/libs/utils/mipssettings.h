@@ -1,7 +1,7 @@
 #ifndef UTILS_MIPSSETTINGS_H
 #define UTILS_MIPSSETTINGS_H
 
-#include "utils_global.h"
+#include "utils_export.h"
 
 #include <QSettings>
 

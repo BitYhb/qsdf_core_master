@@ -5,6 +5,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/super_build")
 
 include(FeatureSummary)
+include(GenerateExportHeader)
 include(ExternalProject)
 include(ExternalProjectDependency)
 include(MIPSoftwareAPI)
@@ -23,12 +24,12 @@ set(MIPS_MERGE_BINARY_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # SuperBuild Option - Enabled by default
-option(${PROJECT_NAME}_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
-mark_as_advanced(${PROJECT_NAME}_SUPERBUILD)
+option(MIPS_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
+mark_as_advanced(MIPS_SUPERBUILD)
 
 # Internal SuperBuild Option - Enabled by default
-option(${PROJECT_NAME}_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
-mark_as_advanced(${PROJECT_NAME}_INTERNAL_SUPERBUILD)
+option(MIPS_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
+mark_as_advanced(MIPS_INTERNAL_SUPERBUILD)
 
 option(WITH_TESTS "Build Tests" OFF)
 add_feature_info("Build Tests" ${WITH_TESTS} "")
@@ -58,12 +59,12 @@ if(WITH_TESTS)
 endif()
 
 # SuperBuild script
-if(${PROJECT_NAME}_SUPERBUILD)
+if(MIPS_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
 endif()
 
 # Internal SuperBuild script
-if(${PROJECT_NAME}_INTERNAL_SUPERBUILD)
+if(MIPS_INTERNAL_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/InternalSuperBuild.cmake")
 endif()
 

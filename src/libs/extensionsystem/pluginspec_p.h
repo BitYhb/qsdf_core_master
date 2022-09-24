@@ -9,8 +9,11 @@
 #include <QObject>
 #include <QPluginLoader>
 #include <QRegularExpression>
+#include <QLoggingCategory>
 
 namespace ExtensionSystem {
+
+Q_DECLARE_LOGGING_CATEGORY(lcPlugin)
 
 class IPlugin;
 

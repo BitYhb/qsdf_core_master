@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils_global.h"
+#include "utils_export.h"
 
 #include <QFileInfo>
 #include <QFont>

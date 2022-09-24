@@ -1,7 +1,7 @@
 #ifndef UTILS_THEME_H
 #define UTILS_THEME_H
 
-#include "../utils_global.h"
+#include "utils_export.h"
 
 #include <QObject>
 #include <QPalette>

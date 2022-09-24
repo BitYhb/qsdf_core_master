@@ -1,10 +1,8 @@
 import QtQuick
 
-Item {
-    id: root
-
-    Rectangle {
-        anchors.fill: parent
-        color: "red"
-    }
+Window {
+    width: 1920
+    height: 1080
+    visible: true
+    title: qsTr("Hello World")
 }

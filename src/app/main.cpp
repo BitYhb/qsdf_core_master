@@ -274,6 +274,12 @@ int main(int argc, char **argv)
     Options options = parseCommandLine(argc, argv);
     applicationDirPath(argv[0]);
 
+    // set logging category message pattern
+    qputenv("QT_MESSAGE_PATTERN",
+            "[%{time yyyyMMdd h:mm:ss.zzz} "
+            "%{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-critical}C%{endif}%{if-fatal}F%{endif}] "
+            "%{file}:%{line} - %{message}");
+
     qputenv("QSG_RHI_BACKEND", "opengl");
     Utils::MIPSApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
     Utils::MIPSApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
@@ -300,7 +306,7 @@ int main(int argc, char **argv)
     QThreadPool::globalInstance()->setMaxThreadCount(qMax(4, 2 * nThreadCount));
 
     PluginManager pluginManager;
-    PluginManager::setPluginIID(QLatin1String("org.truesight.MIPS.MIPSoftwarePlugin"));
+    PluginManager::setPluginIID(QLatin1String("org.MIPS.MIPSoftwarePlugin"));
     PluginManager::setSettings(settings);
     PluginManager::setGlobalSettings(globalSettings);
 

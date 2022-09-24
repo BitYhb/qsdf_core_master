@@ -1,7 +1,7 @@
 #ifndef UTILS_THEME_P_H
 #define UTILS_THEME_P_H
 
-#include "../utils_global.h"
+#include "utils_export.h"
 #include "theme.h"
 
 #include <QString>

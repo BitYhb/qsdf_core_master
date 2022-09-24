@@ -4,8 +4,6 @@
 #include <utils/id.h>
 #include <utils/theme/theme.h>
 
-#include <QWidget>
-
 namespace Core {
 namespace Internal {
 
@@ -28,18 +26,6 @@ private:
     Utils::Id m_id;
     QString m_filePath;
     mutable QString m_displayName;
-};
-
-class ThemeChooser : public QWidget
-{
-public:
-    explicit ThemeChooser(QWidget *parent = nullptr);
-    ~ThemeChooser() override;
-
-    void apply();
-
-private:
-    ThemeChooserPrivate *d;
 };
 
 } // namespace Internal

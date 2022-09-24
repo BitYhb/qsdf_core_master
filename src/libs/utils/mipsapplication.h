@@ -5,7 +5,7 @@
 
 #include <QScopedPointer>
 
-MIPS_UTILS_BEGIN_NAMESPACE
+namespace Utils {
 
 class MIPSApplication;
 class MIPSApplicationPrivate;
@@ -30,4 +30,4 @@ private:
     Q_DECLARE_PRIVATE(MIPSApplication)
 };
 
-MIPS_UTILS_END_NAMESPACE
+}

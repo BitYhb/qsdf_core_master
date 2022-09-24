@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     Utils::MipsSettings *userSettings = createUserSettings();
 
     PluginManager pluginManager;
-    PluginManager::setPluginIID(QLatin1String("org.truesight.MIPS.MIPSoftwarePlugin"));
+    PluginManager::setPluginIID(QLatin1String("org.MIPS.MIPSoftwarePlugin"));
     PluginManager::setSettings(userSettings);
 
     // Must be set before setPluginPaths() call

@@ -1,7 +1,7 @@
 #ifndef SINGLEAPPLICATION_H
 #define SINGLEAPPLICATION_H
 
-#include "../utils_global.h"
+#include "utils_export.h"
 
 #include <QApplication>
 

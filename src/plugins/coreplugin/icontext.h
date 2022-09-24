@@ -1,5 +1,5 @@
 #pragma once
-#include "core_global.h"
+#include "core_export.h"
 
 #include <utils/id.h>
 
@@ -11,7 +11,7 @@ namespace Core {
 /// <summary>
 /// Context 类维护一个上下文 Id 的列表, 可用于在 ActionManager 中注册提供 UI 元素
 /// </summary>
-class MIPS_COREPLUGIN_EXPORT Context
+class MIPS_PLUGIN_CORE_EXPORT Context
 {
 public:
     Context() = default;
@@ -37,7 +37,7 @@ class IContextPrivate;
 /// <summary>
 /// IContext 类主要用于将 widget 与 context list 关联起来
 /// </summary>
-class MIPS_COREPLUGIN_EXPORT IContext : public QObject
+class MIPS_PLUGIN_CORE_EXPORT IContext : public QObject
 {
     Q_OBJECT
 public:

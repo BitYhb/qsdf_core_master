@@ -1,7 +1,7 @@
 #ifndef EXTENSIONSYSTEM_PLUGINSPEC_H
 #define EXTENSIONSYSTEM_PLUGINSPEC_H
 
-#include "extensionsystem_global.h"
+#include "extensionsystem_export.h"
 
 #include <QScopedPointer>
 #include <QObject>

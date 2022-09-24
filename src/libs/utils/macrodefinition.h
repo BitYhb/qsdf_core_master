@@ -1,9 +1,13 @@
 #ifndef MACRODEFINITION_H
 #define MACRODEFINITION_H
 
-#include "utils_global.h"
+#include "utils_export.h"
 
-MIPS_UTILS_BEGIN_NAMESPACE
+#include <QLoggingCategory>
+
+namespace Utils {
+
+Q_DECLARE_LOGGING_CATEGORY(lcUtils)
 
 class MacroDefinition
 {
@@ -11,6 +15,6 @@ public:
     MacroDefinition();
 };
 
-MIPS_UTILS_END_NAMESPACE
+}
 
 #endif // MACRODEFINITION_H

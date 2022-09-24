@@ -9,12 +9,12 @@ class ICore;
 
 namespace Internal {
 
-class MainWindow final : public QQmlApplicationEngine
+class MainQmlApplicationEngine final : public QQmlApplicationEngine
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QObject *parent = nullptr);
-    ~MainWindow() override;
+    explicit MainQmlApplicationEngine(QObject *parent = nullptr);
+    ~MainQmlApplicationEngine() override;
 
 private:
     ICore *m_coreImpl = nullptr;

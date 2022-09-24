@@ -11,7 +11,6 @@ set(UTILS_PUBLIC_HEADERS
     mipssettings.h
     stringutils.h
     stylehelper.h
-    utils_global.h
     macrodefinition.h
 )
 

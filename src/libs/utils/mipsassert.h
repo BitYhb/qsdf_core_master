@@ -1,7 +1,7 @@
 #ifndef UTILS_MIPSASSERT_H
 #define UTILS_MIPSASSERT_H
 
-#include "utils_global.h"
+#include "utils_export.h"
 
 namespace Utils {
 MIPS_UTILS_EXPORT void dumpBacktrace(int maxdepth);

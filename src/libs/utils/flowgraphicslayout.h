@@ -1,7 +1,7 @@
 #ifndef FLOWGRAPHICSLAYOUT_H
 #define FLOWGRAPHICSLAYOUT_H
 
-#include "utils_global.h"
+#include "utils_export.h"
 
 #include <QGraphicsLayout>
 

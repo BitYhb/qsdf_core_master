@@ -1,7 +1,7 @@
 #ifndef UTILS_BENCHMARKER_H
 #define UTILS_BENCHMARKER_H
 
-#include "utils_global.h"
+#include "utils_export.h"
 
 #include <QElapsedTimer>
 #include <QString>

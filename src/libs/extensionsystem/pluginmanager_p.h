@@ -4,17 +4,15 @@
 #include "pluginmanager.h"
 #include "pluginspec.h"
 
-#include <utils/algorithm.h>
+#include "utils/algorithm.h"
 
 #include <QElapsedTimer>
 #include <QReadWriteLock>
 
 #include <queue>
 
-QT_BEGIN_NAMESPACE
 class QTimer;
 class QEventLoop;
-QT_END_NAMESPACE
 
 namespace ExtensionSystem {
 

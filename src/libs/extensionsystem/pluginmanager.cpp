@@ -12,13 +12,9 @@
 #include <QCryptographicHash>
 #include <QDir>
 #include <QLibrary>
-#include <QLoggingCategory>
 #include <QMetaEnum>
 #include <QTimer>
 #include <QWriteLocker>
-#include <memory>
-
-Q_LOGGING_CATEGORY(pluginLog, "mips.extensionsystem", QtWarningMsg)
 
 const char S_IGNORED_PLUGINS[] = "Plugins/Ignored";
 const char S_FORCEENABLED_PLUGINS[] = "Plugins/ForceEnabled";
@@ -50,7 +46,7 @@ public:
                 lockFile.close();
                 return pluginName;
             } else {
-                qCDebug(pluginLog) << "Lockfile" << strLockFilePath << "exists but does not have read permission";
+                qCDebug(lcPlugin) << "Lockfile" << strLockFilePath << "exists but does not have read permission";
             }
         }
 
@@ -67,7 +63,7 @@ public:
             lockFile.write("\n");
             lockFile.close();
         } else {
-            qCDebug(pluginLog) << "Unable to write to lock file" << m_strFilePath;
+            qCDebug(lcPlugin) << "Unable to write to lock file" << m_strFilePath;
         }
     }
 
@@ -577,8 +573,8 @@ QVector<PluginSpec *> PluginManagerPrivate::loadQueue()
 
 void PluginManagerPrivate::setPluginPaths(const QStringList &lstPluginPaths)
 {
-    qCDebug(pluginLog) << "Plugin search paths:" << lstPluginPaths;
-    qCDebug(pluginLog) << "Required IID:" << m_strPluginIID;
+    qCDebug(lcPlugin) << "Plugin search paths:" << lstPluginPaths;
+    qCDebug(lcPlugin) << "Required IID:" << m_strPluginIID;
 
     m_lstPluginPaths = lstPluginPaths;
     readSettings();
@@ -632,7 +628,7 @@ void PluginManagerPrivate::checkForProblematicPlugins()
         if (pSpec != nullptr && pSpec->isRequired()) {
             const QSet<PluginSpec *> dependents = PluginManager::pluginsRequiringPlugin(pSpec);
             const auto dependentsNames = Utils::transform<QStringList>(dependents, &PluginSpec::name);
-            qCDebug(pluginLog) << dependentsNames;
+            qCDebug(lcPlugin) << dependentsNames;
         }
     }
 }

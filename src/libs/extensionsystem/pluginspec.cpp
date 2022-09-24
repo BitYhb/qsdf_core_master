@@ -14,6 +14,8 @@
 
 namespace ExtensionSystem {
 
+Q_LOGGING_CATEGORY(lcPlugin, "mips.extensionsystem")
+
 size_t qHash(const PluginDependency &value)
 {
     return qHash(value.m_strName);
@@ -53,7 +55,7 @@ PluginSpecPrivate::PluginSpecPrivate(PluginSpec &object)
 
 bool PluginSpecPrivate::read(const QString &strFileName)
 {
-    qCDebug(pluginLog) << "\nReading meta data of" << strFileName;
+    qCDebug(lcPlugin) << "Reading meta data of" << strFileName;
 
     // 初始化信息
     state = PluginSpec::Invalid;
@@ -66,7 +68,7 @@ bool PluginSpecPrivate::read(const QString &strFileName)
     m_strPluginPath = fileInfo.absoluteFilePath();
     m_loader.setFileName(m_strPluginPath);
     if (m_loader.fileName().isEmpty()) {
-        qCDebug(pluginLog) << "Cannot open file";
+        qCDebug(lcPlugin) << "Cannot open file";
         return false;
     }
 
@@ -306,15 +308,15 @@ static inline QString metaValueIsNotBool(const char *key)
 
 bool PluginSpecPrivate::readMetaData(const QJsonObject &jsonMetaData)
 {
-    qCDebug(pluginLog) << "plugin meta data:" << QJsonDocument(jsonMetaData).toJson();
+    qCDebug(lcPlugin) << "plugin meta data:" << QJsonDocument(jsonMetaData).toJson();
     QJsonValue value;
     value = jsonMetaData.value(QLatin1String("IID"));
     if (!value.isString()) {
-        qCDebug(pluginLog) << "Not a plugin (string IID not found)";
+        qCDebug(lcPlugin) << "Not a plugin (string IID not found)";
         return false;
     }
     if (value.toString() != PluginManager::pluginIID()) {
-        qCDebug(pluginLog) << "Plugin ignored (IID mismatch)";
+        qCDebug(lcPlugin) << "Plugin ignored (IID mismatch)";
         return false;
     }
 
@@ -363,7 +365,7 @@ PluginSpec::PluginSpec(QObject *parent)
     , d_ptr(new PluginSpecPrivate(*this))
 {}
 
-PluginSpec::~PluginSpec() {}
+PluginSpec::~PluginSpec() = default;
 
 PluginSpec *PluginSpec::read(const QString &strFilePath)
 {

@@ -1,14 +1,14 @@
 #include "coreplugin.h"
-#include "mainwindow.h"
+#include "mainqmlapplicationengine.h"
 #include "themechooser.h"
 
-#include <extensionsystem/pluginerroroverview.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
 #include <utils/mimetypes.h>
 #include <utils/stringutils.h>
 #include <utils/theme/theme.h>
 #include <utils/theme/theme_p.h>
+#include <utils/mipsapplication.h>
 
 #include <QJsonObject>
 #include <QMetaEnum>
@@ -95,19 +95,20 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorString)
     Theme::setInitialPalette(theme);
     setApplicationTheme(theme);
 
-    m_mainWindow = new MainWindow;
-    m_mainWindow->resize(1600, 900);
-    m_mainWindow->show();
+    m_mainQmlEngine = new MainQmlApplicationEngine;
+    const QUrl url(u"qrc:/qml/main.qml"_qs);
+    QObject::connect(m_mainQmlEngine, &MainQmlApplicationEngine::objectCreated,
+        mipsApp, [url](QObject *obj, const QUrl &objUrl) {
+            if (!obj && url == objUrl)
+                Utils::MIPSApplication::exit(-1);
+        }, Qt::QueuedConnection);
+    m_mainQmlEngine->load(url);
     return true;
 }
 
 void CorePlugin::extensionsInitialized()
 {
     if (ExtensionSystem::PluginManager::hasError()) {
-        const auto errorOverview = new ExtensionSystem::PluginErrorOverview(m_mainWindow);
-        errorOverview->setAttribute(Qt::WA_DeleteOnClose);
-        errorOverview->setModal(true);
-        errorOverview->show();
     }
     checkSettings();
 }

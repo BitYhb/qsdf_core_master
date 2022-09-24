@@ -1,5 +1,7 @@
 #include "mipsassert.h"
 
+#include <utils/macrodefinition.h>
+
 using namespace Utils;
 
 MIPS_UTILS_EXPORT void Utils::dumpBacktrace(int maxdepth)
@@ -13,11 +15,11 @@ MIPS_UTILS_EXPORT void Utils::writeAssertLocation(const char *msg)
 {
     static bool goBoom = qEnvironmentVariableIsSet("MIPS_FATAL_ASSERTS");
     if (goBoom)
-        qFatal("SOFT ASSERT made fatal: %s", msg);
+        qCCritical(lcUtils, "SOFT ASSERT made fatal: %s", msg);
     else
-        qDebug("SOFT ASSERT: %s", msg);
+        qCDebug(lcUtils, "SOFT ASSERT: %s", msg);
 
-    static int maxdepth = qEnvironmentVariableIntValue("MIPS_BACKTRACE_MAXDEPTH");
-    if (maxdepth != 0)
-        dumpBacktrace(maxdepth);
+    static int backTraceMaxDepthValue = qEnvironmentVariableIntValue("MIPS_BACKTRACE_MAX_DEPTH");
+    if (backTraceMaxDepthValue != 0)
+        dumpBacktrace(backTraceMaxDepthValue);
 }

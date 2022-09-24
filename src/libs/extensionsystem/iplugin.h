@@ -1,13 +1,8 @@
-#ifndef EXTENSIONSYSTEM_IPLUGIN_H
-#define EXTENSIONSYSTEM_IPLUGIN_H
+#pragma once
 
-#include "extensionsystem_global.h"
+#include "extensionsystem_export.h"
 
 #include <QObject>
-
-QT_BEGIN_NAMESPACE
-class QGraphicsItem;
-QT_END_NAMESPACE
 
 namespace ExtensionSystem {
 
@@ -60,4 +55,3 @@ private:
 
 } // namespace ExtensionSystem
 
-#endif // EXTENSIONSYSTEM_IPLUGIN_H

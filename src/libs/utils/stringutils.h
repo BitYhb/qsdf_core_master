@@ -1,11 +1,9 @@
 #ifndef UTILS_STRINGUTILS_H
 #define UTILS_STRINGUTILS_H
 
-#include "utils_global.h"
+#include "utils_export.h"
 
-QT_BEGIN_NAMESPACE
-class QJsonValue;
-QT_END_NAMESPACE
+#include <QJsonValue>
 
 namespace Utils {
 
