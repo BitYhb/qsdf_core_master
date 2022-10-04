@@ -9,7 +9,7 @@
 
 namespace Utils {
 
-class MIPS_UTILS_EXPORT ThemePrivate
+class QUICK_UTILS_EXPORT ThemePrivate
 {
 public:
     ThemePrivate();
@@ -24,8 +24,8 @@ public:
     QMap<QString, QColor> palette;
 };
 
-MIPS_UTILS_EXPORT void setApplicationTheme(Theme *theme);
-MIPS_UTILS_EXPORT void setThemeApplicationPalette();
+QUICK_UTILS_EXPORT void setApplicationTheme(Theme *theme);
+QUICK_UTILS_EXPORT void setThemeApplicationPalette();
 
 } // namespace Utils
 

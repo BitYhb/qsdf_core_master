@@ -7,9 +7,9 @@
 
 namespace Utils {
 
-MIPS_UTILS_EXPORT bool readMultiLineString(const QJsonValue &value, QString *out)
+QUICK_UTILS_EXPORT bool readMultiLineString(const QJsonValue &value, QString *out)
 {
-    MIPS_ASSERT(out, return false);
+    QUICK_ASSERT(out, return false);
     if (value.isString()) {
         *out = value.toString();
     } else if (value.isArray()) {

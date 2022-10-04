@@ -1,5 +1,4 @@
 #pragma once
-
 #include "extensionsystem_export.h"
 
 #include <QObject>
@@ -10,7 +9,7 @@ class PluginSpecPrivate;
 class PluginSpec;
 class IPluginPrivate;
 
-class MIPS_EXTENSIONSYSTEM_EXPORT IPlugin : public QObject
+class QUICK_EXTENSIONSYSTEM_EXPORT IPlugin : public QObject
 {
     Q_OBJECT
 public:

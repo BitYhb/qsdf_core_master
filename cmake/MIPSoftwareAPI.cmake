@@ -141,7 +141,8 @@ function(add_mips_library target_name)
         set(_MSVC_SOLUTION_FOLDER "${_arg_MSVC_SOLUTION_FOLDER}")
     endif ()
 
-    generate_export_header(${target_name} PREFIX_NAME MIPS_)
+    # export header file
+    generate_export_header(${target_name} PREFIX_NAME QUICK_)
     string(TOLOWER ${target_name} lower_target_name)
     target_sources(${target_name} PUBLIC
         FILE_SET HEADERS
@@ -242,7 +243,7 @@ function(add_mips_plugin target_name)
 
     set_public_headers(${target_name} ${_arg_SOURCES})
 
-    generate_export_header(${target_name} PREFIX_NAME MIPS_PLUGIN_)
+    generate_export_header(${target_name} PREFIX_NAME QUICK_PLUGIN_)
     string(TOLOWER ${target_name} lower_target_name)
     target_sources(${target_name} PUBLIC
         FILE_SET HEADERS

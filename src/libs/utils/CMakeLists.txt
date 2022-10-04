@@ -1,12 +1,16 @@
 set(UTILS_PUBLIC_HEADERS
     singleapplication/singleapplication.h
     theme/theme.h
+    quickevent/customevent.h
+    quickevent/quickevent.h
+    quickevent/quickmacro.h
+    quickevent/customeventapplication.h
     algorithm.h
     benchmarker.h
     flowgraphicslayout.h
     id.h
     mimetypes.h
-    mipsapplication.h
+    quickapplication.h
     mipsassert.h
     mipssettings.h
     stringutils.h
@@ -17,11 +21,13 @@ set(UTILS_PUBLIC_HEADERS
 set(UTILS_PUBLIC_SOURCES
     singleapplication/singleapplication.cpp
     theme/theme.cpp
+    quickevent/customevent.cpp
+    quickevent/customeventapplication.cpp
     benchmarker.cpp
     flowgraphicslayout.cpp
     id.cpp
     mimetypes.cpp
-    mipsapplication.cpp
+    quickapplication.cpp
     mipsassert.cpp
     mipssettings.cpp
     stringutils.cpp

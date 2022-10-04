@@ -15,9 +15,9 @@ enum class StartupPhase {
     UpAndRunning
 };
 
-MIPS_UTILS_EXPORT void setMimeStartupPhase(StartupPhase startupPhase);
+QUICK_UTILS_EXPORT void setMimeStartupPhase(StartupPhase startupPhase);
 
-MIPS_UTILS_EXPORT void addMimeTypes(const QString &id, const QByteArray &data);
+QUICK_UTILS_EXPORT void addMimeTypes(const QString &id, const QByteArray &data);
 
 } // namespace Utils
 

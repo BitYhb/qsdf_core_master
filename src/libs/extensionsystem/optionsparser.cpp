@@ -2,7 +2,7 @@
 #include "pluginmanager.h"
 #include "pluginmanager_p.h"
 
-#include <utils/mipsapplication.h>
+#include <utils/quickapplication.h>
 
 #include <QDir>
 #include <QMetaEnum>

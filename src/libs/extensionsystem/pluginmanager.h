@@ -12,7 +12,7 @@ namespace ExtensionSystem {
 class PluginSpec;
 class PluginManagerPrivate;
 
-class MIPS_EXTENSIONSYSTEM_EXPORT PluginManager : public QObject
+class QUICK_EXTENSIONSYSTEM_EXPORT PluginManager : public QObject
 {
     Q_OBJECT
 public:

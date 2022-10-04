@@ -5,10 +5,10 @@
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
 #include <utils/mimetypes.h>
+#include <utils/quickapplication.h>
 #include <utils/stringutils.h>
 #include <utils/theme/theme.h>
 #include <utils/theme/theme_p.h>
-#include <utils/mipsapplication.h>
 
 #include <QJsonObject>
 #include <QMetaEnum>
@@ -98,9 +98,9 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorString)
     m_mainQmlEngine = new MainQmlApplicationEngine;
     const QUrl url(u"qrc:/qml/main.qml"_qs);
     QObject::connect(m_mainQmlEngine, &MainQmlApplicationEngine::objectCreated,
-        mipsApp, [url](QObject *obj, const QUrl &objUrl) {
+        quickApp, [url](QObject *obj, const QUrl &objUrl) {
             if (!obj && url == objUrl)
-                Utils::MIPSApplication::exit(-1);
+                Utils::QuickApplication::exit(-1);
         }, Qt::QueuedConnection);
     m_mainQmlEngine->load(url);
     return true;

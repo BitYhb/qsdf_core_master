@@ -9,7 +9,7 @@
 
 namespace Utils {
 
-class MIPS_UTILS_EXPORT Id
+class QUICK_UTILS_EXPORT Id
 {
 public:
     Id() = default;

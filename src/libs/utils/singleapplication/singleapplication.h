@@ -13,7 +13,7 @@ namespace Internal {
 class LocalPeer;
 }
 
-class MIPS_UTILS_EXPORT SingleApplication : public QApplication
+class QUICK_UTILS_EXPORT SingleApplication : public QApplication
 {
     Q_OBJECT
 
@@ -47,8 +47,6 @@ private:
     QString m_strAppId;
     bool m_bBlock = false;
 };
-
-
 
 } // namespace Utils
 

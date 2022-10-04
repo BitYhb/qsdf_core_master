@@ -4,14 +4,14 @@
 
 using namespace Utils;
 
-MIPS_UTILS_EXPORT void Utils::dumpBacktrace(int maxdepth)
+QUICK_UTILS_EXPORT void Utils::dumpBacktrace(int maxdepth)
 {
     if (maxdepth == -1)
         maxdepth = 1000;
     Q_UNUSED(maxdepth);
 }
 
-MIPS_UTILS_EXPORT void Utils::writeAssertLocation(const char *msg)
+QUICK_UTILS_EXPORT void Utils::writeAssertLocation(const char *msg)
 {
     static bool goBoom = qEnvironmentVariableIsSet("MIPS_FATAL_ASSERTS");
     if (goBoom)

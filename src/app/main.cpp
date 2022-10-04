@@ -4,8 +4,8 @@
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
 
-#include <utils/mipsapplication.h>
 #include <utils/mipssettings.h>
+#include <utils/quickapplication.h>
 #include <utils/stylehelper.h>
 
 #include <QDebug>
@@ -64,7 +64,7 @@ static QString toHtml(const QString &t)
 
 static void displayHelpText(const QString &t)
 {
-    if (mipsApp)
+    if (quickApp)
         QMessageBox::information(nullptr, QLatin1String(Core::Constants::MIPS_DISPLAY_NAME), toHtml(t));
     else
         qWarning("%s", qPrintable(t));
@@ -77,7 +77,7 @@ static void displayError(const QString &t)
 
 static QString msgCoreLoadFailure(const QString &why)
 {
-    return Utils::MIPSApplication::translate("Application", "Failed to load core: %1").arg(why);
+    return Utils::QuickApplication::translate("Application", "Failed to load core: %1").arg(why);
 }
 
 static void printHelp(const QString &name)
@@ -247,7 +247,7 @@ public:
 
     [[nodiscard]] int restartOrExit(const int exitCode) const
     {
-        return mipsApp->property("restart").toBool() ? restart(exitCode) : exitCode;
+        return quickApp->property("restart").toBool() ? restart(exitCode) : exitCode;
     }
 
     [[nodiscard]] int restart(const int exitCode) const
@@ -281,21 +281,21 @@ int main(int argc, char **argv)
             "%{file}:%{line} - %{message}");
 
     qputenv("QSG_RHI_BACKEND", "opengl");
-    Utils::MIPSApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
-    Utils::MIPSApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    Utils::QuickApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
+    Utils::QuickApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
     int nNumberOfArguments = static_cast<int>(options.appArguments.size());
 
-    Utils::MIPSApplication app(QLatin1String(Core::Constants::MIPS_DISPLAY_NAME),
+    Utils::QuickApplication app(QLatin1String(Core::Constants::MIPS_DISPLAY_NAME),
                                nNumberOfArguments,
                                options.appArguments.data());
-    Utils::MIPSApplication::setApplicationName(Core::Constants::MIPS_CASED_ID);
-    Utils::MIPSApplication::setApplicationVersion(QLatin1String(Core::Constants::MIPS_VERSION_LONG));
-    Utils::MIPSApplication::setOrganizationName(QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR));
-    Utils::MIPSApplication::setApplicationDisplayName(Core::Constants::MIPS_DISPLAY_NAME);
+    Utils::QuickApplication::setApplicationName(Core::Constants::MIPS_CASED_ID);
+    Utils::QuickApplication::setApplicationVersion(QLatin1String(Core::Constants::MIPS_VERSION_LONG));
+    Utils::QuickApplication::setOrganizationName(QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR));
+    Utils::QuickApplication::setApplicationDisplayName(Core::Constants::MIPS_DISPLAY_NAME);
 
     loadFontFamilyFromFiles();
-    Utils::MIPSApplication::setFont(QFont("PingFang SC"));
+    Utils::QuickApplication::setFont(QFont("PingFang SC"));
 
     // Initialize global settings and reset-up install settings with QApplication::applicationDirPath
     setupInstallSettings(options.strInstallSettingsPath);
@@ -326,15 +326,15 @@ int main(int argc, char **argv)
             const QString &qtTrPath = QLibraryInfo::path(QLibraryInfo::TranslationsPath);
             const QString &qtTrFile = QLatin1String("qt_") + locale;
             if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, applicationTrPath)) {
-                Utils::MIPSApplication::installTranslator(&translator);
-                Utils::MIPSApplication::installTranslator(&qtTranslator);
+                Utils::QuickApplication::installTranslator(&translator);
+                Utils::QuickApplication::installTranslator(&qtTranslator);
                 break;
             }
         }
     }
 
     // Load plugins
-    const QStringList lstPluginArguments = Utils::MIPSApplication::arguments();
+    const QStringList lstPluginArguments = Utils::QuickApplication::arguments();
     const QStringList lstPluginPaths = getPluginPaths() + options.lstCustomPluginPaths;
     PluginManager::setPluginPaths(lstPluginPaths);
     QMap<QString, QString> foundAppOptions;
@@ -348,7 +348,7 @@ int main(int argc, char **argv)
         QString strErrorMessage;
         if (!PluginManager::parseOptions(lstPluginArguments, mapAppOptions, &foundAppOptions, &strErrorMessage)) {
             displayError(strErrorMessage);
-            printHelp(QFileInfo(Utils::MIPSApplication::applicationFilePath()).baseName());
+            printHelp(QFileInfo(Utils::QuickApplication::applicationFilePath()).baseName());
             return -1;
         }
     }
@@ -375,13 +375,13 @@ int main(int argc, char **argv)
     }
     if (nullptr == coreplugin) {
         QString nativePaths = QDir::toNativeSeparators(lstPluginPaths.join(","));
-        const QString reason = Utils::MIPSApplication::translate("MIPSApplication", "Could not find Core plugin in %1")
+        const QString reason = Utils::QuickApplication::translate("QuickApplication", "Could not find Core plugin in %1")
                                    .arg(nativePaths);
         displayError(msgCoreLoadFailure(reason));
         return 1;
     }
     if (!coreplugin->isEffectivelyEnabled()) {
-        const QString reason = Utils::MIPSApplication::translate("MIPSApplication", "Core plugin is disabled.");
+        const QString reason = Utils::QuickApplication::translate("QuickApplication", "Core plugin is disabled.");
         displayError(msgCoreLoadFailure(reason));
         return 1;
     }
@@ -396,7 +396,7 @@ int main(int argc, char **argv)
     }
 
     if (foundAppOptions.contains(QLatin1String(HELP_OPTION))) {
-        printHelp(QFileInfo(Utils::MIPSApplication::applicationFilePath()).baseName());
+        printHelp(QFileInfo(Utils::QuickApplication::applicationFilePath()).baseName());
         return 0;
     }
 
@@ -407,11 +407,11 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    QObject::connect(&app, &Utils::MIPSApplication::messageReceived, &pluginManager, &PluginManager::remoteArguments);
+    QObject::connect(&app, &Utils::QuickApplication::messageReceived, &pluginManager, &PluginManager::remoteArguments);
     QObject::connect(&app, SIGNAL(fileOpenRequest(QString)), coreplugin->plugin(), SLOT(fileOpenRequest(QString)));
 
     // shutdown plugin manager on the exit
     QObject::connect(&app, &QCoreApplication::aboutToQuit, &pluginManager, &PluginManager::shutdown);
 
-    return restarter.restartOrExit(Utils::MIPSApplication::exec());
+    return restarter.restartOrExit(Utils::QuickApplication::exec());
 }

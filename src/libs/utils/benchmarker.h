@@ -12,7 +12,7 @@ QT_END_NAMESPACE
 
 namespace Utils {
 
-class MIPS_UTILS_EXPORT Benchmarker
+class QUICK_UTILS_EXPORT Benchmarker
 {
 public:
     static void report(const QString &testsuite, const QString &testcase, qint64 ms, const QString &tags = QString());

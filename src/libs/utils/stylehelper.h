@@ -7,7 +7,7 @@
 
 namespace Utils {
 
-class MIPS_UTILS_EXPORT StyleHelper
+class QUICK_UTILS_EXPORT StyleHelper
 {
 public:
     // 针对某个图片, 根据 devicePixelRatio() 返回该图片可用的有效分辨率

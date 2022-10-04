@@ -14,7 +14,7 @@ namespace Utils {
 
 class ThemePrivate;
 
-class MIPS_UTILS_EXPORT Theme : public QObject
+class QUICK_UTILS_EXPORT Theme : public QObject
 {
     Q_OBJECT
 public:
@@ -65,13 +65,13 @@ protected:
     ThemePrivate *d;
 
 private:
-    friend MIPS_UTILS_EXPORT Theme *applicationTheme();
-    friend MIPS_UTILS_EXPORT Theme *proxyTheme();
+    friend QUICK_UTILS_EXPORT Theme *applicationTheme();
+    friend QUICK_UTILS_EXPORT Theme *proxyTheme();
     QPair<QColor, QString> readNamedColor(const QString &color);
 };
 
-MIPS_UTILS_EXPORT Theme *applicationTheme();
-MIPS_UTILS_EXPORT Theme *proxyTheme();
+QUICK_UTILS_EXPORT Theme *applicationTheme();
+QUICK_UTILS_EXPORT Theme *proxyTheme();
 
 } // namespace Utils
 
