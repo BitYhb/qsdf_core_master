@@ -1,8 +1,6 @@
-#ifndef CORE_CORECONSTANTS_H
-#define CORE_CORECONSTANTS_H
+#pragma once
 
-namespace Core {
-namespace Constants {
+namespace Core::Constants {
 
 // actions
 const char DEFAULT[] = "MIPSoftware.Default";
@@ -36,7 +34,4 @@ const char SETTINGS_THEME[] = "Core/Theme";
 const char DEFAULT_THEME[] = "flat";
 const char DEFAULT_DARK_THEME[] = "flat-dark";
 
-} // namespace Constants
-} // namespace Core
-
-#endif // CORE_CORECONSTANTS_H
+} // namespace Core::Constants

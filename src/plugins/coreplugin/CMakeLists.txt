@@ -11,8 +11,10 @@ set(CORE_PUBLIC_SOURCES
 
 ### *** Internal ***
 set(CORE_PRIVATE_HEADERS_AND_SOURCES
-    mainqmlapplicationengine.h mainqmlapplicationengine.cpp
-    themechooser.h themechooser.cpp)
+    qmlapplicationengine.h qmlapplicationengine.cpp
+    corepluginmacro.h corepluginmacro.cpp
+    themechooser.h themechooser.cpp
+    corepluginmacro.h corepluginmacro.cpp)
 
 qt_add_resources(CORE_RESOURCES qml.qrc)
 

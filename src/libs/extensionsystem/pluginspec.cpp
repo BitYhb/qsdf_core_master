@@ -231,7 +231,7 @@ bool PluginSpecPrivate::delayedInitialize()
 IPlugin::ShutdownFlag PluginSpecPrivate::stop()
 {
     if (!plugin)
-        return IPlugin::ShutdownFlag::AsynchronousShutdown;
+        return IPlugin::ShutdownFlag::SynchronousShutdown;
 
     state = PluginSpec::Stopped;
     return plugin->aboutToShutdown();

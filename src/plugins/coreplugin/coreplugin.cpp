@@ -1,7 +1,8 @@
 #include "coreplugin.h"
-#include "mainqmlapplicationengine.h"
+#include "qmlapplicationengine.h"
 #include "themechooser.h"
 
+#include <coreplugin/corepluginmacro.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
 #include <utils/mimetypes.h>
@@ -12,8 +13,6 @@
 
 #include <QJsonObject>
 #include <QMetaEnum>
-
-using namespace Utils;
 
 namespace Core::Internal {
 
@@ -26,7 +25,7 @@ CorePlugin::CorePlugin()
 
 CorePlugin::~CorePlugin()
 {
-    setApplicationTheme(nullptr);
+    Utils::setApplicationTheme(nullptr);
 }
 
 CorePlugin *CorePlugin::instance()
@@ -37,7 +36,7 @@ CorePlugin *CorePlugin::instance()
 struct CoreArguments
 {
     QColor overrideColor;
-    Id themeId;
+    Utils::Id themeId;
     bool presentationMode = false;
     bool designerMode = false; // 布局设计模式, 将禁用插件通信和交互
     QString patientId;
@@ -90,18 +89,24 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorString)
         return false;
     }
     const CoreArguments args = parseArguments(arguments);
-    Theme *themeFromArg = ThemeEntry::createTheme(args.themeId);
-    Theme *theme = themeFromArg ? themeFromArg : ThemeEntry::createTheme(ThemeEntry::themeSetting());
-    Theme::setInitialPalette(theme);
+    auto themeFromArg = ThemeEntry::createTheme(args.themeId);
+    auto theme = themeFromArg ? themeFromArg : ThemeEntry::createTheme(ThemeEntry::themeSetting());
+    Utils::Theme::setInitialPalette(theme);
     setApplicationTheme(theme);
 
-    m_mainQmlEngine = new MainQmlApplicationEngine;
-    const QUrl url(u"qrc:/qml/main.qml"_qs);
-    QObject::connect(m_mainQmlEngine, &MainQmlApplicationEngine::objectCreated,
-        quickApp, [url](QObject *obj, const QUrl &objUrl) {
-            if (!obj && url == objUrl)
-                Utils::QuickApplication::exit(-1);
-        }, Qt::QueuedConnection);
+    m_mainQmlEngine = new QmlApplicationEngine;
+    const QUrl url(u"qrc:/main.qml"_qs);
+    QObject::connect(
+        m_mainQmlEngine,
+        &QmlApplicationEngine::objectCreated,
+        quickApp,
+        [url](QObject *obj, const QUrl &objUrl) {
+            if (!obj && url == objUrl) {
+                qCInfo(Core::lcCorePlugin, "Application failed to load, exit(-1)");
+                Utils::CustomEventApplication::publishEvent("QuitApplication", Qt::AutoConnection, -1);
+            }
+        },
+        Qt::QueuedConnection);
     m_mainQmlEngine->load(url);
     return true;
 }

@@ -1,5 +1,5 @@
-#ifndef MACRODEFINITION_H
-#define MACRODEFINITION_H
+#ifndef QUICK_UTILS_MACRO_DEFINITION_H
+#define QUICK_UTILS_MACRO_DEFINITION_H
 
 #include "utils_export.h"
 
@@ -15,6 +15,6 @@ public:
     MacroDefinition();
 };
 
-}
+} // namespace Utils
 
-#endif // MACRODEFINITION_H
+#endif // QUICK_UTILS_MACRO_DEFINITION_H

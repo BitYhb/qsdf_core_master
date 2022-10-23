@@ -14,7 +14,7 @@ class IContext;
 class ICorePrivate;
 
 namespace Internal {
-class MainQmlApplicationEngine;
+class QmlApplicationEngine;
 }
 
 /// <summary>
@@ -29,7 +29,7 @@ class QUICK_PLUGIN_CORE_EXPORT ICore : public QObject
 public:
     ~ICore() override;
 
-    void setMainWindow(Internal::MainQmlApplicationEngine *mainWindow);
+    void setMainWindow(Internal::QmlApplicationEngine *mainWindow);
 
     // 返回指向 ICore 实例的指针, 可用于信号的连接
     static ICore *instance();

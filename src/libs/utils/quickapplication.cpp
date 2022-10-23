@@ -28,8 +28,15 @@ protected:
 QuickApplication::QuickApplication(const QString &appId, int &argc, char **argv)
     : SingleApplication(appId, argc, argv)
     , d(new Internal::QuickApplicationPrivate(*this))
-{}
+{
+    Utils::CustomEventApplication::subscribeEvent(this, "QuitApplication");
+}
 
 QuickApplication::~QuickApplication() = default;
+
+void QuickApplication::eventQuitApplication()
+{
+    quit();
+}
 
 } // namespace Utils

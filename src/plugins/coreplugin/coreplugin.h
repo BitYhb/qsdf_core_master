@@ -8,12 +8,12 @@ class ActionManager;
 
 namespace Internal {
 
-class MainQmlApplicationEngine;
+class QmlApplicationEngine;
 
 class CorePlugin final : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.MIPS.MIPSoftwarePlugin" FILE "Core.json")
+    Q_PLUGIN_METADATA(IID "org.quick.plugin" FILE "Core.json")
 public:
     CorePlugin();
     ~CorePlugin() override;
@@ -35,9 +35,8 @@ private:
     void checkSettings();
 
     ActionManager *m_actionManager = nullptr;
-    MainQmlApplicationEngine *m_mainQmlEngine = nullptr;
+    QmlApplicationEngine *m_mainQmlEngine = nullptr;
 };
 
 } // namespace Internal
 } // namespace Core
-

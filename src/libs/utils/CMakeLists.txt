@@ -1,7 +1,7 @@
 set(UTILS_PUBLIC_HEADERS
     singleapplication/singleapplication.h
     theme/theme.h
-    quickevent/customevent.h
+    quickevent/customquickevent.h
     quickevent/quickevent.h
     quickevent/quickmacro.h
     quickevent/customeventapplication.h
@@ -21,7 +21,7 @@ set(UTILS_PUBLIC_HEADERS
 set(UTILS_PUBLIC_SOURCES
     singleapplication/singleapplication.cpp
     theme/theme.cpp
-    quickevent/customevent.cpp
+    quickevent/customquickevent.cpp
     quickevent/customeventapplication.cpp
     benchmarker.cpp
     flowgraphicslayout.cpp

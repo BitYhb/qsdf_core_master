@@ -8,12 +8,23 @@ QMap<QByteArray, QMap<qint32, QObject *>> CustomEventApplicationPrivate::default
 QReadWriteLock CustomEventApplicationPrivate::eventQueueLock;                               // For event queues
 } // namespace Internal
 
+Internal::CustomEventApplicationPrivate *d = nullptr;
+
 CustomEventApplication::CustomEventApplication(QObject *parent)
     : QObject(parent)
-    , d(new Internal::CustomEventApplicationPrivate(*this))
-{}
+{
+    d = new Internal::CustomEventApplicationPrivate(*this);
+}
 
-CustomEventApplication::~CustomEventApplication() = default;
+QMap<QByteArray, QMap<qint32, QObject*>> CustomEventApplication::defaultEventQueue()
+{
+    return Internal::CustomEventApplicationPrivate::defaultEventQueue;
+}
+
+QReadWriteLock* CustomEventApplication::listLock()
+{
+    return &Internal::CustomEventApplicationPrivate::eventQueueLock;
+}
 
 int CustomEventApplication::methodIndex(QObject *obj, const QByteArray &methodName)
 {

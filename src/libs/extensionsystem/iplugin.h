@@ -1,4 +1,6 @@
-#pragma once
+#ifndef QUICK_IPLUGIN_H
+#define QUICK_IPLUGIN_H
+
 #include "extensionsystem_export.h"
 
 #include <QObject>
@@ -27,7 +29,7 @@ public:
 
     virtual bool delayedInitialize() { return false; }
 
-    virtual ShutdownFlag aboutToShutdown() { return ShutdownFlag::AsynchronousShutdown; }
+    virtual ShutdownFlag aboutToShutdown() { return ShutdownFlag::SynchronousShutdown; }
 
     virtual QObject *remoteCommand(const QStringList &options,
                                    const QString &workingDirectory,
@@ -54,3 +56,4 @@ private:
 
 } // namespace ExtensionSystem
 
+#endif // QUICK_IPLUGIN_H

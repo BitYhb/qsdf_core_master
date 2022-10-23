@@ -5,7 +5,7 @@
 #include <QList>
 #include <QSharedPointer>
 
-#define EVENT_METHOD_PREFIX "event"
+#define QUICK_EVENT_METHOD_PREFIX "event"
 
 namespace Utils {
 
@@ -13,12 +13,12 @@ namespace Internal {
 class CustomEventPrivate;
 }
 
-class QUICK_UTILS_EXPORT CustomEvent final : public QEvent
+class QUICK_UTILS_EXPORT CustomQuickEvent final : public QEvent
 {
 public:
-    explicit CustomEvent(Type type = GenericEvent);
-    CustomEvent(const QByteArray &eventName, const QList<QSharedPointer<QVariant>> &info, Type type = GenericEvent);
-    ~CustomEvent() override;
+    explicit CustomQuickEvent(Type type = GenericEvent);
+    CustomQuickEvent(const QByteArray &eventName, const QList<QSharedPointer<QVariant>> &info, Type type = GenericEvent);
+    ~CustomQuickEvent() override;
 
     [[nodiscard]] QByteArray eventName() const;
     void setEventName(const QByteArray &eventName);
@@ -32,7 +32,7 @@ protected:
     QSharedPointer<Internal::CustomEventPrivate> d_ptr;
 
 private:
-    Q_EVENT_DISABLE_COPY(CustomEvent);
+    Q_EVENT_DISABLE_COPY(CustomQuickEvent);
 };
 
 } // namespace Utils

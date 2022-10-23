@@ -1,15 +1,11 @@
-#pragma once
-#include "customeventapplication_p.h"
-
 #include <utils/macrodefinition.h>
 #include <utils/mipsassert.h>
-#include <utils/quickevent/quickevent.h>
 #include <utils/quickapplication.h>
+#include <utils/quickevent/quickevent.h>
 
 #include <QMetaMethod>
 #include <QThread>
-
-namespace Utils {
+#include <QtCore>
 
 template<typename T>
 static void getList(QList<QByteArray> &typeNames, QList<QGenericArgument> &list, T &&t)
@@ -36,28 +32,28 @@ static void getList(QList<QByteArray> &typeNames, QList<QSharedPointer<QVariant>
  * and connections can't be a Qt::BlockingQueuedConnection.
  */
 template<class... Args>
-void CustomEventApplication::publishEvent(const QByteArray &eventName, Qt::ConnectionType type, Args &&...args)
+void Utils::CustomEventApplication::publishEvent(const QByteArray &eventName, Qt::ConnectionType type, Args &&...args)
 {
     if (eventName.isEmpty()) {
         return;
     }
 
-    auto argsCount = sizeof...(args);
-    QUICK_ASSERT(argsCount <= 10, qCWarning(lcUtils, "publishEvent() parameter-pack args cannot exceed 10"); return);
+    auto count = sizeof...(args);
+    QUICK_ASSERT(count <= 10, qWarning("publishEvent() parameter-pack args cannot exceed 10"); return);
 
-    QReadLocker locker(&Internal::CustomEventApplicationPrivate::eventQueueLock);
-    const auto &defaultEventQueue = Internal::CustomEventApplicationPrivate::defaultEventQueue;
-    if (!defaultEventQueue.contains(eventName)) {
+    QReadLocker locker(listLock());
+    auto defaultQueue = defaultEventQueue();
+    if (!defaultQueue.contains(eventName)) {
         return;
     }
 
-    auto objs = defaultEventQueue[eventName].values();
-    const auto methodName = QByteArray(EVENT_METHOD_PREFIX) + eventName;
+    auto objs = defaultQueue[eventName].values();
+    const auto methodName = QByteArray(QUICK_EVENT_METHOD_PREFIX) + eventName;
     foreach (auto item, objs) {
         if (item->thread() == QThread::currentThread() || type == Qt::BlockingQueuedConnection) {
             QList<QByteArray> typeNames;
             QList<QGenericArgument> g;
-            std::initializer_list<int32_t>{(getList(typeNames, g, args), 0)...};
+            (void) std::initializer_list<int32_t>{(getList(typeNames, g, args), 0)...};
             while (g.size() < 10) {
                 g << QGenericArgument();
             }
@@ -72,15 +68,11 @@ void CustomEventApplication::publishEvent(const QByteArray &eventName, Qt::Conne
         } else {
             QList<QByteArray> typeNames;
             QList<QSharedPointer<QVariant>> list;
-            std::initializer_list<int32_t>{(getList(typeNames, list, args), 0)...};
-
-            auto quickEvent = new CustomEvent;
+            (void) std::initializer_list<int32_t>{(getList(typeNames, list, args), 0)...};
+            auto quickEvent = new CustomQuickEvent;
             quickEvent->setInfo(list);
             quickEvent->setEventName(eventName);
             QCoreApplication::postEvent(item, quickEvent);
         }
     }
 }
-
-
-} // namespace Utils

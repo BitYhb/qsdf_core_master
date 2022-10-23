@@ -287,8 +287,8 @@ int main(int argc, char **argv)
     int nNumberOfArguments = static_cast<int>(options.appArguments.size());
 
     Utils::QuickApplication app(QLatin1String(Core::Constants::MIPS_DISPLAY_NAME),
-                               nNumberOfArguments,
-                               options.appArguments.data());
+                                nNumberOfArguments,
+                                options.appArguments.data());
     Utils::QuickApplication::setApplicationName(Core::Constants::MIPS_CASED_ID);
     Utils::QuickApplication::setApplicationVersion(QLatin1String(Core::Constants::MIPS_VERSION_LONG));
     Utils::QuickApplication::setOrganizationName(QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR));
@@ -306,7 +306,7 @@ int main(int argc, char **argv)
     QThreadPool::globalInstance()->setMaxThreadCount(qMax(4, 2 * nThreadCount));
 
     PluginManager pluginManager;
-    PluginManager::setPluginIID(QLatin1String("org.MIPS.MIPSoftwarePlugin"));
+    PluginManager::setPluginIID(QLatin1String("org.quick.plugin"));
     PluginManager::setSettings(settings);
     PluginManager::setGlobalSettings(globalSettings);
 
@@ -322,7 +322,7 @@ int main(int argc, char **argv)
     const QString &applicationTrPath = resourcePath() + "/translations";
     for (QString locale : qAsConst(uiLanguages)) {
         locale = QLocale(locale).name();
-        if (translator.load("mipsoftware_" + locale, applicationTrPath)) {
+        if (translator.load("quick_" + locale, applicationTrPath)) {
             const QString &qtTrPath = QLibraryInfo::path(QLibraryInfo::TranslationsPath);
             const QString &qtTrFile = QLatin1String("qt_") + locale;
             if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, applicationTrPath)) {

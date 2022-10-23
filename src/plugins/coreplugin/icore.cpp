@@ -1,5 +1,5 @@
 #include "icore.h"
-#include "mainqmlapplicationengine.h"
+#include "qmlapplicationengine.h"
 
 #include <app/app_version.h>
 #include <extensionsystem/pluginmanager.h>
@@ -20,7 +20,7 @@ public:
         : q_ptr(&object)
     {}
 
-    MainQmlApplicationEngine *m_mainWindow = nullptr;
+    QmlApplicationEngine *m_mainWindow = nullptr;
 
 protected:
     ICore *q_ptr;
@@ -33,7 +33,7 @@ ICore::ICore(QObject *parent /*= nullptr*/)
 
 ICore::~ICore() {}
 
-void ICore::setMainWindow(Internal::MainQmlApplicationEngine *mainWindow)
+void ICore::setMainWindow(Internal::QmlApplicationEngine *mainWindow)
 {
     Q_D(ICore);
     d->m_mainWindow = mainWindow;

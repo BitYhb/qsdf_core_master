@@ -1,4 +1,4 @@
-#include "mainqmlapplicationengine.h"
+#include "qmlapplicationengine.h"
 
 #include <app/app_version.h>
 
@@ -8,10 +8,10 @@ Q_LOGGING_CATEGORY(mainWindow, "mips.coreplugin", QtWarningMsg)
 
 using namespace Core::Internal;
 
-MainQmlApplicationEngine::MainQmlApplicationEngine(QObject *parent)
+QmlApplicationEngine::QmlApplicationEngine(QObject *parent)
     : QQmlApplicationEngine(parent)
 {
     // setWindowTitle(QLatin1String(Constants::MIPS_DISPLAY_NAME));
 }
 
-MainQmlApplicationEngine::~MainQmlApplicationEngine() = default;
+QmlApplicationEngine::~QmlApplicationEngine() = default;

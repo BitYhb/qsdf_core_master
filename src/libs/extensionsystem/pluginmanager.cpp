@@ -311,14 +311,17 @@ void PluginManager::remoteArguments(const QString &serializedArgument, QObject *
         return;
 }
 
-void PluginManager::shutdown()
-{
-    d->shutdown();
-}
-
 QString PluginManager::systemInformation()
 {
     return {};
+}
+
+/*!
+ * \brief Shuts down and deletes all plugins.
+ */
+void PluginManager::shutdown()
+{
+    d->shutdown();
 }
 
 bool PluginManager::isInitializationDone()
@@ -408,7 +411,7 @@ void PluginManagerPrivate::profilingReport(const char *what, const PluginSpec *s
         if (spec)
             qDebug("%-22s %-22s %8dms (%8dms)", what, qUtf8Printable(spec->name()), nAbsoluteElapsedMS, nElapsedMS);
         else
-            qDebug("%-22 %8dms (%8dms)", what, nAbsoluteElapsedMS, nElapsedMS);
+            qDebug("%-22s %8dms (%8dms)", what, nAbsoluteElapsedMS, nElapsedMS);
         if (what && *what == '<') {
             QString tc;
             if (spec) {
@@ -530,10 +533,12 @@ void PluginManagerPrivate::loadPlugin(PluginSpec *spec, PluginSpec::State destSt
         profilingReport(">stop", spec);
         if (spec->d_ptr->stop() == IPlugin::ShutdownFlag::AsynchronousShutdown) {
             asynchronousPlugins << spec;
-            connect(spec->plugin(),
-                    &IPlugin::asynchronousShutdownFinished,
-                    this,
-                    &PluginManagerPrivate::asyncShutdownFinished);
+            connect(spec->plugin(), &IPlugin::asynchronousShutdownFinished, this, [this, spec] {
+                asynchronousPlugins.remove(spec);
+                if (asynchronousPlugins.isEmpty()) {
+                    shutdownEventLoop->exec();
+                }
+            });
         }
         profilingReport("<stop", spec);
         break;
@@ -705,15 +710,6 @@ void PluginManagerPrivate::nextDelayedInitialize()
     } else {
         delayedInitializeTimer->start();
     }
-}
-
-void PluginManagerPrivate::asyncShutdownFinished()
-{
-    IPlugin *plugin = qobject_cast<IPlugin *>(sender());
-    Q_ASSERT(plugin);
-    asynchronousPlugins.remove(plugin->pluginSpec());
-    if (asynchronousPlugins.isEmpty())
-        shutdownEventLoop->exit();
 }
 
 void PluginManagerPrivate::readPluginPaths()

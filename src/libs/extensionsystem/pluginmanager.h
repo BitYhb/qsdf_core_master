@@ -84,11 +84,13 @@ public:
 
     // 解析serializedArgument中编码的选项，并将它们与参数一起传递给各自的插件。
     static void remoteArguments(const QString &serializedArgument, QObject *socket);
-    static void shutdown();
 
     static QString systemInformation();
 
     static bool isInitializationDone();
+
+public slots:
+    void shutdown();
 
 signals:
     void pluginsChanged();

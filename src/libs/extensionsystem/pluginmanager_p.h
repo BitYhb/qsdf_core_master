@@ -90,7 +90,7 @@ public:
     QTimer *delayedInitializeTimer = nullptr;
     std::queue<PluginSpec *> delayedInitializeQueue;
 
-    // ansynchronous shutdown
+    // asynchronous shutdown
     QSet<PluginSpec *> asynchronousPlugins;
     QEventLoop *shutdownEventLoop = nullptr;
 
@@ -116,7 +116,6 @@ private:
     PluginManager *q;
 
     void nextDelayedInitialize();
-    void asyncShutdownFinished();
 
     void readPluginPaths();
     bool loadQueue(PluginSpec *pSpec, QVector<PluginSpec *> &queue, QVector<PluginSpec *> &circularityCheckQueue);
