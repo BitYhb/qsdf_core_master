@@ -65,7 +65,7 @@ static QString toHtml(const QString &t)
 static void displayHelpText(const QString &t)
 {
     if (quickApp)
-        QMessageBox::information(nullptr, QLatin1String(Core::Constants::MIPS_DISPLAY_NAME), toHtml(t));
+        QMessageBox::information(nullptr, QLatin1String(Core::Constants::QSDF_DISPLAY_NAME), toHtml(t));
     else
         qWarning("%s", qPrintable(t));
 }
@@ -99,8 +99,8 @@ static QStringList getPluginPaths()
     QStringList lstPluginPaths(QDir::cleanPath(QApplication::applicationDirPath() + '/' + RELATIVE_PLUGIN_PATH));
 
     QString strPluginPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    strPluginPath += QLatin1Char('/') + Core::Constants::MIPS_SETTINGSVARIANT_STR + QLatin1Char('/');
-    strPluginPath += Core::Constants::MIPS_ID;
+    strPluginPath += QLatin1Char('/') + Core::Constants::QSDF_SETTINGSVARIANT_STR + QLatin1Char('/');
+    strPluginPath += Core::Constants::QSDF_ID;
     strPluginPath += QLatin1String("/plugins/");
     lstPluginPaths.push_back(strPluginPath);
     return lstPluginPaths;
@@ -130,9 +130,9 @@ static void setupInstallSettings(QString &strInstallSettingsPath)
         const QString strErrorMessage
             = QString("-install-settings-path \"%0\" needs to be the path where a %1/%2.ini exist.")
                   .arg(strInstallSettingsPath,
-                       QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR),
-                       QLatin1String(Core::Constants::MIPS_CASED_ID));
-        QMessageBox::critical(nullptr, QLatin1String(Core::Constants::MIPS_DISPLAY_NAME), strErrorMessage);
+                       QLatin1String(Core::Constants::QSDF_SETTINGSVARIANT_STR),
+                       QLatin1String(Core::Constants::QSDF_CASED_ID));
+        QMessageBox::critical(nullptr, QLatin1String(Core::Constants::QSDF_DISPLAY_NAME), strErrorMessage);
         strInstallSettingsPath.clear();
     }
 
@@ -143,8 +143,8 @@ static void setupInstallSettings(QString &strInstallSettingsPath)
 
     if (const QSettings installSettings(QSettings::IniFormat,
                                         QSettings::UserScope,
-                                        QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR),
-                                        QLatin1String(Core::Constants::MIPS_CASED_ID));
+                                        QLatin1String(Core::Constants::QSDF_SETTINGSVARIANT_STR),
+                                        QLatin1String(Core::Constants::QSDF_CASED_ID));
         installSettings.contains(kInstallSettingsKey)) {
         QString installSettingsPath = installSettings.value(kInstallSettingsKey).toString();
         if (QDir::isRelativePath(installSettingsPath))
@@ -157,30 +157,30 @@ static Utils::MipsSettings *createUserSettings()
 {
     return new Utils::MipsSettings(QSettings::IniFormat,
                                    QSettings::UserScope,
-                                   QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR),
-                                   QLatin1String(Core::Constants::MIPS_CASED_ID));
+                                   QLatin1String(Core::Constants::QSDF_SETTINGSVARIANT_STR),
+                                   QLatin1String(Core::Constants::QSDF_CASED_ID));
 }
 
 static Utils::MipsSettings *createSystemSettings()
 {
     return new Utils::MipsSettings(QSettings::IniFormat,
                                    QSettings::SystemScope,
-                                   QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR),
-                                   QLatin1String(Core::Constants::MIPS_CASED_ID));
+                                   QLatin1String(Core::Constants::QSDF_SETTINGSVARIANT_STR),
+                                   QLatin1String(Core::Constants::QSDF_CASED_ID));
 }
 
 void loadFontFamilyFromFiles()
 {
     // share dir
     const QDir fontDir(resourcePath() + "/fonts/");
-    for (const QFileInfoList lstFonts = fontDir.entryInfoList(QStringList{"*.ttf", "*.ttc", "*.otf"}, QDir::Files);
-         const QFileInfo &fileInfo : lstFonts) {
+    const QFileInfoList lstFonts = fontDir.entryInfoList(QStringList{"*.ttf", "*.ttc", "*.otf"}, QDir::Files);
+    for (const QFileInfo &fileInfo : lstFonts) {
         QFontDatabase::addApplicationFont(fileInfo.absoluteFilePath());
     }
 
     // build in
-    for (const QFileInfoList buildInFonts = Utils::StyleHelper::builtInFonts();
-         const QFileInfo &buildInFont : buildInFonts) {
+    const QFileInfoList buildInFonts = Utils::StyleHelper::builtInFonts();
+    for (const QFileInfo &buildInFont : buildInFonts) {
         QFontDatabase::addApplicationFont(buildInFont.absoluteFilePath());
     }
 }
@@ -286,13 +286,13 @@ int main(int argc, char **argv)
 
     int nNumberOfArguments = static_cast<int>(options.appArguments.size());
 
-    Utils::QuickApplication app(QLatin1String(Core::Constants::MIPS_DISPLAY_NAME),
+    Utils::QuickApplication app(QLatin1String(Core::Constants::QSDF_DISPLAY_NAME),
                                 nNumberOfArguments,
                                 options.appArguments.data());
-    Utils::QuickApplication::setApplicationName(Core::Constants::MIPS_CASED_ID);
-    Utils::QuickApplication::setApplicationVersion(QLatin1String(Core::Constants::MIPS_VERSION_LONG));
-    Utils::QuickApplication::setOrganizationName(QLatin1String(Core::Constants::MIPS_SETTINGSVARIANT_STR));
-    Utils::QuickApplication::setApplicationDisplayName(Core::Constants::MIPS_DISPLAY_NAME);
+    Utils::QuickApplication::setApplicationName(Core::Constants::QSDF_CASED_ID);
+    Utils::QuickApplication::setApplicationVersion(QLatin1String(Core::Constants::QSDF_VERSION_LONG));
+    Utils::QuickApplication::setOrganizationName(QLatin1String(Core::Constants::QSDF_SETTINGSVARIANT_STR));
+    Utils::QuickApplication::setApplicationDisplayName(Core::Constants::QSDF_DISPLAY_NAME);
 
     loadFontFamilyFromFiles();
     Utils::QuickApplication::setFont(QFont("PingFang SC"));

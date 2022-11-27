@@ -11,7 +11,7 @@ using namespace Core::Internal;
 QmlApplicationEngine::QmlApplicationEngine(QObject *parent)
     : QQmlApplicationEngine(parent)
 {
-    // setWindowTitle(QLatin1String(Constants::MIPS_DISPLAY_NAME));
+    // setWindowTitle(QLatin1String(Constants::QSDF_DISPLAY_NAME));
 }
 
 QmlApplicationEngine::~QmlApplicationEngine() = default;

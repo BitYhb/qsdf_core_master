@@ -1,1 +1,1 @@
-add_subdirectory(mipsoftware)
+add_subdirectory(qsdf)

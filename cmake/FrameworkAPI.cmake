@@ -1,16 +1,16 @@
-set(MIPS_QT_VERSION_MIN "6.2.0")
+set(QSDF_QT_VERSION_MIN "6.2.0")
 
-include(${CMAKE_CURRENT_LIST_DIR}/MIPSoftwareAPIInternal.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/FrameworkAPIInternal.cmake)
 
-set(MIPS_HEADER_INSTALL_PATH ${_MIPS_HEADER_INSTALL_PATH})
-set(MIPS_CMAKE_INSTALL_PATH ${_MIPS_CMAKE_INSTALL_PATH})
+set(QSDF_HEADER_INSTALL_PATH ${_QSDF_HEADER_INSTALL_PATH})
+set(QSDF_CMAKE_INSTALL_PATH ${_QSDF_CMAKE_INSTALL_PATH})
 
-set(MIPS_DATA_PATH ${_MIPS_DATA_PATH})
-set(MIPS_LIBRARY_PATH "${_MIPS_LIBRARY_PATH}")
-set(MIPS_PLUGIN_PATH "${_MIPS_PLUGIN_PATH}")
-set(MIPS_BIN_PATH ${_MIPS_BIN_PATH})
-set(MIPS_LIBRARY_ARCHIVE_PATH ${_MIPS_LIBRARY_ARCHIVE_PATH})
-set(MIPS_LIBEXEC_PATH ${_MIPS_LIBEXEC_PATH})
+set(QSDF_DATA_PATH ${_QSDF_DATA_PATH})
+set(QSDF_LIBRARY_PATH "${_QSDF_LIBRARY_PATH}")
+set(QSDF_PLUGIN_PATH "${_QSDF_PLUGIN_PATH}")
+set(QSDF_BIN_PATH ${_QSDF_BIN_PATH})
+set(QSDF_LIBRARY_ARCHIVE_PATH ${_QSDF_LIBRARY_ARCHIVE_PATH})
+set(QSDF_LIBEXEC_PATH ${_QSDF_LIBEXEC_PATH})
 
 set(APP_SOLUTION_FOLDER "${_APP_SOLUTION_FOLDER}")
 set(PLUGINS_SOLUTION_FOLDER "${_PLUGINS_SOLUTION_FOLDER}")
@@ -19,9 +19,9 @@ set(SHARED_SOLUTION_FOLDER "${_SHARED_SOLUTION_FOLDER}")
 set(TOOLS_SOLUTION_FOLDER "${_TOOLS_SOLUTION_FOLDER}")
 set(OTHER_SOLUTION_FOLDER "${_OTHER_SOLUTION_FOLDER}")
 
-file(RELATIVE_PATH RELATIVE_DATA_PATH "/${MIPS_BIN_PATH}" "/${MIPS_DATA_PATH}")
-file(RELATIVE_PATH RELATIVE_LIBRARY_PATH "/${MIPS_BIN_PATH}" "/${MIPS_LIBRARY_PATH}")
-file(RELATIVE_PATH RELATIVE_PLUGIN_PATH "/${MIPS_BIN_PATH}" "/${MIPS_PLUGIN_PATH}")
+file(RELATIVE_PATH RELATIVE_DATA_PATH "/${QSDF_BIN_PATH}" "/${QSDF_DATA_PATH}")
+file(RELATIVE_PATH RELATIVE_LIBRARY_PATH "/${QSDF_BIN_PATH}" "/${QSDF_LIBRARY_PATH}")
+file(RELATIVE_PATH RELATIVE_PLUGIN_PATH "/${QSDF_BIN_PATH}" "/${QSDF_PLUGIN_PATH}")
 
 list(APPEND DEFAULT_DEFINES
     RELATIVE_DATA_PATH="${RELATIVE_DATA_PATH}"
@@ -30,10 +30,10 @@ list(APPEND DEFAULT_DEFINES
 
 option(BUILD_TESTS_BY_DEFAULT "Build tests by default. This can be used to build all tests by default, or none." ON)
 option(WITH_SCCACHE_SUPPORT "Enables support for building with SCCACHE and separate debug info with MSVC, which SCCACHE normally doesn't support." OFF)
-option(MIPS_STATIC_BUILD "Builds libraries and plugins as static libraries" OFF)
+option(QSDF_STATIC_BUILD "Builds libraries and plugins as static libraries" OFF)
 
-function(mips_output_binary_dir varName)
-    if (MIPS_MERGE_BINARY_DIR)
+function(qsdf_output_binary_dir varName)
+    if (QSDF_MERGE_BINARY_DIR)
         set(${varName} ${MIPSoftware_BINARY_DIR} PARENT_SCOPE)
     else ()
         set(${varName} ${PROJECT_BINARY_DIR} PARENT_SCOPE)
@@ -51,19 +51,19 @@ function(reset_msvc_output_path target_name)
     endforeach ()
 endfunction()
 
-function(mips_source_dir varName)
-    if (MIPS_MERGE_BINARY_DIR)
+function(qsdf_source_dir varName)
+    if (QSDF_MERGE_BINARY_DIR)
         set(${varName} ${MIPSoftware_SOURCE_DIR} PARENT_SCOPE)
     else ()
         set(${varName} ${PROJECT_SOURCE_DIR} PARENT_SCOPE)
     endif ()
 endfunction()
 
-function(mips_copy_to_builddir custom_target_name)
+function(qsdf_copy_to_builddir custom_target_name)
     cmake_parse_arguments(_arg "CREATE_SUBDIRS" "DESTINATION" "FILES;DIRECTORIES" ${ARGN})
     set(timestampFiles)
 
-    mips_output_binary_dir(_output_binary_dir)
+    qsdf_output_binary_dir(_output_binary_dir)
     set(allFiles ${_arg_FILES})
 
     # FILES
@@ -113,14 +113,14 @@ function(mips_copy_to_builddir custom_target_name)
         SOURCES ${allFiles})
 endfunction()
 
-function(add_mips_library target_name)
+function(add_qsdf_library target_name)
     set(options STATIC OBJECT QML_PLUGIN)
     set(oneValueArgs DESTINATION SOURCES_PREFIX MSVC_SOLUTION_FOLDER)
     set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS STATIC_DEPENDS DEFINES PUBLIC_DEFINES PROPERTIES)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if (${_arg_UNPARSED_ARGUMENTS})
-        message(FATAL_ERROR "add_mips_library had unparsed arguments!")
+        message(FATAL_ERROR "add_qsdf_library had unparsed arguments!")
     endif ()
 
     set(library_type SHARED)
@@ -131,7 +131,7 @@ function(add_mips_library target_name)
     add_library(${target_name} ${library_type})
     add_library(MIPSoftware::${target_name} ALIAS ${target_name})
 
-    set(_DESTINATION ${MIPS_BIN_PATH})
+    set(_DESTINATION ${QSDF_BIN_PATH})
     if (_arg_DESTINATION)
         set(_DESTINATION ${_arg_DESTINATION})
     endif ()
@@ -149,7 +149,7 @@ function(add_mips_library target_name)
         BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}"
         FILES "${CMAKE_CURRENT_BINARY_DIR}/${lower_target_name}_export.h")
 
-    extend_mips_target(${target_name}
+    extend_qsdf_target(${target_name}
         SOURCES ${_arg_SOURCES}
         INCLUDES ${_arg_INCLUDES}
         PUBLIC_INCLUDES ${_arg_PUBLIC_INCLUDES}
@@ -171,36 +171,36 @@ function(add_mips_library target_name)
             "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
             PUBLIC
             "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-            "$<INSTALL_INTERFACE:${MIPS_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+            "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
     endif ()
 
-    mips_output_binary_dir(_output_binary_dir)
-    string(REGEX MATCH "^[0-9]*" MIPS_VERSION_MAJOR ${MIPS_VERSION})
+    qsdf_output_binary_dir(_output_binary_dir)
+    string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
     set_target_properties(${target_name} PROPERTIES
         LINK_DEPENDS_NO_SHARED ON
         SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
-        VERSION ${MIPS_VERSION}
-        SOVERSION ${MIPS_VERSION_MAJOR}
+        VERSION ${QSDF_VERSION}
+        SOVERSION ${QSDF_VERSION_MAJOR}
         CXX_EXTENSIONS OFF
         FOLDER "${_MSVC_SOLUTION_FOLDER}"
         BUILD_RPATH "${_LIB_RPATH};${CMAKE_BUILD_RPATH}"
         INSTALL_RPATH "${_LIB_RPATH};${CMAKE_INSTALL_RPATH}"
         RUNTIME_OUTPUT_DIRECTORY "${_output_binary_dir}/${_DESTINATION}"
-        LIBRARY_OUTPUT_DIRECTORY "${_output_binary_dir}/${MIPS_LIBRARY_PATH}"
-        ARCHIVE_OUTPUT_DIRECTORY "${_output_binary_dir}/${MIPS_LIBRARY_ARCHIVE_PATH}"
+        LIBRARY_OUTPUT_DIRECTORY "${_output_binary_dir}/${QSDF_LIBRARY_PATH}"
+        ARCHIVE_OUTPUT_DIRECTORY "${_output_binary_dir}/${QSDF_LIBRARY_ARCHIVE_PATH}"
         ${_arg_PROPERTIES})
 
     reset_msvc_output_path(${target_name})
 endfunction()
 
-function(add_mips_plugin target_name)
+function(add_qsdf_plugin target_name)
     set(options)
     set(oneValueArgs PLUGIN_PATH MSVC_SOLUTION_FOLDER)
     set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS DEFINES PUBLIC_DEFINES PLUGIN_DEPENDS)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if (${_arg_UNPARSED_ARGUMENTS})
-        message(FATAL_ERROR "add_mips_plugin had unparsed arguments!")
+        message(FATAL_ERROR "add_qsdf_plugin had unparsed arguments!")
     endif ()
 
     set(_MSVC_SOLUTION_FOLDER "")
@@ -210,13 +210,13 @@ function(add_mips_plugin target_name)
 
     ### Generate dependency list:
     if (NOT _arg_VERSION)
-        set(_arg_VERSION ${MIPS_VERSION})
+        set(_arg_VERSION ${QSDF_VERSION})
     endif ()
     find_dependent_plugins(_PLUGIN_DEPENDS ${_arg_PLUGIN_DEPENDS})
     set(_arg_DEPENDENCY_STRING "\"Dependencies\": [\n")
     foreach (_plugin_i IN LISTS _PLUGIN_DEPENDS)
         if (_plugin_i MATCHES "^MIPSoftware::")
-            set(_VERSION ${MIPS_VERSION})
+            set(_VERSION ${QSDF_VERSION})
             string(REPLACE "MIPSoftware::" "" _plugin_i ${_plugin_i})
         else ()
             get_property(_VERSION TARGET ${_plugin_i} PROPERTY _arg_VERSION)
@@ -226,14 +226,14 @@ function(add_mips_plugin target_name)
     endforeach ()
     string(APPEND _arg_DEPENDENCY_STRING "\n    ]")
 
-    set(MIPS_PLUGIN_DEPENDENCY_STRING ${_arg_DEPENDENCY_STRING})
+    set(QSDF_PLUGIN_DEPENDENCY_STRING ${_arg_DEPENDENCY_STRING})
 
     ### Configure plugin.json file:
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${target_name}.json.in")
         file(READ "${target_name}.json.in" plugin_json_in)
         string(REPLACE "\\\"" "\"" plugin_json_in ${plugin_json_in})
-        string(REPLACE "$$MIPS_VERSION" "\${MIPS_VERSION}" plugin_json_in ${plugin_json_in})
-        string(REPLACE "$$dependencyList" "\${MIPS_PLUGIN_DEPENDENCY_STRING}" plugin_json_in ${plugin_json_in})
+        string(REPLACE "$$QSDF_VERSION" "\${QSDF_VERSION}" plugin_json_in ${plugin_json_in})
+        string(REPLACE "$$dependencyList" "\${QSDF_PLUGIN_DEPENDENCY_STRING}" plugin_json_in ${plugin_json_in})
         string(CONFIGURE "${plugin_json_in}" plugin_json)
         file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${target_name}.json" CONTENT "${plugin_json}")
     endif ()
@@ -250,7 +250,7 @@ function(add_mips_plugin target_name)
         BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}"
         FILES "${CMAKE_CURRENT_BINARY_DIR}/${lower_target_name}_export.h")
 
-    extend_mips_target(${target_name}
+    extend_qsdf_target(${target_name}
         SOURCES ${_arg_SOURCES}
         INCLUDES ${_arg_INCLUDES}
         PUBLIC_INCLUDES ${_arg_PUBLIC_INCLUDES}
@@ -270,14 +270,14 @@ function(add_mips_plugin target_name)
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
         PUBLIC
         "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-        "$<INSTALL_INTERFACE:${MIPS_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+        "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
 
-    set(plugin_dir "${MIPS_PLUGIN_PATH}")
+    set(plugin_dir "${QSDF_PLUGIN_PATH}")
     if (_arg_PLUGIN_PATH)
         set(plugin_dir "${_arg_PLUGIN_PATH}")
     endif ()
 
-    mips_output_binary_dir(_output_binary_dir)
+    qsdf_output_binary_dir(_output_binary_dir)
     set_target_properties(${target_name} PROPERTIES
         LINK_DEPENDS_NO_SHARED ON
         SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -295,14 +295,14 @@ function(add_mips_plugin target_name)
     reset_msvc_output_path(${target_name})
 endfunction()
 
-function(add_mips_executable target_name)
+function(add_qsdf_executable target_name)
     set(options)
     set(oneValueArgs DESTINATION MSVC_SOLUTION_FOLDER)
     set(multiValueArgs SOURCES INCLUDES DEPENDS PUBLIC_DEPENDS DEFINES PUBLIC_DEFINES PROPERTIES)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if (${_arg_UNPARSED_ARGUMENTS})
-        message(FATAL_ERROR "add_mips_executable had unparsed arguments!")
+        message(FATAL_ERROR "add_qsdf_executable had unparsed arguments!")
     endif ()
 
     set(_MSVC_SOLUTION_FOLDER "")
@@ -312,25 +312,25 @@ function(add_mips_executable target_name)
 
     add_executable(${target_name} ${_arg_SOURCES})
 
-    extend_mips_target(${target_name}
+    extend_qsdf_target(${target_name}
         INCLUDES "${CMAKE_BINARY_DIR}/src" ${_arg_INCLUDES}
         DEFINES ${_arg_DEFINES} ${DEFAULT_DEFINES}
         PUBLIC_DEFINES ${_arg_PUBLIC_DEFINES}
         DEPENDS ${_arg_DEPENDS}
         PUBLIC_DEPENDS ${_arg_PUBLIC_DEPENDS})
 
-    set(_DESTINATION ${MIPS_LIBEXEC_PATH})
+    set(_DESTINATION ${QSDF_LIBEXEC_PATH})
     if (_arg_DESTINATION)
         set(_DESTINATION ${_arg_DESTINATION})
     endif ()
 
     set(_EXECUTABLE_PATH ${_DESTINATION})
-    file(RELATIVE_PATH relative_lib_path "/${_EXECUTABLE_PATH}" "/${MIPS_LIBRARY_PATH}")
+    file(RELATIVE_PATH relative_lib_path "/${_EXECUTABLE_PATH}" "/${QSDF_LIBRARY_PATH}")
 
     set(build_rpath "${_RPATH_BASE}/${relative_lib_path};${CMAKE_BUILD_RPATH}")
     set(install_rpath "${_RPATH_BASE}/${relative_lib_path};${CMAKE_INSTALL_RPATH}")
 
-    mips_output_binary_dir(_output_binary_dir)
+    qsdf_output_binary_dir(_output_binary_dir)
     set_target_properties(${target_name} PROPERTIES
         LINK_DEPENDS_NO_SHARED ON
         BUILD_RPATH "${build_rpath}"
@@ -343,17 +343,17 @@ function(add_mips_executable target_name)
     reset_msvc_output_path(${target_name})
 endfunction()
 
-function(add_mips_test target_name)
+function(add_qsdf_test target_name)
     set(options)
     set(oneValueArgs)
     set(multiValueArgs SOURCES INCLUDES DEPENDS DEFINES CONDITION EXPLICIT_MOC SKIP_AUTOMOC)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if (${_arg_UNPARSED_ARGUMENTS})
-        message(FATAL_ERROR "add_mips_test had unparsed arguments!")
+        message(FATAL_ERROR "add_qsdf_test had unparsed arguments!")
     endif ()
 
-    update_cached_list(__MIPS_TESTS ${target_name})
+    update_cached_list(__QSDF_TESTS ${target_name})
 
     if (NOT _arg_CONDITION)
         set(_arg_CONDITION ON)
@@ -361,8 +361,8 @@ function(add_mips_test target_name)
 
     string(TOUPPER "BUILD_TEST_${target_name}" _build_test_var)
     set(_build_test_by_default ${BUILD_TESTS_BY_DEFAULT})
-    if (DEFINED ENV{MIPS_${_build_test_var}})
-        set(_build_test_by_default "$ENV{MIPS_${_build_test_var}}")
+    if (DEFINED ENV{QSDF_${_build_test_var}})
+        set(_build_test_by_default "$ENV{QSDF_${_build_test_var}}")
     endif ()
     set(${_build_test_var} "${_build_test_by_default}" CACHE BOOL "Build test ${target_name}")
 
@@ -385,11 +385,11 @@ function(add_mips_test target_name)
     set(default_defines_copy ${DEFAULT_DEFINES})
     list(REMOVE_ITEM default_defines_copy QT_NO_CAST_TO_ASCII QT_RESTRICTED_CAST_FROM_ASCII)
 
-    file(RELATIVE_PATH _RPATH "/${MIPS_BIN_PATH}" "/${MIPS_LIBRARY_PATH}")
+    file(RELATIVE_PATH _RPATH "/${QSDF_BIN_PATH}" "/${QSDF_LIBRARY_PATH}")
 
     add_executable(${target_name} ${_arg_SOURCES})
 
-    extend_mips_target(${target_name}
+    extend_qsdf_target(${target_name}
         DEPENDS ${_arg_DEPENDS} ${IMPLICIT_DEPENDS}
         INCLUDES "${CMAKE_BINARY_DIR}/src" ${_arg_INCLUDES}
         DEFINES ${_arg_DEFINES} ${TEST_DEFINES} ${default_defines_copy}

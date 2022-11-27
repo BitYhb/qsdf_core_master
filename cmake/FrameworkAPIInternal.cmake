@@ -1,15 +1,15 @@
 ### 路径相关
 if (WIN32)
-    set(_MIPS_HEADER_INSTALL_PATH "include/mipsoftware")
-    set(_MIPS_CMAKE_INSTALL_PATH "lib/cmake")
+    set(_QSDF_HEADER_INSTALL_PATH "include/qsdf")
+    set(_QSDF_CMAKE_INSTALL_PATH "lib/cmake")
 
-    set(_MIPS_LIBRARY_BASE_PATH "lib")
-    set(_MIPS_DATA_PATH "share/mipsoftware")
-    set(_MIPS_LIBRARY_PATH "${_MIPS_LIBRARY_BASE_PATH}/mipsoftware")
-    set(_MIPS_PLUGIN_PATH "${_MIPS_LIBRARY_BASE_PATH}/mipsoftware/plugins")
-    set(_MIPS_BIN_PATH "bin")
-    set(_MIPS_LIBRARY_ARCHIVE_PATH ${_MIPS_BIN_PATH})
-    set(_MIPS_LIBEXEC_PATH "bin")
+    set(_QSDF_LIBRARY_BASE_PATH "lib")
+    set(_QSDF_DATA_PATH "share/qsdf")
+    set(_QSDF_LIBRARY_PATH "${_QSDF_LIBRARY_BASE_PATH}/qsdf")
+    set(_QSDF_PLUGIN_PATH "${_QSDF_LIBRARY_BASE_PATH}/qsdf/plugins")
+    set(_QSDF_BIN_PATH "bin")
+    set(_QSDF_LIBRARY_ARCHIVE_PATH ${_QSDF_BIN_PATH})
+    set(_QSDF_LIBEXEC_PATH "bin")
 
     set(_RPATH_BASE "")
     set(_LIB_RPATH "")
@@ -27,17 +27,17 @@ if (WITH_USE_SOLUTION_FOLDERS)
 endif()
 
 ### 设置版本以及项目有关信息
-set(MIPS_VERSION "1.0.0")
-set(MIPS_SETTINGSVARIANT "MIPSoftware")
-set(MIPS_DISPLAY_NAME "MIP Software")
-set(MIPS_ID "mipsoftware")
-set(MIPS_CASED_ID "MIPSoftware")
+set(QSDF_VERSION "1.0.0")
+set(QSDF_SETTINGSVARIANT "QSDF")
+set(QSDF_DISPLAY_NAME "QSDF")
+set(QSDF_ID "qsdf")
+set(QSDF_CASED_ID "QSDF")
 
 ### Internal
-set(__MIPS_TESTS "" CACHE INTERNAL "***** Internal *****")
+set(__QSDF_TESTS "" CACHE INTERNAL "***** Internal *****")
 
 # Must be called after project(...).
-function(mips_handle_sccache_support)
+function(qsdf_handle_sccache_support)
     if (MSVC AND WITH_SCCACHE_SUPPORT)
         foreach(config DEBUG RELWITHDEBINFO)
             foreach(lang C CXX)
@@ -70,14 +70,14 @@ function(set_public_includes target_name includes)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} ${inc_dir})
         target_include_directories(${target_name} PUBLIC
             $<BUILD_INTERFACE:${inc_dir}>
-            $<INSTALL_INTERFACE:${_MIPS_HEADER_INSTALL_PATH}/${inc_dir}>)
+            $<INSTALL_INTERFACE:${_QSDF_HEADER_INSTALL_PATH}/${inc_dir}>)
     endforeach()
 endfunction()
 
-function(add_mips_depends target_name)
+function(add_qsdf_depends target_name)
     cmake_parse_arguments(_arg "" "" "PUBLIC;PRIVATE;STATIC" ${ARGN})
     if (${_arg_UNPARSED_ARGUMENTS})
-        message(FATAL_ERROR "add_mips_depends had unparsed arguments!")
+        message(FATAL_ERROR "add_qsdf_depends had unparsed arguments!")
     endif()
 
     set(depends "${_arg_PRIVATE}")
@@ -112,17 +112,17 @@ function(sources_group_by_explorer SRCS)
     endforeach()
 endfunction()
 
-function(extend_mips_target target_name)
+function(extend_qsdf_target target_name)
     set(options)
     set(oneValueArgs SOURCES_PREFIX)
     set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS STATIC_DEPENDS DEFINES PUBLIC_DEFINES)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if (${_arg_UNPARSED_ARGUMENTS})
-        message(FATAL_ERROR "extend_mips_target had unparsed arguments!")
+        message(FATAL_ERROR "extend_qsdf_target had unparsed arguments!")
     endif()
 
-    add_mips_depends(${target_name} PUBLIC ${_arg_PUBLIC_DEPENDS} PRIVATE ${_arg_DEPENDS} STATIC ${_arg_STATIC_DEPENDS})
+    add_qsdf_depends(${target_name} PUBLIC ${_arg_PUBLIC_DEPENDS} PRIVATE ${_arg_DEPENDS} STATIC ${_arg_STATIC_DEPENDS})
 
     target_include_directories(${target_name} PRIVATE ${_arg_INCLUDES})
     target_sources(${target_name} PRIVATE ${_arg_SOURCES})

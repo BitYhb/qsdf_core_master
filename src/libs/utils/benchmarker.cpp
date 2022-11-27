@@ -16,7 +16,7 @@ void Benchmarker::report(const QString &testsuite, const QString &testcase, qint
 void Benchmarker::report(
     const QLoggingCategory &cat, const QString &testsuite, const QString &testcase, qint64 ms, const QString &tags)
 {
-    static const QByteArray quitAfter = qgetenv("MIPS_QUIT_AFTER_BENCHMARKER");
+    static const QByteArray quitAfter = qgetenv("QSDF_QUIT_AFTER_BENCHMARKER");
     QString t = "unit=ms";
     if (!tags.isEmpty())
         t += "," + tags;

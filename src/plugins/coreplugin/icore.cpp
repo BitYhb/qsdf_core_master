@@ -53,7 +53,7 @@ QFileInfo ICore::resourcePath(const QString &relativePath)
 QFileInfo ICore::userResourcePath(const QString &relativePath)
 {
     const QString configDir = QFileInfo(settings(QSettings::UserScope)->fileName()).path();
-    const QString urp = configDir + '/' + QLatin1String(Constants::MIPS_ID);
+    const QString urp = configDir + '/' + QLatin1String(Constants::QSDF_ID);
 
     if (!QFileInfo::exists(urp + QLatin1Char('/'))) {
         QDir dir;

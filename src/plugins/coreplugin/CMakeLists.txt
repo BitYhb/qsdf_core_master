@@ -18,7 +18,7 @@ set(CORE_PRIVATE_HEADERS_AND_SOURCES
 
 qt_add_resources(CORE_RESOURCES qml.qrc)
 
-add_mips_plugin(Core
+add_qsdf_plugin(Core
     DEPENDS Qt6::Qml
     PUBLIC_DEPENDS ExtensionSystem Utils
     MSVC_SOLUTION_FOLDER "${PLUGINS_SOLUTION_FOLDER}"
@@ -28,7 +28,7 @@ add_mips_plugin(Core
         ${CORE_PRIVATE_HEADERS_AND_SOURCES}
         ${CORE_RESOURCES})
 
-#mips_copy_to_builddir(copy_core_header_to_builddir
+#qsdf_copy_to_builddir(copy_core_header_to_builddir
 #    FILES ${CORE_PUBLIC_HEADERS}
-#    DESTINATION "${MIPS_HEADER_INSTALL_PATH}/coreplugin"
+#    DESTINATION "${QSDF_HEADER_INSTALL_PATH}/coreplugin"
 #)

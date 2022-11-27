@@ -44,7 +44,7 @@ set(UTILS_PRIVATE_HEADERS_AND_SOURCES
 
 qt_add_resources(UTILS_RESOURCES utils.qrc)
 
-add_mips_library(Utils
+add_qsdf_library(Utils
     PUBLIC_DEPENDS Qt6::Core Qt6::Widgets Qt6::Network
     MSVC_SOLUTION_FOLDER "${CORE_SOLUTION_FOLDER}"
     SOURCES
@@ -54,7 +54,7 @@ add_mips_library(Utils
         ${UTILS_RESOURCES}
 )
 
-#mips_copy_to_builddir(copy_utils_header_to_builddir
+#qsdf_copy_to_builddir(copy_utils_header_to_builddir
 #    FILES ${UTILS_PUBLIC_HEADERS}
-#    DESTINATION "${MIPS_HEADER_INSTALL_PATH}/utils"
+#    DESTINATION "${QSDF_HEADER_INSTALL_PATH}/utils"
 #)

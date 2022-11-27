@@ -8,28 +8,29 @@ include(FeatureSummary)
 include(GenerateExportHeader)
 include(ExternalProject)
 include(ExternalProjectDependency)
-include(MIPSoftwareAPI)
+include(FrameworkAPI)
 
-project(MIPSoftware VERSION ${MIPS_VERSION})
+# Quick Software Development Framework
+project(QSDF VERSION ${QSDF_VERSION})
 
 # Force C++ standard, do not fall back, do not use compiler extensions
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-mips_handle_sccache_support()
+qsdf_handle_sccache_support()
 
 # merge binary directories of sub projects into top level
-set(MIPS_MERGE_BINARY_DIR ON)
+set(QSDF_MERGE_BINARY_DIR ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # SuperBuild Option - Enabled by default
-option(MIPS_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
-mark_as_advanced(MIPS_SUPERBUILD)
+option(QSDF_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
+mark_as_advanced(QSDF_SUPERBUILD)
 
 # Internal SuperBuild Option - Enabled by default
-option(MIPS_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
-mark_as_advanced(MIPS_INTERNAL_SUPERBUILD)
+option(QSDF_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
+mark_as_advanced(QSDF_INTERNAL_SUPERBUILD)
 
 option(WITH_TESTS "Build Tests" OFF)
 add_feature_info("Build Tests" ${WITH_TESTS} "")
@@ -51,7 +52,7 @@ if(WITH_TESTS)
     set(IMPLICIT_DEPENDS Qt6::Test)
 endif()
 
-find_package(Qt6 ${MIPS_QT_VERSION_MIN} REQUIRED COMPONENTS
+find_package(Qt6 ${QSDF_QT_VERSION_MIN} REQUIRED COMPONENTS
     Core Widgets Network Qml Quick QuickWidgets LinguistTools ${QT_TEST_COMPONENT})
 
 if(WITH_TESTS)
@@ -59,13 +60,20 @@ if(WITH_TESTS)
 endif()
 
 # SuperBuild script
-if(MIPS_SUPERBUILD)
+if(QSDF_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
 endif()
 
 # Internal SuperBuild script
-if(MIPS_INTERNAL_SUPERBUILD)
+if(QSDF_INTERNAL_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/InternalSuperBuild.cmake")
+endif()
+
+# System flags
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+    message(STATUS "The target operating system is WIN")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
 add_subdirectory(src)

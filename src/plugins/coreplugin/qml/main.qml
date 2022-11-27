@@ -1,6 +1,6 @@
-import QtQuick
+import QtQuick.Controls
 
-Window {
+ApplicationWindow {
     width: 1920
     height: 1080
     visible: true

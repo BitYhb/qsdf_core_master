@@ -40,13 +40,13 @@ public:
 
 struct IdCache : public QHash<StringHolder, quintptr>
 {
-#ifndef MIPS_ALLOW_STATIC_LEAKS
+#ifndef QSDF_ALLOW_STATIC_LEAKS
     ~IdCache()
     {
         for (IdCache::iterator it = begin(); it != end(); ++it)
-            delete[](const_cast<char *>(it.key().str));
+            delete[] (const_cast<char *>(it.key().str));
     }
-#endif // !MIPS_ALLOW_STATIC_LEAKS
+#endif // !QSDF_ALLOW_STATIC_LEAKS
 };
 
 static QHash<quintptr, StringHolder> stringFromId;
