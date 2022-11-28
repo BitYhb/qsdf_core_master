@@ -14,7 +14,7 @@ namespace Internal {
 class QmlApplicationEngine final : public QQmlApplicationEngine
 {
     Q_OBJECT
-    QUICK_EVENT(QQmlApplicationEngine)
+    QSDF_QUICK_EVENT(QQmlApplicationEngine)
 public:
     explicit QmlApplicationEngine(QObject *parent = nullptr);
     ~QmlApplicationEngine() override;
