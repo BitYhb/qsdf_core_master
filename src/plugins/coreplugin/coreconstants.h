@@ -3,9 +3,9 @@
 namespace Core::Constants {
 
 // actions
-const char DEFAULT[] = "MIPSoftware.Default";
-const char UNDO[] = "MIPSoftware.Undo";
-const char REDO[] = "MIPSoftware.Redo";
+const char DEFAULT[] = "QSDF.Default";
+const char UNDO[] = "QSDF.Undo";
+const char REDO[] = "QSDF.Redo";
 
 const int TITLEBAR_HEIGHT = 32;                    // 标题栏高度
 const int TITLEBAR_LOGO_WIDTH = 14;                // 标题栏LOGO宽度
@@ -17,15 +17,15 @@ const int SYSTEM_TOOLBAR_WIDTH = 328;              // 系统工具栏宽度
 const int TOOLSPANEL_WIDTH = SYSTEM_TOOLBAR_WIDTH; // 工具面板宽度
 
 // toolbar
-const char G_GENERAL[] = "MIPSoftware.General";
-const char G_SYSTEM[] = "MIPSoftware.System";
+const char G_GENERAL[] = "QSDF.General";
+const char G_SYSTEM[] = "QSDF.System";
 
 // General tools menu groups
-const char G_GENERAL_DEFAULT[] = "MIPSoftware.General.Default";
-const char G_GENERAL_OTHER[] = "MIPSoftware.General.Other";
+const char G_GENERAL_DEFAULT[] = "QSDF.General.Default";
+const char G_GENERAL_OTHER[] = "QSDF.General.Other";
 
 // System tools menu groups(default)
-const char G_SYSTEM_SAVE[] = "MIPSoftware.System.Save";
+const char G_SYSTEM_SAVE[] = "QSDF.System.Save";
 
 // Contexts
 const char C_GLOBAL[] = "Global Context";
