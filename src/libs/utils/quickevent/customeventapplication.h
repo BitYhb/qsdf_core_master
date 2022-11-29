@@ -1,5 +1,5 @@
-#ifndef QUICK_UTILS_CUSTOM_EVENT_APPLICATION_H
-#define QUICK_UTILS_CUSTOM_EVENT_APPLICATION_H
+#ifndef QSDF_LIBS_UTILS_QUICK_EVENT_CUSTOM_EVENT_APPLICATION_H
+#define QSDF_LIBS_UTILS_QUICK_EVENT_CUSTOM_EVENT_APPLICATION_H
 
 #include "utils_export.h"
 
@@ -10,12 +10,9 @@ class QReadWriteLock;
 
 namespace Utils {
 
-namespace Internal {
-class CustomEventApplicationPrivate;
-}
-
 class QUICK_UTILS_EXPORT CustomEventApplication : public QObject
 {
+    Q_DISABLE_COPY(CustomEventApplication)
 public:
     explicit CustomEventApplication(QObject *parent = nullptr);
     ~CustomEventApplication() override = default;
@@ -30,11 +27,12 @@ public:
     static void publishEvent(const QByteArray &eventName, Qt::ConnectionType type, Args &&...args);
 
 private:
-    Q_DISABLE_COPY(CustomEventApplication)
+    static QMap<QByteArray, QMap<qint32, QObject *>> m_defaultEventQueue; // default level
+    static QReadWriteLock m_eventQueueLock;                               // For event queues
 };
 
 } // namespace Utils
 
 #include "customeventapplication.tpp"
 
-#endif // QUICK_UTILS_CUSTOM_EVENT_APPLICATION_H
+#endif
