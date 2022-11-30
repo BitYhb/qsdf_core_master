@@ -43,6 +43,9 @@ endif()
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP "Generated Files")
+set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER "Autogen Targets")
+
 if(WITH_USE_SOLUTION_FOLDERS)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
