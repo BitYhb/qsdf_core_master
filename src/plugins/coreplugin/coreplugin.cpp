@@ -89,18 +89,18 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorString)
         return false;
     }
     const CoreArguments args = parseArguments(arguments);
-    auto themeFromArg = ThemeEntry::createTheme(args.themeId);
-    auto theme = themeFromArg ? themeFromArg : ThemeEntry::createTheme(ThemeEntry::themeSetting());
+    const auto themeFromArg = ThemeEntry::createTheme(args.themeId);
+    const auto theme = themeFromArg ? themeFromArg : ThemeEntry::createTheme(ThemeEntry::themeSetting());
     Utils::Theme::setInitialPalette(theme);
     setApplicationTheme(theme);
 
     m_mainQmlEngine = new QmlApplicationEngine;
     const QUrl url(u"qrc:/main.qml"_qs);
-    QObject::connect(
+    connect(
         m_mainQmlEngine,
         &QmlApplicationEngine::objectCreated,
         quickApp,
-        [url](QObject *obj, const QUrl &objUrl) {
+        [url](const QObject *obj, const QUrl &objUrl) {
             if (!obj && url == objUrl) {
                 qCInfo(Core::lcCorePlugin, "Application failed to load, exit(-1)");
                 Utils::CustomEventApplication::publishEvent("QuitApplication", Qt::AutoConnection, -1);

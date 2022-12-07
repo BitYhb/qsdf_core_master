@@ -1,29 +1,23 @@
 #include "customeventapplication.h"
-#include "customeventapplication_p.h"
 
 namespace Utils {
 
-namespace Internal {
-QMap<QByteArray, QMap<qint32, QObject *>> CustomEventApplicationPrivate::defaultEventQueue; // default level
-QReadWriteLock CustomEventApplicationPrivate::eventQueueLock;                               // For event queues
-} // namespace Internal
-
-Internal::CustomEventApplicationPrivate *d = nullptr;
+QMap<QByteArray, QMap<qint32, QObject *>> CustomEventApplication::m_defaultEventQueue; // default level
+QReadWriteLock CustomEventApplication::m_eventQueueLock;                               // For event queues
 
 CustomEventApplication::CustomEventApplication(QObject *parent)
     : QObject(parent)
 {
-    d = new Internal::CustomEventApplicationPrivate(*this);
 }
 
 QMap<QByteArray, QMap<qint32, QObject*>> CustomEventApplication::defaultEventQueue()
 {
-    return Internal::CustomEventApplicationPrivate::defaultEventQueue;
+    return m_defaultEventQueue;
 }
 
 QReadWriteLock* CustomEventApplication::listLock()
 {
-    return &Internal::CustomEventApplicationPrivate::eventQueueLock;
+    return &m_eventQueueLock;
 }
 
 int CustomEventApplication::methodIndex(QObject *obj, const QByteArray &methodName)
@@ -36,19 +30,17 @@ int CustomEventApplication::methodIndex(QObject *obj, const QByteArray &methodNa
  */
 bool CustomEventApplication::subscribeEvent(QObject *listener, const QByteArray &eventName, qint32 level)
 {
-    using namespace Internal;
-    QMap<QByteArray, QMap<qint32, QObject *>> &defaultEventQueue = CustomEventApplicationPrivate::defaultEventQueue;
     if (level < 0) { // default level
-        QWriteLocker locker(&CustomEventApplicationPrivate::eventQueueLock);
-        if (defaultEventQueue.contains(eventName)) {
-            auto list = defaultEventQueue.value(eventName);
+        QWriteLocker locker(&m_eventQueueLock);
+        if (m_defaultEventQueue.contains(eventName)) {
+            auto list = m_defaultEventQueue.value(eventName);
             list.insert((qint32) list.size(), listener);
-            defaultEventQueue.insert(eventName, list);
+            m_defaultEventQueue.insert(eventName, list);
             return true;
         }
         QMap<qint32, QObject *> list;
         list.insert(0, listener);
-        defaultEventQueue.insert(eventName, list);
+        m_defaultEventQueue.insert(eventName, list);
     }
     return true;
 }
