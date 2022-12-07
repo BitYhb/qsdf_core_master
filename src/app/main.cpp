@@ -19,8 +19,11 @@
 #include <QStandardPaths>
 #include <QThreadPool>
 #include <QTranslator>
+#include <QLoggingCategory>
 
 using namespace ExtensionSystem;
+
+Q_LOGGING_CATEGORY(lcLaunch, "quick.launch")
 
 enum { OptionIndent = 4, DescriptionIndent = 34 };
 

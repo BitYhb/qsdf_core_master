@@ -1,4 +1,6 @@
-#pragma once
+#ifndef QSDF_LIBS_UTILS_QUICK_EVENT_CUSTOM_QUICK_EVENT_H
+#define QSDF_LIBS_UTILS_QUICK_EVENT_CUSTOM_QUICK_EVENT_H
+
 #include "utils_export.h"
 
 #include <QEvent>
@@ -36,3 +38,5 @@ private:
 };
 
 } // namespace Utils
+
+#endif

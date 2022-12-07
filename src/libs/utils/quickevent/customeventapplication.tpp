@@ -1,7 +1,6 @@
 #include <utils/macrodefinition.h>
 #include <utils/mipsassert.h>
-#include <utils/quickapplication.h>
-#include <utils/quickevent/quickevent.h>
+#include <utils/quickevent/customquickevent.h>
 
 #include <QMetaMethod>
 #include <QThread>

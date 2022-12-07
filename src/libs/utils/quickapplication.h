@@ -21,7 +21,7 @@ class QuickApplicationPrivate;
 class QUICK_UTILS_EXPORT QuickApplication final : public SingleApplication
 {
     Q_OBJECT
-    QUICK_EVENT(SingleApplication)
+    QSDF_QUICK_EVENT(SingleApplication)
 public:
     QuickApplication(const QString &appId, int &argc, char **argv);
     ~QuickApplication() override;

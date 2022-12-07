@@ -1,8 +1,9 @@
-#pragma once
+#ifndef QSDF_LIBS_UTILS_QUICK_EVENT_QUICK_MACRO_H
+#define QSDF_LIBS_UTILS_QUICK_EVENT_QUICK_MACRO_H
 
 #include <utils/quickevent/customquickevent.h>
 
-#define QUICK_EVENT(PARENT_CLASS) \
+#define QSDF_QUICK_EVENT(PARENT_CLASS) \
 public: \
     bool event(QEvent *e) override \
     { \
@@ -24,3 +25,5 @@ public: \
         } \
         return PARENT_CLASS::event(e); \
     }
+
+#endif
