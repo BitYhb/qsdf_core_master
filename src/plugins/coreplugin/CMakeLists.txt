@@ -14,12 +14,13 @@ set(CORE_PRIVATE_HEADERS_AND_SOURCES
     qmlapplicationengine.h qmlapplicationengine.cpp
     corepluginmacro.h corepluginmacro.cpp
     themechooser.h themechooser.cpp
-    corepluginmacro.h corepluginmacro.cpp)
+    corepluginmacro.h corepluginmacro.cpp
+    framelessquickwindow.h framelessquickwindow.cpp)
 
 qt_add_resources(CORE_RESOURCES qml.qrc)
 
 add_qsdf_plugin(Core
-    DEPENDS Qt6::Qml
+    DEPENDS Qt6::Qml Qt6::Quick
     PUBLIC_DEPENDS ExtensionSystem Utils
     MSVC_SOLUTION_FOLDER "${PLUGINS_SOLUTION_FOLDER}"
     SOURCES

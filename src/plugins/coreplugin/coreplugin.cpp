@@ -3,6 +3,7 @@
 #include "themechooser.h"
 
 #include <coreplugin/corepluginmacro.h>
+#include <coreplugin/framelessquickwindow.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
 #include <utils/mimetypes.h>
@@ -93,6 +94,8 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorString)
     const auto theme = themeFromArg ? themeFromArg : ThemeEntry::createTheme(ThemeEntry::themeSetting());
     Utils::Theme::setInitialPalette(theme);
     setApplicationTheme(theme);
+
+    qmlRegisterType<FramelessQuickWindow>("qsdf.gui.window", 1, 0, "FramelessQuickWindow");
 
     m_mainQmlEngine = new QmlApplicationEngine;
     const QUrl url(u"qrc:/main.qml"_qs);

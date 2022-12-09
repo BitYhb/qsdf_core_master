@@ -144,14 +144,15 @@ static void setupInstallSettings(QString &strInstallSettingsPath)
                        QSettings::SystemScope,
                        strInstallSettingsPath.isEmpty() ? resourcePath() : strInstallSettingsPath);
 
-    if (const QSettings installSettings(QSettings::IniFormat,
-                                        QSettings::UserScope,
-                                        QLatin1String(Core::Constants::QSDF_SETTINGSVARIANT_STR),
-                                        QLatin1String(Core::Constants::QSDF_CASED_ID));
-        installSettings.contains(kInstallSettingsKey)) {
+    const QSettings installSettings(QSettings::IniFormat,
+                                    QSettings::UserScope,
+                                    QLatin1String(Core::Constants::QSDF_SETTINGSVARIANT_STR),
+                                    QLatin1String(Core::Constants::QSDF_CASED_ID));
+    if (installSettings.contains(kInstallSettingsKey)) {
         QString installSettingsPath = installSettings.value(kInstallSettingsKey).toString();
-        if (QDir::isRelativePath(installSettingsPath))
+        if (QDir::isRelativePath(installSettingsPath)) {
             installSettingsPath = applicationDirPath() + "/" + installSettingsPath;
+        }
         QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, installSettingsPath);
     }
 }
