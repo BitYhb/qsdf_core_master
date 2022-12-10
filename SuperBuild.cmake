@@ -1,10 +1,10 @@
 set(SUPERBUILD_PREFIX "External_")
 set(SUPERBUILD_FOLDER_NAME "superbuild")
 
-#set(${PROJECT_NAME}_DEPENDENCIES
+#set(QSDF_DEPENDENCIES
 #    Lua)
 
-foreach(extension_dir ${${PROJECT_NAME}_EXTENSION_SOURCE_DIRS})
+foreach(extension_dir ${QSDF_EXTENSION_SOURCE_DIRS})
     cmake_path(ABSOLUTE_PATH extension_dir OUTPUT_VARIABLE extension_dir)
     cmake_path(GET extension_dir FILENAME extension_name)
     if(EXISTS "${extension_dir}/${SUPERBUILD_FOLDER_NAME}")
@@ -18,4 +18,15 @@ foreach(extension_dir ${${PROJECT_NAME}_EXTENSION_SOURCE_DIRS})
     endif()
 endforeach()
 
-ExternalProject_Include_Dependencies(${PROJECT_NAME} DEPENDS_VAR ${PROJECT_NAME}_DEPENDENCIES)
+ExternalProject_Include_Dependencies(QSDF DEPENDS_VAR QSDF_DEPENDENCIES)
+
+ExternalProject_Add(${PROJECT_NAME}
+    DEPENDS ${QSDF_DEPENDENCIES}
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+    BINARY_DIR ${CMAKE_BINARY_DIR}/${QSDF_BINARY_INNER_SUBDIR}
+    DOWNLOAD_COMMAND ""
+    UPDATE_COMMAND ""
+    CMAKE_CACHE_ARGS
+        -DQSDF_SUPERBUILD:BOOL=OFF
+    INSTALL_DIR ""
+)

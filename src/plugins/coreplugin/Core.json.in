@@ -1,7 +1,10 @@
 {
     \"Name\": \"Core\",
-    \"Version\": \"$$MIPS_VERSION\",
+    \"Version\": \"$$QSDF_VERSION\",
     \"Category\": \"Core\",
-
+    \"Events\": [
+        \"QuitApplication\",
+        \"UpdateFullScreenMode\"
+    ],
     $$dependencyList
 }
