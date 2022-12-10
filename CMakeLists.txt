@@ -4,6 +4,7 @@
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/super_build")
 
+set(SUPERBUILD_TOPLEVEL_PROJECT "qsdf-core")
 include(FeatureSummary)
 include(GenerateExportHeader)
 include(ExternalProject)

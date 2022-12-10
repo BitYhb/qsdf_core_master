@@ -16,7 +16,6 @@ if (WIN32)
     set(_PLUGIN_RPATH "")
 endif()
 
-### 设置 Visual Studio 中的解决方案文件夹
 if (WITH_USE_SOLUTION_FOLDERS)
     set(_APP_SOLUTION_FOLDER "AppTargets")
     set(_PLUGINS_SOLUTION_FOLDER "PluginTargets")
