@@ -47,6 +47,11 @@ if(WITH_USE_SOLUTION_FOLDERS)
 endif()
 
 # Qt
+if(NOT DEFINED QSDF_REQUIRED_QT_VERSION)
+    set(_required_qt_version ${QSDF_QT_VERSION_MIN})
+    set(QSDF_REQUIRED_QT_VERSION ${_required_qt_version} CACHE STRING "Minimum required Qt version" FORCE)
+endif()
+
 set(QSDF_REQUIRED_QT_MODULES
     Core Network Quick
     LinguistTools # no dll
@@ -57,9 +62,8 @@ if(WITH_TESTS)
     set(IMPLICIT_DEPENDS Qt6::Test)
 endif()
 
+include(FindQtAndCheckVersion)
 mark_as_superbuild(VARS Qt6_DIR LABELS "FIND_PACKAGE")
-
-find_package(Qt6 ${QSDF_QT_VERSION_MIN} REQUIRED COMPONENTS ${QSDF_REQUIRED_QT_MODULES})
 
 # SuperBuild script
 if(QSDF_SUPERBUILD)
