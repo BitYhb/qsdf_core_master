@@ -28,7 +28,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # SuperBuild Option - Enabled by default
 option(QSDF_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
 mark_as_advanced(QSDF_SUPERBUILD)
-set(QSDF_BINARY_INNER_SUBDIR QSDF-build)
+set(QSDF_BINARY_INNER_SUBDIR ${PROJECT_NAME}-build)
 
 # Internal SuperBuild Option - Enabled by default
 option(QSDF_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
@@ -55,7 +55,7 @@ endif()
 set(QSDF_REQUIRED_QT_MODULES
     Core Network Quick
     LinguistTools # no dll
-)
+    Widgets)
 
 if(WITH_TESTS)
     list(APPEND QSDF_REQUIRED_QT_MODULES Test)
@@ -83,7 +83,7 @@ set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP "Generated Files")
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER "Autogen Targets")
 
 # System flags
-if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     message(STATUS "The target operating system is WIN")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")

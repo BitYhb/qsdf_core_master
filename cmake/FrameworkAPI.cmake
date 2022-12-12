@@ -24,39 +24,39 @@ file(RELATIVE_PATH RELATIVE_LIBRARY_PATH "/${QSDF_BIN_PATH}" "/${QSDF_LIBRARY_PA
 file(RELATIVE_PATH RELATIVE_PLUGIN_PATH "/${QSDF_BIN_PATH}" "/${QSDF_PLUGIN_PATH}")
 
 list(APPEND DEFAULT_DEFINES
-    RELATIVE_DATA_PATH="${RELATIVE_DATA_PATH}"
-    RELATIVE_LIBRARY_PATH="${RELATIVE_LIBRARY_PATH}"
-    RELATIVE_PLUGIN_PATH="${RELATIVE_PLUGIN_PATH}")
+    RELATIVE_DATA_PATH= "${RELATIVE_DATA_PATH}"
+    RELATIVE_LIBRARY_PATH= "${RELATIVE_LIBRARY_PATH}"
+    RELATIVE_PLUGIN_PATH= "${RELATIVE_PLUGIN_PATH}")
 
 option(BUILD_TESTS_BY_DEFAULT "Build tests by default. This can be used to build all tests by default, or none." ON)
 option(WITH_SCCACHE_SUPPORT "Enables support for building with SCCACHE and separate debug info with MSVC, which SCCACHE normally doesn't support." OFF)
 option(QSDF_STATIC_BUILD "Builds libraries and plugins as static libraries" OFF)
 
 function(qsdf_output_binary_dir varName)
-    if (QSDF_MERGE_BINARY_DIR)
+    if(QSDF_MERGE_BINARY_DIR)
         set(${varName} ${QSDF_BINARY_DIR} PARENT_SCOPE)
-    else ()
+    else()
         set(${varName} ${PROJECT_BINARY_DIR} PARENT_SCOPE)
-    endif ()
+    endif()
 endfunction()
 
 function(reset_msvc_output_path target_name)
-    foreach (config DEBUG RELEASE)
-        foreach (flag RUNTIME LIBRARY ARCHIVE)
+    foreach(config DEBUG RELEASE)
+        foreach(flag RUNTIME LIBRARY ARCHIVE)
             get_target_property(target_property ${target_name} "${flag}_OUTPUT_DIRECTORY")
-            if (NOT target_property STREQUAL "")
+            if(NOT target_property STREQUAL "")
                 set_target_properties(${target_name} PROPERTIES "${flag}_OUTPUT_DIRECTORY_${config}" ${target_property})
-            endif ()
-        endforeach ()
-    endforeach ()
+            endif()
+        endforeach()
+    endforeach()
 endfunction()
 
 function(qsdf_source_dir varName)
-    if (QSDF_MERGE_BINARY_DIR)
+    if(QSDF_MERGE_BINARY_DIR)
         set(${varName} ${QSDF_SOURCE_DIR} PARENT_SCOPE)
-    else ()
+    else()
         set(${varName} ${PROJECT_SOURCE_DIR} PARENT_SCOPE)
-    endif ()
+    endif()
 endfunction()
 
 function(qsdf_copy_to_builddir custom_target_name)
@@ -67,16 +67,16 @@ function(qsdf_copy_to_builddir custom_target_name)
     set(allFiles ${_arg_FILES})
 
     # FILES
-    foreach (srcFile ${_arg_FILES})
+    foreach(srcFile ${_arg_FILES})
         string(MAKE_C_IDENTIFIER "${srcFile}" destinationTimestampFilePart)
         set(destinationTimestampFileName "${CMAKE_CURRENT_BINARY_DIR}/.${destinationTimestampFilePart}_timestamp")
         list(APPEND timestampFiles "${destinationTimestampFileName}")
 
-        if (IS_ABSOLUTE "${srcFile}")
+        if(IS_ABSOLUTE "${srcFile}")
             set(srcPath "")
-        else ()
+        else()
             get_filename_component(srcPath "${srcFile}" DIRECTORY)
-        endif ()
+        endif()
 
         add_custom_command(OUTPUT "${destinationTimestampFileName}"
             COMMAND ${CMAKE_COMMAND} -E make_directory "${_output_binary_dir}/${_arg_DESTINATION}/${srcPath}"
@@ -85,18 +85,18 @@ function(qsdf_copy_to_builddir custom_target_name)
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
             COMMENT "Copy ${srcFile} into build directory"
             DEPENDS "${srcFile}")
-    endforeach ()
+    endforeach()
 
     # DIRECTORIES
-    foreach (srcDirectory ${_arg_DIRECTORIES})
+    foreach(srcDirectory ${_arg_DIRECTORIES})
         string(MAKE_C_IDENTIFIER "${srcDirectory}" destinationTimestampFilePart)
         set(destinationTimestampFileName "${CMAKE_CURRENT_BINARY_DIR}/.${destinationTimestampFilePart}_timestamp")
         list(APPEND timestampFiles "${destinationTimestampFileName}")
         set(destinationDirectory "${_output_binary_dir}/${_arg_DESTINATION}")
 
-        if (_arg_CREATE_SUBDIRS)
+        if(_arg_CREATE_SUBDIRS)
             set(destinationDirectory "${destinationDirectory}/${srcDirectory}")
-        endif ()
+        endif()
 
         file(GLOB_RECURSE filesToCopy "${srcDirectory}/*")
         list(APPEND allFiles ${filesToCopy})
@@ -107,7 +107,7 @@ function(qsdf_copy_to_builddir custom_target_name)
             COMMENT "Copy ${srcDirectory}/ into build directory"
             DEPENDS ${filesToCopy}
             VERBATIM)
-    endforeach ()
+    endforeach()
 
     add_custom_target("${custom_target_name}" ALL DEPENDS ${timestampFiles}
         SOURCES ${allFiles})
@@ -119,27 +119,27 @@ function(add_qsdf_library target_name)
     set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS STATIC_DEPENDS DEFINES PUBLIC_DEFINES PROPERTIES)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (${_arg_UNPARSED_ARGUMENTS})
+    if(${_arg_UNPARSED_ARGUMENTS})
         message(FATAL_ERROR "add_qsdf_library had unparsed arguments!")
-    endif ()
+    endif()
 
     set(library_type SHARED)
-    if (_arg_STATIC)
+    if(_arg_STATIC)
         set(library_type STATIC)
-    endif ()
+    endif()
 
     add_library(${target_name} ${library_type})
     add_library(QSDF::${target_name} ALIAS ${target_name})
 
     set(_DESTINATION ${QSDF_BIN_PATH})
-    if (_arg_DESTINATION)
+    if(_arg_DESTINATION)
         set(_DESTINATION ${_arg_DESTINATION})
-    endif ()
+    endif()
 
     set(_MSVC_SOLUTION_FOLDER "")
-    if (_arg_MSVC_SOLUTION_FOLDER)
+    if(_arg_MSVC_SOLUTION_FOLDER)
         set(_MSVC_SOLUTION_FOLDER "${_arg_MSVC_SOLUTION_FOLDER}")
-    endif ()
+    endif()
 
     # export header file
     generate_export_header(${target_name} PREFIX_NAME QUICK_)
@@ -163,7 +163,7 @@ function(add_qsdf_library target_name)
         PUBLIC_DEPENDS ${_arg_PUBLIC_DEPENDS})
 
     # everything is different with SOURCES_PREFIX
-    if (NOT _arg_SOURCES_PREFIX)
+    if(NOT _arg_SOURCES_PREFIX)
         get_filename_component(public_build_interface_dir "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
         target_include_directories(${target_name}
@@ -172,7 +172,7 @@ function(add_qsdf_library target_name)
             PUBLIC
             "$<BUILD_INTERFACE:${public_build_interface_dir}>"
             "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
-    endif ()
+    endif()
 
     qsdf_output_binary_dir(_output_binary_dir)
     string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
@@ -199,44 +199,44 @@ function(add_qsdf_plugin target_name)
     set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS DEFINES PUBLIC_DEFINES PLUGIN_DEPENDS)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (${_arg_UNPARSED_ARGUMENTS})
+    if(${_arg_UNPARSED_ARGUMENTS})
         message(FATAL_ERROR "add_qsdf_plugin had unparsed arguments!")
-    endif ()
+    endif()
 
     set(_MSVC_SOLUTION_FOLDER "")
-    if (_arg_MSVC_SOLUTION_FOLDER)
+    if(_arg_MSVC_SOLUTION_FOLDER)
         set(_MSVC_SOLUTION_FOLDER "${_arg_MSVC_SOLUTION_FOLDER}")
-    endif ()
+    endif()
 
     ### Generate dependency list:
-    if (NOT _arg_VERSION)
+    if(NOT _arg_VERSION)
         set(_arg_VERSION ${QSDF_VERSION})
-    endif ()
+    endif()
     find_dependent_plugins(_PLUGIN_DEPENDS ${_arg_PLUGIN_DEPENDS})
     set(_arg_DEPENDENCY_STRING "\"Dependencies\": [\n")
-    foreach (_plugin_i IN LISTS _PLUGIN_DEPENDS)
-        if (_plugin_i MATCHES "^QSDF::")
+    foreach(_plugin_i IN LISTS _PLUGIN_DEPENDS)
+        if(_plugin_i MATCHES "^QSDF::")
             set(_VERSION ${QSDF_VERSION})
             string(REPLACE "QSDF::" "" _plugin_i ${_plugin_i})
-        else ()
+        else()
             get_property(_VERSION TARGET ${_plugin_i} PROPERTY _arg_VERSION)
-        endif ()
+        endif()
 
         string(APPEND _arg_DEPENDENCY_STRING "{\"Name\":\"${_plugin_i}\", \"Version\": \"${_VERSION}\"}")
-    endforeach ()
+    endforeach()
     string(APPEND _arg_DEPENDENCY_STRING "\n    ]")
 
     set(QSDF_PLUGIN_DEPENDENCY_STRING ${_arg_DEPENDENCY_STRING})
 
     ### Configure plugin.json file:
-    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${target_name}.json.in")
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${target_name}.json.in")
         file(READ "${target_name}.json.in" plugin_json_in)
         string(REPLACE "\\\"" "\"" plugin_json_in ${plugin_json_in})
         string(REPLACE "$$QSDF_VERSION" "\${QSDF_VERSION}" plugin_json_in ${plugin_json_in})
         string(REPLACE "$$dependencyList" "\${QSDF_PLUGIN_DEPENDENCY_STRING}" plugin_json_in ${plugin_json_in})
         string(CONFIGURE "${plugin_json_in}" plugin_json)
         file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${target_name}.json" CONTENT "${plugin_json}")
-    endif ()
+    endif()
 
     add_library(${target_name} SHARED ${_arg_SOURCES})
     add_library(QSDF::${target_name} ALIAS ${target_name})
@@ -273,9 +273,9 @@ function(add_qsdf_plugin target_name)
         "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
 
     set(plugin_dir "${QSDF_PLUGIN_PATH}")
-    if (_arg_PLUGIN_PATH)
+    if(_arg_PLUGIN_PATH)
         set(plugin_dir "${_arg_PLUGIN_PATH}")
-    endif ()
+    endif()
 
     qsdf_output_binary_dir(_output_binary_dir)
     set_target_properties(${target_name} PROPERTIES
@@ -301,14 +301,14 @@ function(add_qsdf_executable target_name)
     set(multiValueArgs SOURCES INCLUDES DEPENDS PUBLIC_DEPENDS DEFINES PUBLIC_DEFINES PROPERTIES)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (${_arg_UNPARSED_ARGUMENTS})
+    if(${_arg_UNPARSED_ARGUMENTS})
         message(FATAL_ERROR "add_qsdf_executable had unparsed arguments!")
-    endif ()
+    endif()
 
     set(_MSVC_SOLUTION_FOLDER "")
-    if (_arg_MSVC_SOLUTION_FOLDER)
+    if(_arg_MSVC_SOLUTION_FOLDER)
         set(_MSVC_SOLUTION_FOLDER "${_arg_MSVC_SOLUTION_FOLDER}")
-    endif ()
+    endif()
 
     add_executable(${target_name} ${_arg_SOURCES})
 
@@ -320,9 +320,9 @@ function(add_qsdf_executable target_name)
         PUBLIC_DEPENDS ${_arg_PUBLIC_DEPENDS})
 
     set(_DESTINATION ${QSDF_LIBEXEC_PATH})
-    if (_arg_DESTINATION)
+    if(_arg_DESTINATION)
         set(_DESTINATION ${_arg_DESTINATION})
-    endif ()
+    endif()
 
     set(_EXECUTABLE_PATH ${_DESTINATION})
     file(RELATIVE_PATH relative_lib_path "/${_EXECUTABLE_PATH}" "/${QSDF_LIBRARY_PATH}")
@@ -349,35 +349,35 @@ function(add_qsdf_test target_name)
     set(multiValueArgs SOURCES INCLUDES DEPENDS DEFINES CONDITION EXPLICIT_MOC SKIP_AUTOMOC)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (${_arg_UNPARSED_ARGUMENTS})
+    if(${_arg_UNPARSED_ARGUMENTS})
         message(FATAL_ERROR "add_qsdf_test had unparsed arguments!")
-    endif ()
+    endif()
 
     update_cached_list(__QSDF_TESTS ${target_name})
 
-    if (NOT _arg_CONDITION)
+    if(NOT _arg_CONDITION)
         set(_arg_CONDITION ON)
-    endif ()
+    endif()
 
     string(TOUPPER "BUILD_TEST_${target_name}" _build_test_var)
     set(_build_test_by_default ${BUILD_TESTS_BY_DEFAULT})
-    if (DEFINED ENV{QSDF_${_build_test_var}})
+    if(DEFINED ENV{QSDF_${_build_test_var}})
         set(_build_test_by_default "$ENV{QSDF_${_build_test_var}}")
-    endif ()
+    endif()
     set(${_build_test_var} "${_build_test_by_default}" CACHE BOOL "Build test ${target_name}")
 
-    if (NOT ${_build_test_var} OR NOT ${_arg_CONDITION})
+    if(NOT ${_build_test_var} OR NOT ${_arg_CONDITION})
         return()
-    endif ()
+    endif()
 
-    foreach (dependency ${_arg_DEPENDS})
-        if (NOT TARGET ${dependency} AND NOT _arg_GTEST)
-            if (WITH_DEBUG_CMAKE)
+    foreach(dependency ${_arg_DEPENDS})
+        if(NOT TARGET ${dependency} AND NOT _arg_GTEST)
+            if(WITH_DEBUG_CMAKE)
                 message(STATUS "'${dependency}' is not a target")
-            endif ()
+            endif()
             return()
-        endif ()
-    endforeach ()
+        endif()
+    endforeach()
 
     set(TEST_DEFINES SRCDIR=${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -412,16 +412,16 @@ function(add_translation_targets target_name)
     set(multiValueArgs LANGUAGES)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (${_arg_UNPARSED_ARGUMENTS})
+    if(${_arg_UNPARSED_ARGUMENTS})
         message(FATAL_ERROR "add_translation_targets had unparsed arguments!")
-    endif ()
+    endif()
 
     set(language_files)
-    foreach (language ${_arg_LANGUAGES})
+    foreach(language ${_arg_LANGUAGES})
         string(TOLOWER ${target_name} lower_target_name)
         string(CONCAT language_file "${lower_target_name}_" "${language}" ".ts")
         list(APPEND language_files ${language_file})
-    endforeach ()
+    endforeach()
 
     set_source_files_properties(${language_files} PROPERTIES OUTPUT_LOCATION "${OUTPUT_DIRECTORY}")
 

@@ -12,7 +12,6 @@ FramelessQuickWindow::~FramelessQuickWindow() {}
 
 void FramelessQuickWindow::eventUpdateFullScreenMode()
 {
-    if (Plugin)
 }
 
 } // namespace Core::Internal
