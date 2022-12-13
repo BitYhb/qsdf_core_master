@@ -24,9 +24,9 @@ file(RELATIVE_PATH RELATIVE_LIBRARY_PATH "/${QSDF_BIN_PATH}" "/${QSDF_LIBRARY_PA
 file(RELATIVE_PATH RELATIVE_PLUGIN_PATH "/${QSDF_BIN_PATH}" "/${QSDF_PLUGIN_PATH}")
 
 list(APPEND DEFAULT_DEFINES
-    RELATIVE_DATA_PATH= "${RELATIVE_DATA_PATH}"
-    RELATIVE_LIBRARY_PATH= "${RELATIVE_LIBRARY_PATH}"
-    RELATIVE_PLUGIN_PATH= "${RELATIVE_PLUGIN_PATH}")
+    RELATIVE_DATA_PATH="${RELATIVE_DATA_PATH}"
+    RELATIVE_LIBRARY_PATH="${RELATIVE_LIBRARY_PATH}"
+    RELATIVE_PLUGIN_PATH="${RELATIVE_PLUGIN_PATH}")
 
 option(BUILD_TESTS_BY_DEFAULT "Build tests by default. This can be used to build all tests by default, or none." ON)
 option(WITH_SCCACHE_SUPPORT "Enables support for building with SCCACHE and separate debug info with MSVC, which SCCACHE normally doesn't support." OFF)
@@ -157,10 +157,12 @@ function(add_qsdf_library target_name)
     if(NOT _arg_SOURCES_PREFIX)
         get_filename_component(public_build_interface_dir "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
-        include_directories(
-            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-            "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-            "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+        target_include_directories(${target_name}
+            PRIVATE
+                "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+            PUBLIC
+                "$<BUILD_INTERFACE:${public_build_interface_dir}>"
+                "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
     endif()
 
     string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
@@ -251,12 +253,14 @@ function(add_qsdf_plugin target_name)
 
     get_filename_component(public_build_interface_dir "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
     file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
-    include_directories(
-        "${CMAKE_CURRENT_BINARY_DIR}"
-        "${CMAKE_BINARY_DIR}/src"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-        "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-        "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+    target_include_directories(${target_name}
+        PRIVATE
+            "${CMAKE_CURRENT_BINARY_DIR}"
+            "${CMAKE_BINARY_DIR}/src"
+            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+        PUBLIC
+            "$<BUILD_INTERFACE:${public_build_interface_dir}>"
+            "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
 
     set(plugin_dir "${QSDF_PLUGIN_PATH}")
     if(_arg_PLUGIN_PATH)
