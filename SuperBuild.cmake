@@ -21,8 +21,7 @@ endforeach()
 ExternalProject_Include_Dependencies(${PROJECT_NAME} DEPENDS_VAR QSDF_DEPENDENCIES)
 
 ExternalProject_Add(${PROJECT_NAME}
-    CMAKE_CACHE_ARGS
-        -DQt6_DIR:PATH=C:/Qt/6.4.1/msvc2019_64/lib/cmake/Qt6
+    ${${proj}_EP_ARGS}
     DEPENDS ${QSDF_DEPENDENCIES}
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
     BINARY_DIR ${CMAKE_BINARY_DIR}/${QSDF_BINARY_INNER_SUBDIR}
@@ -30,5 +29,4 @@ ExternalProject_Add(${PROJECT_NAME}
     UPDATE_COMMAND ""
     CMAKE_CACHE_ARGS
         -DQSDF_SUPERBUILD:BOOL=OFF
-    INSTALL_DIR ""
-)
+    INSTALL_DIR "")

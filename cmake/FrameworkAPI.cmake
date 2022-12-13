@@ -32,14 +32,6 @@ option(BUILD_TESTS_BY_DEFAULT "Build tests by default. This can be used to build
 option(WITH_SCCACHE_SUPPORT "Enables support for building with SCCACHE and separate debug info with MSVC, which SCCACHE normally doesn't support." OFF)
 option(QSDF_STATIC_BUILD "Builds libraries and plugins as static libraries" OFF)
 
-function(qsdf_output_binary_dir varName)
-    if(QSDF_MERGE_BINARY_DIR)
-        set(${varName} ${QSDF_BINARY_DIR} PARENT_SCOPE)
-    else()
-        set(${varName} ${PROJECT_BINARY_DIR} PARENT_SCOPE)
-    endif()
-endfunction()
-
 function(reset_msvc_output_path target_name)
     foreach(config DEBUG RELEASE)
         foreach(flag RUNTIME LIBRARY ARCHIVE)
@@ -63,7 +55,6 @@ function(qsdf_copy_to_builddir custom_target_name)
     cmake_parse_arguments(_arg "CREATE_SUBDIRS" "DESTINATION" "FILES;DIRECTORIES" ${ARGN})
     set(timestampFiles)
 
-    qsdf_output_binary_dir(_output_binary_dir)
     set(allFiles ${_arg_FILES})
 
     # FILES
@@ -79,8 +70,8 @@ function(qsdf_copy_to_builddir custom_target_name)
         endif()
 
         add_custom_command(OUTPUT "${destinationTimestampFileName}"
-            COMMAND ${CMAKE_COMMAND} -E make_directory "${_output_binary_dir}/${_arg_DESTINATION}/${srcPath}"
-            COMMAND ${CMAKE_COMMAND} -E copy "${srcFile}" "${_output_binary_dir}/${_arg_DESTINATION}/${srcPath}"
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/${_arg_DESTINATION}/${srcPath}"
+            COMMAND ${CMAKE_COMMAND} -E copy "${srcFile}" "${CMAKE_BINARY_DIR}/${_arg_DESTINATION}/${srcPath}"
             COMMAND ${CMAKE_COMMAND} -E touch "${destinationTimestampFileName}"
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
             COMMENT "Copy ${srcFile} into build directory"
@@ -92,7 +83,7 @@ function(qsdf_copy_to_builddir custom_target_name)
         string(MAKE_C_IDENTIFIER "${srcDirectory}" destinationTimestampFilePart)
         set(destinationTimestampFileName "${CMAKE_CURRENT_BINARY_DIR}/.${destinationTimestampFilePart}_timestamp")
         list(APPEND timestampFiles "${destinationTimestampFileName}")
-        set(destinationDirectory "${_output_binary_dir}/${_arg_DESTINATION}")
+        set(destinationDirectory "${CMAKE_BINARY_DIR}/${_arg_DESTINATION}")
 
         if(_arg_CREATE_SUBDIRS)
             set(destinationDirectory "${destinationDirectory}/${srcDirectory}")
@@ -166,15 +157,12 @@ function(add_qsdf_library target_name)
     if(NOT _arg_SOURCES_PREFIX)
         get_filename_component(public_build_interface_dir "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
-        target_include_directories(${target_name}
-            PRIVATE
+        include_directories(
             "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-            PUBLIC
             "$<BUILD_INTERFACE:${public_build_interface_dir}>"
             "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
     endif()
 
-    qsdf_output_binary_dir(_output_binary_dir)
     string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
     set_target_properties(${target_name} PROPERTIES
         LINK_DEPENDS_NO_SHARED ON
@@ -185,9 +173,9 @@ function(add_qsdf_library target_name)
         FOLDER "${_MSVC_SOLUTION_FOLDER}"
         BUILD_RPATH "${_LIB_RPATH};${CMAKE_BUILD_RPATH}"
         INSTALL_RPATH "${_LIB_RPATH};${CMAKE_INSTALL_RPATH}"
-        RUNTIME_OUTPUT_DIRECTORY "${_output_binary_dir}/${_DESTINATION}"
-        LIBRARY_OUTPUT_DIRECTORY "${_output_binary_dir}/${QSDF_LIBRARY_PATH}"
-        ARCHIVE_OUTPUT_DIRECTORY "${_output_binary_dir}/${QSDF_LIBRARY_ARCHIVE_PATH}"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${_DESTINATION}"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${QSDF_LIBRARY_PATH}"
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${QSDF_LIBRARY_ARCHIVE_PATH}"
         ${_arg_PROPERTIES})
 
     reset_msvc_output_path(${target_name})
@@ -263,12 +251,10 @@ function(add_qsdf_plugin target_name)
 
     get_filename_component(public_build_interface_dir "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
     file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
-    target_include_directories(${target_name}
-        PRIVATE
+    include_directories(
         "${CMAKE_CURRENT_BINARY_DIR}"
         "${CMAKE_BINARY_DIR}/src"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-        PUBLIC
         "$<BUILD_INTERFACE:${public_build_interface_dir}>"
         "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
 
@@ -277,16 +263,15 @@ function(add_qsdf_plugin target_name)
         set(plugin_dir "${_arg_PLUGIN_PATH}")
     endif()
 
-    qsdf_output_binary_dir(_output_binary_dir)
     set_target_properties(${target_name} PROPERTIES
         LINK_DEPENDS_NO_SHARED ON
         SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
         CXX_EXTENSIONS OFF
         BUILD_RPATH "${_PLUGIN_RPATH};${CMAKE_BUILD_RPATH}"
         INSTALL_RPATH "${_PLUGIN_RPATH};${CMAKE_INSTALL_RPATH}"
-        RUNTIME_OUTPUT_DIRECTORY "${_output_binary_dir}/${plugin_dir}"
-        LIBRARY_OUTPUT_DIRECTORY "${_output_binary_dir}/${plugin_dir}"
-        ARCHIVE_OUTPUT_DIRECTORY "${_output_binary_dir}/${plugin_dir}"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${plugin_dir}"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${plugin_dir}"
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${plugin_dir}"
         FOLDER "${_MSVC_SOLUTION_FOLDER}"
         _arg_DEPENDS "${_arg_PUBLIC_DEPENDS}"
         _arg_VERSION "${_arg_VERSION}"
@@ -330,12 +315,11 @@ function(add_qsdf_executable target_name)
     set(build_rpath "${_RPATH_BASE}/${relative_lib_path};${CMAKE_BUILD_RPATH}")
     set(install_rpath "${_RPATH_BASE}/${relative_lib_path};${CMAKE_INSTALL_RPATH}")
 
-    qsdf_output_binary_dir(_output_binary_dir)
     set_target_properties(${target_name} PROPERTIES
         LINK_DEPENDS_NO_SHARED ON
         BUILD_RPATH "${build_rpath}"
         INSTALL_RPATH "${install_rpath}"
-        RUNTIME_OUTPUT_DIRECTORY "${_output_binary_dir}/${_DESTINATION}"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${_DESTINATION}"
         CXX_EXTENSIONS OFF
         FOLDER "${_MSVC_SOLUTION_FOLDER}"
         ${_arg_PROPERTIES})
