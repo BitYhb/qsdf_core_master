@@ -1,0 +1,16 @@
+stages:
+  - Static-analysis
+  - Build
+
+variables:
+  CMAKE_BIN_PATH: "C:/Program Files/JetBrains/CLion 2022.2.1/bin/cmake/win/bin/cmake.exe"
+  NINJA_BIN_PATH: "C:/Program Files/JetBrains/CLion 2022.2.1/bin/ninja/win/ninja.exe"
+
+"Windows Build":
+  stage: Build
+  only:
+    - master
+  script:
+    - mkdir build && cd build
+    - . \"$CMAKE_BIN_PATH\" -DCMAKE_BUILD_TYPE=Release \"-DCMAKE_MAKE_PROGRAM=$NINJA_BIN_PATH\" -G Ninja
+    - . \"$CMAKE_BIN_PATH\" --build . --config Release
