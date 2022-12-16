@@ -2,15 +2,12 @@ stages:
   - Static-analysis
   - Build
 
-variables:
-  CMAKE_BIN_PATH: "C:/Program Files/JetBrains/CLion 2022.2.1/bin/cmake/win/bin/cmake.exe"
-  NINJA_BIN_PATH: "C:/Program Files/JetBrains/CLion 2022.2.1/bin/ninja/win/ninja.exe"
-
 "Windows Build":
   stage: Build
   only:
-    - master
+    - ci_workflows
   script:
     - mkdir build && cd build
-    - . \"$CMAKE_BIN_PATH\" -DCMAKE_BUILD_TYPE=Release \"-DCMAKE_MAKE_PROGRAM=$NINJA_BIN_PATH\" -G Ninja
-    - . \"$CMAKE_BIN_PATH\" --build . --config Release
+    - Enter-VsDevShell -VsInstallPath "$vsPath" -DevCmdArguments "-arch=x64 -host_arch=x64" -SkipAutomaticLocation
+    - cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja -DQt6_DIR="$qtInstallPath/lib/cmake/Qt6"
+    - cmake --build . --config Release
