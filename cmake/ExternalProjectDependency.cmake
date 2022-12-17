@@ -132,15 +132,23 @@ function(mark_as_superbuild)
     set(multiValueArgs VARS PROJECTS LABELS)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if(_arg_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR "Invalid arguments: ${_arg_UNPARSED_ARGUMENTS}")
+    set(_vars ${_arg_UNPARSED_ARGUMENTS})
+
+    set(_named_parameters_expected 0)
+    if(_arg_ALL_PROJECTS OR _arg_VARS OR _arg_PROJECTS OR _arg_LABELS)
+        set(_named_parameters_expected 1)
+        set(_vars ${_arg_VARS})
+    endif()
+
+    if(_named_parameters_expected AND _arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "error: " ${_arg_UNPARSED_ARGUMENTS} " should be associated with VARS parameter!")
     endif()
 
     if(_arg_PROJECTS AND _arg_ALL_PROJECTS)
         message(FATAL_ERROR "Arguments 'PROJECTS' and 'ALL_PROJECTS' are mutually exclusive!")
     endif()
 
-    foreach(var ${_arg_VARS})
+    foreach(var ${_vars})
         set(_var ${var})
         get_property(_type_set_in_cache CACHE ${_var} PROPERTY TYPE SET)
         set(_var_name ${_var})

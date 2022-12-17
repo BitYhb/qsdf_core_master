@@ -10,7 +10,6 @@ add_subdirectory(share)
 add_subdirectory(shared)
 add_subdirectory(libs)
 add_subdirectory(plugins)
-add_subdirectory(domains)
 
 option(${PROJECT_NAME}_BUILD_UTILITY_SOFTWARE "Compilation tools" OFF)
 mark_as_advanced(${PROJECT_NAME}_BUILD_UTILITY_SOFTWARE)

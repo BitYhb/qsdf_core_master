@@ -65,6 +65,10 @@ endif()
 include(FindQtAndCheckVersion)
 mark_as_superbuild(VARS Qt6_DIR LABELS "FIND_PACKAGE")
 
+if(DEFINED QSDF_DOMAIN_NAME)
+    mark_as_superbuild(QSDF_DOMAIN_NAME)
+endif()
+
 # SuperBuild script
 if(QSDF_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")

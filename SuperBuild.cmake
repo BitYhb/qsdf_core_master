@@ -2,7 +2,8 @@ set(SUPERBUILD_PREFIX "External_")
 set(SUPERBUILD_FOLDER_NAME "superbuild")
 
 #set(QSDF_DEPENDENCIES
-#    Lua)
+#    GDCM
+#    DCMTK)
 
 foreach(extension_dir ${QSDF_EXTENSION_SOURCE_DIRS})
     cmake_path(ABSOLUTE_PATH extension_dir OUTPUT_VARIABLE extension_dir)
