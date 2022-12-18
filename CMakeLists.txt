@@ -34,6 +34,10 @@ set(QSDF_BINARY_INNER_SUBDIR ${PROJECT_NAME}-build)
 option(QSDF_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
 mark_as_advanced(QSDF_INTERNAL_SUPERBUILD)
 
+option(QSDF_BUILD_SDK "Build an SDK for app or domain development" OFF)
+mark_as_advanced(QSDF_BUILD_SDK)
+mark_as_superbuild(QSDF_BUILD_SDK)
+
 option(WITH_TESTS "Build Tests" OFF)
 add_feature_info("Build Tests" ${WITH_TESTS} "")
 option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
@@ -105,3 +109,30 @@ add_subdirectory(doc)
 if(WITH_TESTS)
     add_subdirectory(tests)
 endif()
+
+# install cmake module
+export(EXPORT QSDFTargets
+    NAMESPACE QSDF::
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/QSDFTargets.cmake)
+configure_file(cmake/QSDFConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/QSDFConfig.cmake
+    COPYONLY)
+
+if(QSDF_BUILD_SDK)
+    file(GLOB cmake_files "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cmake")
+    install(
+        FILES ${cmake_files}
+        DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF COMPONENT Development)
+
+    install(EXPORT QSDFTargets
+        DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
+        COMPONENT Development
+        NAMESPACE QSDF::
+        FILE QSDFTargets.cmake)
+    install(FILES
+        ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPI.cmake
+        ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPIInternal.cmake
+        DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
+        COMPONENT Development)
+endif()
+
