@@ -73,16 +73,21 @@ endfunction()
 #             By default, it is `<target_name>_DEPENDS`
 #
 # EP_ARGS_VAR Name of the variable listing arguments to pass to ExternalProject.
-#             If not specified, variable name default to `<project_name>_EP_ARGS`.
+#             If not specified, variable name default to `<target_name>_EP_ARGS`.
 #
 macro(ExternalProject_Include_Dependencies target_name)
     set(options)
-    set(oneValueArgs DEPENDS_VAR EP_ARGS_VAR)
+    set(oneValueArgs PROJECT_VAR DEPENDS_VAR EP_ARGS_VAR)
     set(multiValueArgs)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(_arg_UNPARSED_ARGUMENTS)
         message(FATAL_ERROR "Invalid arguments: ${_arg_UNPARSED_ARGUMENTS}")
+    endif()
+
+    if(NOT _arg_PROJECT_VAR)
+        set(_arg_PROJECT_VAR proj)
+        set(${_arg_PROJECT_VAR} ${target_name})
     endif()
 
     set(_sb_proj ${target_name})
@@ -99,14 +104,23 @@ macro(ExternalProject_Include_Dependencies target_name)
     # Save variables
     set_property(GLOBAL PROPERTY SB_${_sb_proj}_DEPENDS ${_sb_DEPENDS})
     set_property(GLOBAL PROPERTY SB_${_sb_proj}_EP_ARGS_VAR ${_sb_EP_ARGS_VAR})
+    set_property(GLOBAL PROPERTY SB_${_sb_proj}_PROJECT_VAR ${_arg_PROJECT_VAR})
 
     foreach(dep ${_sb_DEPENDS})
         get_property(_included GLOBAL PROPERTY SB_${_sb_proj}_FILE_INCLUDED)
         if(NOT _included)
-            if(EXISTS "${EXTERNAL_PROJECT_DIR}/${EXTERNAL_PROJECT_FILE_PREFIX}${dep}.cmake")
-                include(${EXTERNAL_PROJECT_DIR}/${EXTERNAL_PROJECT_FILE_PREFIX} ${dep}.cmake)
+            set(_external_project_file_prefix ${EXTERNAL_PROJECT_FILE_PREFIX})
+            set(_external_project_dir ${EXTERNAL_PROJECT_DIR})
+            if(${dep} MATCHES "^EPDomain.*")
+                set(_external_project_file_prefix "")
+                set(_external_project_dir ${_external_project_dir}/domain)
+            endif()
+
+            set(_ep_module_abs_path "${_external_project_dir}/${_external_project_file_prefix}${dep}.cmake")
+            if(EXISTS ${_ep_module_abs_path})
+                include(${_ep_module_abs_path})
             else()
-                message(FATAL_ERROR "error: Can't find ${EXTERNAL_PROJECT_FILE_PREFIX}${dep}.cmake")
+                message(FATAL_ERROR "error: Can't find ${_external_project_file_prefix}${dep}.cmake")
             endif()
             set_property(GLOBAL PROPERTY SB_${_sb_proj}_FILE_INCLUDED 1)
         endif()
@@ -206,4 +220,17 @@ function(_sb_append_to_cmake_args)
             endforeach()
         endif()
     endforeach()
+endfunction()
+
+function(_sb_get_domain_source_path domain_proj_var source_path)
+    set(_domain_root_path "src/domains")
+    cmake_path(ABSOLUTE_PATH _domain_root_path BASE_DIRECTORY ${CMAKE_SOURCE_DIR} NORMALIZE OUTPUT_VARIABLE _domain_root_path)
+
+    set(domain_proj ${${domain_proj_var}})
+    if(${domain_proj} MATCHES "^EPDomain.*")
+        string(REGEX REPLACE "^EPDomain_" "" domain_proj ${domain_proj})
+    endif()
+    string(TOLOWER "${domain_proj}" _domain_proj_lower)
+
+    set(${source_path} "${_domain_root_path}/${_domain_proj_lower}" PARENT_SCOPE)
 endfunction()

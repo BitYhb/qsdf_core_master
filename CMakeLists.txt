@@ -30,10 +30,6 @@ option(QSDF_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
 mark_as_advanced(QSDF_SUPERBUILD)
 set(QSDF_BINARY_INNER_SUBDIR ${PROJECT_NAME}-build)
 
-# Internal SuperBuild Option - Enabled by default
-option(QSDF_INTERNAL_SUPERBUILD "Build the internal projects that ${PROJECT_NAME} depends on." ON)
-mark_as_advanced(QSDF_INTERNAL_SUPERBUILD)
-
 option(QSDF_BUILD_SDK "Build an SDK for app or domain development" OFF)
 mark_as_advanced(QSDF_BUILD_SDK)
 mark_as_superbuild(QSDF_BUILD_SDK)
@@ -77,11 +73,6 @@ endif()
 if(QSDF_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
     return()
-endif()
-
-# Internal SuperBuild script
-if(QSDF_INTERNAL_SUPERBUILD)
-    include("${CMAKE_CURRENT_SOURCE_DIR}/InternalSuperBuild.cmake")
 endif()
 
 if(MSVC)

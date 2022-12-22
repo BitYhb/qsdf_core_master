@@ -1,9 +1,15 @@
 set(SUPERBUILD_PREFIX "External_")
 set(SUPERBUILD_FOLDER_NAME "superbuild")
 
-#set(QSDF_DEPENDENCIES
-#    GDCM
-#    DCMTK)
+if(NOT DEFINED QSDF_DOMAIN_NAME)
+    message(FATAL_ERROR "error: Variable QSDF_DOMAIN_NAME is not defined!")
+endif()
+
+set(QSDF_DEPENDENCIES)
+
+if(QSDF_DOMAIN_NAME STREQUAL "okr")
+    list(APPEND QSDF_DEPENDENCIES EPDomain_${QSDF_DOMAIN_NAME})
+endif()
 
 foreach(extension_dir ${QSDF_EXTENSION_SOURCE_DIRS})
     cmake_path(ABSOLUTE_PATH extension_dir OUTPUT_VARIABLE extension_dir)

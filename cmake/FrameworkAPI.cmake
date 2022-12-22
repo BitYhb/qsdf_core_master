@@ -159,10 +159,10 @@ function(add_qsdf_library target_name)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
         target_include_directories(${target_name}
             PRIVATE
-                "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
             PUBLIC
-                "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-                "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+            "$<BUILD_INTERFACE:${public_build_interface_dir}>"
+            "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
     endif()
 
     string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
@@ -181,6 +181,13 @@ function(add_qsdf_library target_name)
         ${_arg_PROPERTIES})
 
     reset_msvc_output_path(${target_name})
+
+    install(TARGETS ${target_name})
+
+    if(QSDF_BUILD_SDK)
+        file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+        message("${headers}")
+    endif()
 endfunction()
 
 function(add_qsdf_plugin target_name)
@@ -255,12 +262,12 @@ function(add_qsdf_plugin target_name)
     file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
     target_include_directories(${target_name}
         PRIVATE
-            "${CMAKE_CURRENT_BINARY_DIR}"
-            "${CMAKE_BINARY_DIR}/src"
-            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+        "${CMAKE_CURRENT_BINARY_DIR}"
+        "${CMAKE_BINARY_DIR}/src"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
         PUBLIC
-            "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-            "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+        "$<BUILD_INTERFACE:${public_build_interface_dir}>"
+        "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
 
     set(plugin_dir "${QSDF_PLUGIN_PATH}")
     if(_arg_PLUGIN_PATH)
