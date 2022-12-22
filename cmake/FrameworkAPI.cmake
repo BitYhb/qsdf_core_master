@@ -186,7 +186,7 @@ function(add_qsdf_library target_name)
 
     if(QSDF_BUILD_SDK)
         file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-        message("${headers}")
+        #message("${headers}")
     endif()
 endfunction()
 
