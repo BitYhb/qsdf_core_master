@@ -121,6 +121,7 @@ if(QSDF_BUILD_SDK)
         NAMESPACE QSDF::
         FILE QSDFTargets.cmake)
     install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/cmake/QSDFConfig.cmake
         ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPI.cmake
         ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPIInternal.cmake
         DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
