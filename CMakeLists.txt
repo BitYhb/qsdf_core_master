@@ -35,7 +35,6 @@ mark_as_advanced(QSDF_BUILD_SDK)
 mark_as_superbuild(QSDF_BUILD_SDK)
 
 option(WITH_TESTS "Build Tests" OFF)
-add_feature_info("Build Tests" ${WITH_TESTS} "")
 option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
 
 # Set up Qt stuff:
@@ -67,6 +66,7 @@ mark_as_superbuild(VARS Qt6_DIR LABELS "FIND_PACKAGE")
 
 if(DEFINED QSDF_DOMAIN_NAME)
     mark_as_superbuild(QSDF_DOMAIN_NAME)
+    message(STATUS "Using domain name: ${QSDF_DOMAIN_NAME}")
 endif()
 
 # SuperBuild script

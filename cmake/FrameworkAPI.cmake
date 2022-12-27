@@ -137,8 +137,17 @@ function(add_qsdf_library target_name)
     string(TOLOWER ${target_name} lower_target_name)
     target_sources(${target_name} PUBLIC
         FILE_SET HEADERS
-        BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}"
-        FILES "${CMAKE_CURRENT_BINARY_DIR}/${lower_target_name}_export.h")
+        BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/${lower_target_name}_export.h)
+
+    foreach(source ${_arg_SOURCES})
+        if(${source} MATCHES "^.*\.h$" AND NOT ${source} MATCHES "^.*_p\.h$")
+            list(APPEND _public_headers ${source})
+        endif()
+    endforeach()
+    target_sources(${target_name} PUBLIC FILE_SET public_headers_set TYPE HEADERS
+        BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+        FILES ${_public_headers})
 
     extend_qsdf_target(${target_name}
         SOURCES ${_arg_SOURCES}
@@ -182,11 +191,13 @@ function(add_qsdf_library target_name)
 
     reset_msvc_output_path(${target_name})
 
-    install(TARGETS ${target_name})
-
     if(QSDF_BUILD_SDK)
-        file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-        #message("${headers}")
+        string(TOLOWER "${target_name}" lower_target_name)
+        include(GNUInstallDirs)
+        install(TARGETS ${target_name}
+            FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
+            FILE_SET public_headers_set DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
+            COMPONENT Development)
     endif()
 endfunction()
 
