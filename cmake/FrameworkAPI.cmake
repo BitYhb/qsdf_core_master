@@ -132,22 +132,25 @@ function(add_qsdf_library target_name)
         set(_MSVC_SOLUTION_FOLDER "${_arg_MSVC_SOLUTION_FOLDER}")
     endif()
 
-    # export header file
-    generate_export_header(${target_name} PREFIX_NAME QUICK_)
-    string(TOLOWER ${target_name} lower_target_name)
-    target_sources(${target_name} PUBLIC
-        FILE_SET HEADERS
-        BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-        FILES ${CMAKE_CURRENT_BINARY_DIR}/${lower_target_name}_export.h)
+    reset_msvc_output_path(${target_name})
 
+    # export header file
     foreach(source ${_arg_SOURCES})
         if(${source} MATCHES "^.*\.h$" AND NOT ${source} MATCHES "^.*_p\.h$")
             list(APPEND _public_headers ${source})
         endif()
     endforeach()
-    target_sources(${target_name} PUBLIC FILE_SET public_headers_set TYPE HEADERS
-        BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-        FILES ${_public_headers})
+    generate_export_header(${target_name} PREFIX_NAME QUICK_)
+    string(TOLOWER ${target_name} lower_target_name)
+    target_sources(${target_name} PUBLIC
+        FILE_SET export_headers
+            TYPE HEADERS
+            BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+            FILES ${CMAKE_CURRENT_BINARY_DIR}/${lower_target_name}_export.h
+        FILE_SET public_headers
+            TYPE HEADERS
+            BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+            FILES ${_public_headers})
 
     extend_qsdf_target(${target_name}
         SOURCES ${_arg_SOURCES}
@@ -163,6 +166,7 @@ function(add_qsdf_library target_name)
         PUBLIC_DEPENDS ${_arg_PUBLIC_DEPENDS})
 
     # everything is different with SOURCES_PREFIX
+    include(GNUInstallDirs)
     if(NOT _arg_SOURCES_PREFIX)
         get_filename_component(public_build_interface_dir "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
@@ -171,7 +175,8 @@ function(add_qsdf_library target_name)
             "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
             PUBLIC
             "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-            "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}>"
+            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
     endif()
 
     string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
@@ -189,14 +194,10 @@ function(add_qsdf_library target_name)
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${QSDF_LIBRARY_ARCHIVE_PATH}"
         ${_arg_PROPERTIES})
 
-    reset_msvc_output_path(${target_name})
-
     if(QSDF_BUILD_SDK)
-        string(TOLOWER "${target_name}" lower_target_name)
-        include(GNUInstallDirs)
-        install(TARGETS ${target_name}
-            FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
-            FILE_SET public_headers_set DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
+        install(TARGETS ${target_name} EXPORT QSDFTargets
+            FILE_SET export_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
+            FILE_SET public_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
             COMPONENT Development)
     endif()
 endfunction()

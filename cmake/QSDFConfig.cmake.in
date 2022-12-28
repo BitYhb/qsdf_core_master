@@ -1,10 +1,18 @@
 include(CMakeFindDependencyMacro)
-find_dependency(Qt6 ${QSDF_QT_VERSION_MIN} COMPONENTS Core Gui Widgets REQUIRED)
+find_dependency(Qt6 ${QSDF_QT_VERSION_MIN} COMPONENTS
+    Core Network Quick
+    LinguistTools # no dll
+    Widgets
+    REQUIRED)
 
-if (NOT DEFINED add_qsdf_plugin)
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/FrameworkAPI.cmake")
     include(${CMAKE_CURRENT_LIST_DIR}/FrameworkAPI.cmake)
 endif()
 
-if (NOT TARGET MIPSortware::Core)
+if(NOT DEFINED "QSDF_FOUND")
+    set("QSDF_FOUND" TRUE)
+endif()
+
+if(QSDF_FOUND)
     include(${CMAKE_CURRENT_LIST_DIR}/QSDFTargets.cmake)
 endif()
