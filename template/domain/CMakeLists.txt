@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(EPDomain_okr VERSION 0.1 LANGUAGES CXX)
+project(${TM_TARGET_NAME} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,7 +17,7 @@ find_package(QSDF COMPONENTS Utils REQUIRED)
 
 qt_add_library(${PROJECT_NAME} SHARED)
 qt_add_qml_module(${PROJECT_NAME}
-    URI EPDomain_okr
+    URI ${TM_TARGET_NAME}
     VERSION 1.0
     QML_FILES src/qml/Viewer.qml)
 
