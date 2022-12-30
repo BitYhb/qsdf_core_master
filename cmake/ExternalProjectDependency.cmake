@@ -13,6 +13,10 @@ if(NOT DEFINED SUPERBUILD_TOPLEVEL_PROJECT)
     set(SUPERBUILD_TOPLEVEL_PROJECT ${CMAKE_PROJECT_NAME})
 endif()
 
+set(_ALL_PROJECT_IDENTIFIER "ALLALLALL")
+
+set(_ALL_DOMAIN_PROJECT_IDENTIFIER "ALLALLDOMAIN")
+
 function(_sb_cmakevar_to_cmakearg cmake_varname_and_vartype cmake_arg_var)
     _sb_extract_varname_and_vartype(${cmake_varname_and_vartype} _varname _vartype)
     set(_var_value ${${_varname}})
@@ -49,10 +53,14 @@ function(_sb_get_external_project_arguments proj varname)
     endfunction()
 
     _sb_collect_args(${proj})
+    _sb_collect_args(${_ALL_PROJECT_IDENTIFIER})
+    _sb_collect_args(${_ALL_DOMAIN_PROJECT_IDENTIFIER})
 
     set(_ep_arguments "")
     foreach(property CMAKE_CACHE_ARGS)
         get_property(${proj}_EP_PROPERTY_${property} GLOBAL PROPERTY ${proj}_EP_PROPERTY_${property})
+        get_property(${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property} GLOBAL PROPERTY ${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property})
+        get_property(${_ALL_DOMAIN_PROJECT_IDENTIFIER}_EP_PROPERTY_${property} GLOBAL PROPERTY ${_ALL_DOMAIN_PROJECT_IDENTIFIER}_EP_PROPERTY_${property})
         set(_all ${${proj}_EP_PROPERTY_${property}})
         list(LENGTH _all _num_properties)
         if(_num_properties GREATER 0)
@@ -63,18 +71,22 @@ function(_sb_get_external_project_arguments proj varname)
     set(${varname} ${_ep_arguments} PARENT_SCOPE)
 endfunction()
 
-#
-# ExternalProject_Include_Dependencies(<target_name>
-#     [DEPENDS_VAR <depends_var>]
-#     [EP_ARGS_VAR <external_project_args_var>]
-# )
-#
-# DEPENDS_VAR Contains the name of the variable that contains the project dependency.
-#             By default, it is `<target_name>_DEPENDS`
-#
-# EP_ARGS_VAR Name of the variable listing arguments to pass to ExternalProject.
-#             If not specified, variable name default to `<target_name>_EP_ARGS`.
-#
+function(superbuild_stack_push stack_name value)
+    set_property(GLOBAL APPEND PROPERTY ${stack_name} ${value})
+endfunction()
+
+function(superbuild_stack_pop stack_name var)
+    get_property(_stack GLOBAL PROPERTY ${stack_name})
+    list(LENGTH _stack _stack_length)
+    if(_stack_length GREATER 0)
+        math(EXPR _remove_index "${_stack_length} - 1")
+        list(GET _stack ${_remove_index} _item)
+        list(REMOVE_AT _stack ${_remove_index})
+        set_property(GLOBAL PROPERTY ${stack_name} ${_stack})
+        set(${var} ${_item} PARENT_SCOPE)
+    endif()
+endfunction()
+
 macro(ExternalProject_Include_Dependencies target_name)
     set(options)
     set(oneValueArgs PROJECT_VAR DEPENDS_VAR EP_ARGS_VAR)
@@ -106,6 +118,8 @@ macro(ExternalProject_Include_Dependencies target_name)
     set_property(GLOBAL PROPERTY SB_${_sb_proj}_EP_ARGS_VAR ${_sb_EP_ARGS_VAR})
     set_property(GLOBAL PROPERTY SB_${_sb_proj}_PROJECT_VAR ${_arg_PROJECT_VAR})
 
+    superbuild_stack_push(SB_PROJECT_STACK ${_sb_proj})
+
     foreach(dep ${_sb_DEPENDS})
         get_property(_included GLOBAL PROPERTY SB_${_sb_proj}_FILE_INCLUDED)
         if(NOT _included)
@@ -126,7 +140,10 @@ macro(ExternalProject_Include_Dependencies target_name)
         endif()
     endforeach()
 
+    superbuild_stack_pop(SB_PROJECT_STACK _sb_proj)
+
     _sb_get_external_project_arguments(${_sb_proj} ${_sb_EP_ARGS_VAR})
+    message("${${_sb_EP_ARGS_VAR}}")
 endmacro()
 
 function(_sb_extract_varname_and_vartype cmake_varname_and_type varname_var)
@@ -141,7 +158,7 @@ function(_sb_extract_varname_and_vartype cmake_varname_and_type varname_var)
 endfunction()
 
 function(mark_as_superbuild)
-    set(options ALL_PROJECTS)
+    set(options ALL_PROJECTS ALL_DOMAIN_PROJECTS)
     set(oneValueArgs)
     set(multiValueArgs VARS PROJECTS LABELS)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -149,7 +166,7 @@ function(mark_as_superbuild)
     set(_vars ${_arg_UNPARSED_ARGUMENTS})
 
     set(_named_parameters_expected 0)
-    if(_arg_ALL_PROJECTS OR _arg_VARS OR _arg_PROJECTS OR _arg_LABELS)
+    if(_arg_ALL_PROJECTS OR _arg_ALL_DOMAIN_PROJECTS OR _arg_VARS OR _arg_PROJECTS OR _arg_LABELS)
         set(_named_parameters_expected 1)
         set(_vars ${_arg_VARS})
     endif()
@@ -160,6 +177,10 @@ function(mark_as_superbuild)
 
     if(_arg_PROJECTS AND _arg_ALL_PROJECTS)
         message(FATAL_ERROR "Arguments 'PROJECTS' and 'ALL_PROJECTS' are mutually exclusive!")
+    endif()
+
+    if(_arg_ALL_PROJECTS AND _arg_ALL_DOMAIN_PROJECTS)
+        message(FATAL_ERROR "Arguments 'ALL_PROJECTS' and 'ALL_DOMAIN_PROJECTS' are mutually exclusive!")
     endif()
 
     foreach(var ${_vars})
@@ -176,6 +197,8 @@ function(mark_as_superbuild)
 
     if(_arg_ALL_PROJECTS)
         set(optional_arg_ALL_PROJECTS "ALL_PROJECTS")
+    elseif(_arg_ALL_DOMAIN_PROJECTS)
+        set(optional_arg_ALL_PROJECTS "ALL_DOMAIN_PROJECTS")
     else()
         set(optional_arg_ALL_PROJECTS PROJECTS ${_arg_PROJECTS})
     endif()
@@ -184,7 +207,7 @@ function(mark_as_superbuild)
 endfunction()
 
 function(_sb_append_to_cmake_args)
-    set(options ALL_PROJECTS)
+    set(options ALL_PROJECTS ALL_DOMAIN_PROJECTS)
     set(oneValueArgs)
     set(multiValueArgs VARS PROJECTS LABELS)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -199,6 +222,10 @@ function(_sb_append_to_cmake_args)
 
     if(_arg_ALL_PROJECTS)
         set(_arg_PROJECTS ${_ALL_PROJECT_IDENTIFIER})
+    endif()
+
+    if(_arg_ALL_DOMAIN_PROJECTS)
+        set(_arg_PROJECTS ${_ALL_DOMAIN_PROJECT_IDENTIFIER})
     endif()
 
     foreach(_proj ${_arg_PROJECTS})

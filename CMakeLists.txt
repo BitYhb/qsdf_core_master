@@ -62,12 +62,16 @@ if(WITH_TESTS)
 endif()
 
 include(FindQtAndCheckVersion)
-mark_as_superbuild(VARS Qt6_DIR LABELS "FIND_PACKAGE")
+mark_as_superbuild(VARS Qt6_DIR LABELS "FIND_PACKAGE" ALL_DOMAIN_PROJECTS)
 
 if(DEFINED QSDF_DOMAIN_NAME)
     mark_as_superbuild(QSDF_DOMAIN_NAME)
     message(STATUS "Using domain name: ${QSDF_DOMAIN_NAME}")
 endif()
+
+include(FrameworkUtils)
+check_git_branch_name()
+message(STATUS "Project current git branch name: ${PROJECT_GIT_BRANCH_NAME}")
 
 # SuperBuild script
 if(QSDF_SUPERBUILD)
@@ -128,3 +132,10 @@ if(QSDF_BUILD_SDK)
         COMPONENT Development)
 endif()
 
+if(DEFINED QSDF_DOMAIN_NAME)
+    get_property(domain_proj_names GLOBAL PROPERTY QSDF_DOMAIN_PROJ_NAMES VALUE)
+    foreach(domain_proj_name ${domain_proj_names})
+        get_property(${domain_proj}_EP_SDK_DEPENDENCIES GLOBAL PROPERTY ${domain_proj}_EP_SDK_DEPENDENCIES)
+        ExternalProject_Add_StepDependencies(${domain_proj_name} build ${${domain_proj}_EP_SDK_DEPENDENCIES})
+    endforeach()
+endif()
