@@ -1,10 +1,10 @@
 set(SUPERBUILD_PREFIX "External_")
 set(SUPERBUILD_FOLDER_NAME "superbuild")
 
-set(QSDF_DEPENDENCIES)
+set(qsdf-core_DEPENDENCIES)
 
 if(QSDF_DOMAIN_NAME STREQUAL "okr")
-    list(APPEND QSDF_DEPENDENCIES EPDomain_${QSDF_DOMAIN_NAME})
+    list(APPEND qsdf-core_DEPENDENCIES EPDomain_${QSDF_DOMAIN_NAME})
 endif()
 
 foreach(extension_dir ${QSDF_EXTENSION_SOURCE_DIRS})
@@ -21,14 +21,16 @@ foreach(extension_dir ${QSDF_EXTENSION_SOURCE_DIRS})
     endif()
 endforeach()
 
-ExternalProject_Include_Dependencies(${PROJECT_NAME} DEPENDS_VAR QSDF_DEPENDENCIES)
+ExternalProject_Include_Dependencies(qsdf-core DEPENDS_VAR qsdf-core_DEPENDENCIES)
 
-ExternalProject_Add(${PROJECT_NAME}
-    ${${PROJECT_NAME}_EP_ARGS}
-    DEPENDS ${QSDF_DEPENDENCIES}
+set(proj ${PROJECT_NAME})
+
+ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
+    DEPENDS ${qsdf-core_DEPENDENCIES}
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
     BINARY_DIR ${CMAKE_BINARY_DIR}/${QSDF_BINARY_INNER_SUBDIR}
-    INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-install
+    INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     CMAKE_CACHE_ARGS

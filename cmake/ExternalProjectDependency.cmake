@@ -61,7 +61,7 @@ function(_sb_get_external_project_arguments proj varname)
         get_property(${proj}_EP_PROPERTY_${property} GLOBAL PROPERTY ${proj}_EP_PROPERTY_${property})
         get_property(${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property} GLOBAL PROPERTY ${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property})
         get_property(${_ALL_DOMAIN_PROJECT_IDENTIFIER}_EP_PROPERTY_${property} GLOBAL PROPERTY ${_ALL_DOMAIN_PROJECT_IDENTIFIER}_EP_PROPERTY_${property})
-        set(_all ${${proj}_EP_PROPERTY_${property}})
+        set(_all ${${proj}_EP_PROPERTY_${property}} ${${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property}} ${${_ALL_DOMAIN_PROJECT_IDENTIFIER}_EP_PROPERTY_${property}})
         list(LENGTH _all _num_properties)
         if(_num_properties GREATER 0)
             list(APPEND _ep_arguments ${property} ${_all})
@@ -91,32 +91,34 @@ macro(ExternalProject_Include_Dependencies target_name)
     set(options)
     set(oneValueArgs PROJECT_VAR DEPENDS_VAR EP_ARGS_VAR)
     set(multiValueArgs)
-    cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    cmake_parse_arguments(_sb "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if(_arg_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR "Invalid arguments: ${_arg_UNPARSED_ARGUMENTS}")
+    if(_sb_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Invalid arguments: ${_sb_UNPARSED_ARGUMENTS}")
     endif()
 
-    if(NOT _arg_PROJECT_VAR)
-        set(_arg_PROJECT_VAR proj)
-        set(${_arg_PROJECT_VAR} ${target_name})
+    if(NOT _sb_PROJECT_VAR)
+        set(_sb_PROJECT_VAR proj)
+        set(${_sb_PROJECT_VAR} ${target_name})
     endif()
 
     set(_sb_proj ${target_name})
 
     # set local variables
-    set(_sb_DEPENDS ${${_arg_DEPENDS_VAR}})
+    set(_sb_DEPENDS ${${_sb_DEPENDS_VAR}})
 
+    # Set default for optional DEPENDS_VAR and EP_ARGS parameters
     foreach(param DEPENDS EP_ARGS)
         if(NOT _sb_${param}_VAR)
             set(_sb_${param}_VAR ${_sb_proj}_${param})
+            # message("[${target_name}] Setting _sb_${param}_VAR with default value '${_sb_${param}_VAR}'")
         endif()
     endforeach()
 
     # Save variables
-    set_property(GLOBAL PROPERTY SB_${_sb_proj}_DEPENDS ${_sb_DEPENDS})
+    set_property(GLOBAL PROPERTY SB_${_sb_proj}_DEPENDS     ${_sb_DEPENDS})
     set_property(GLOBAL PROPERTY SB_${_sb_proj}_EP_ARGS_VAR ${_sb_EP_ARGS_VAR})
-    set_property(GLOBAL PROPERTY SB_${_sb_proj}_PROJECT_VAR ${_arg_PROJECT_VAR})
+    set_property(GLOBAL PROPERTY SB_${_sb_proj}_PROJECT_VAR ${_sb_PROJECT_VAR})
 
     superbuild_stack_push(SB_PROJECT_STACK ${_sb_proj})
 
@@ -140,10 +142,13 @@ macro(ExternalProject_Include_Dependencies target_name)
         endif()
     endforeach()
 
+    # Restore variables
     superbuild_stack_pop(SB_PROJECT_STACK _sb_proj)
+    get_property(_sb_DEPENDS      GLOBAL PROPERTY SB_${_sb_proj}_DEPENDS)
+    get_property(_sb_EP_ARGS_VAR  GLOBAL PROPERTY SB_${_sb_proj}_EP_ARGS_VAR)
+    get_property(_sb_PROJECT_VAR GLOBAL PROPERTY SB_${_sb_proj}_PROJECT_VAR)
 
     _sb_get_external_project_arguments(${_sb_proj} ${_sb_EP_ARGS_VAR})
-    message("${${_sb_EP_ARGS_VAR}}")
 endmacro()
 
 function(_sb_extract_varname_and_vartype cmake_varname_and_type varname_var)
