@@ -92,16 +92,12 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
-# Test
-if(WITH_TESTS)
-    enable_testing()
-endif()
-
 add_subdirectory(src)
 add_subdirectory(share)
 add_subdirectory(doc)
 
 if(WITH_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()
 
@@ -130,12 +126,4 @@ if(QSDF_BUILD_SDK)
         ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPIInternal.cmake
         DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
         COMPONENT Development)
-endif()
-
-if(DEFINED QSDF_DOMAIN_NAME)
-    get_property(domain_proj_names GLOBAL PROPERTY QSDF_DOMAIN_PROJ_NAMES VALUE)
-    foreach(domain_proj_name ${domain_proj_names})
-        get_property(${domain_proj}_EP_SDK_DEPENDENCIES GLOBAL PROPERTY ${domain_proj}_EP_SDK_DEPENDENCIES)
-        ExternalProject_Add_StepDependencies(${domain_proj_name} build ${${domain_proj}_EP_SDK_DEPENDENCIES})
-    endforeach()
 endif()
