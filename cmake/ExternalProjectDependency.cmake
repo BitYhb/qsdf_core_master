@@ -144,11 +144,15 @@ macro(ExternalProject_Include_Dependencies target_name)
 
     # Restore variables
     superbuild_stack_pop(SB_PROJECT_STACK _sb_proj)
-    get_property(_sb_DEPENDS      GLOBAL PROPERTY SB_${_sb_proj}_DEPENDS)
-    get_property(_sb_EP_ARGS_VAR  GLOBAL PROPERTY SB_${_sb_proj}_EP_ARGS_VAR)
+
+    get_property(_sb_DEPENDS     GLOBAL PROPERTY SB_${_sb_proj}_DEPENDS)
+    get_property(_sb_EP_ARGS_VAR GLOBAL PROPERTY SB_${_sb_proj}_EP_ARGS_VAR)
     get_property(_sb_PROJECT_VAR GLOBAL PROPERTY SB_${_sb_proj}_PROJECT_VAR)
 
     _sb_get_external_project_arguments(${_sb_proj} ${_sb_EP_ARGS_VAR})
+
+    # Set public variables
+    set(${_sb_PROJECT_VAR} ${_sb_proj})
 endmacro()
 
 function(_sb_extract_varname_and_vartype cmake_varname_and_type varname_var)
