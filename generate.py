@@ -11,7 +11,7 @@ def parse_args(destination, name, type):
 
 parser = argparse.ArgumentParser(description="Used to generate various template files.")
 parser.add_argument("-n", "--name", help="target project name. eg: EPDomain_okr", required=True)
-parser.add_argument("-t", "--type", help="target project type", choices=["domain", "app", "plugin"])
+parser.add_argument("-t", "--type", help="target project type", choices=["domain", "app", "plugin"], required=True)
 parser.add_argument("-d", "--destination", help="target generated path", default=r'..\template_generate')
 args = parser.parse_args()
 
