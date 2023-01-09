@@ -1,7 +1,8 @@
 set(SUPERBUILD_PREFIX "External_")
 set(SUPERBUILD_FOLDER_NAME "superbuild")
 
-set(qsdf-core_DEPENDENCIES)
+set(qsdf-core_DEPENDENCIES
+    Lua)
 
 ExternalProject_Include_Dependencies(qsdf-core DEPENDS_VAR qsdf-core_DEPENDENCIES)
 

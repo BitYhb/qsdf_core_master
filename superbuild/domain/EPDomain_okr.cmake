@@ -5,8 +5,7 @@ endif()
 set(proj EPDomain_okr)
 set_property(GLOBAL APPEND PROPERTY QSDF_DOMAIN_PROJ_NAMES ${proj})
 
-set(${proj}_DEPENDENCIES
-    Lua)
+set(${proj}_DEPENDENCIES)
 
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
