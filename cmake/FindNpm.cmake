@@ -3,8 +3,8 @@
 # -------------------------
 # Once done this will define
 #
-#  NPM_FOUND - system has Npm
-#  NPM_EXECUTABLE - the Npm executable
+#  Npm_FOUND - system has Npm
+#  Npm_EXECUTABLE - the Npm executable
 
 set(_doc "Npm command line executable")
 
