@@ -107,7 +107,8 @@ endfunction()
 function(add_qsdf_library target_name)
     set(options STATIC OBJECT QML_PLUGIN)
     set(oneValueArgs DESTINATION SOURCES_PREFIX MSVC_SOLUTION_FOLDER)
-    set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS STATIC_DEPENDS DEFINES PUBLIC_DEFINES PROPERTIES)
+    set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS
+        STATIC_DEPENDS DEFINES PUBLIC_DEFINES PROPERTIES)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(${_arg_UNPARSED_ARGUMENTS})
@@ -172,11 +173,11 @@ function(add_qsdf_library target_name)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
         target_include_directories(${target_name}
             PRIVATE
-            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+                "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
             PUBLIC
-            "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}>"
-            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+                "$<BUILD_INTERFACE:${public_build_interface_dir}>"
+                "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}>"
+                "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
     endif()
 
     string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
