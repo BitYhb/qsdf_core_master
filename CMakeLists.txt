@@ -73,6 +73,12 @@ include(FrameworkUtils)
 check_git_branch_name()
 message(STATUS "Project current git branch name: ${PROJECT_GIT_BRANCH_NAME}")
 
+find_package(Npm)
+if(NOT Npm_FOUND)
+    message(FATAL_ERROR "error: Npm not found, install Npm and try to re-configure")
+endif()
+mark_as_superbuild(Npm_EXECUTABLE)
+
 # SuperBuild script
 if(QSDF_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
