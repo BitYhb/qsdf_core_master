@@ -1,5 +1,11 @@
 ﻿cmake_minimum_required(VERSION 3.21)
 
+## Default build type
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "Setting build type to Release as none was specified.")
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
+endif()
+
 ## Add paths to check for cmake modules:
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/super_build")
@@ -33,6 +39,15 @@ set(QSDF_BINARY_INNER_SUBDIR ${PROJECT_NAME}-build)
 option(QSDF_BUILD_SDK "Build an SDK for app or domain development" OFF)
 mark_as_advanced(QSDF_BUILD_SDK)
 mark_as_superbuild(QSDF_BUILD_SDK)
+
+option(QSDF_BUILD_APP_BUNDLE "Build application package" OFF)
+if(QSDF_BUILD_APP_BUNDLE)
+    set(QSDF_BUILD_RELEASE_PACKAGE ON)
+    mark_as_superbuild(QSDF_BUILD_RELEASE_PACKAGE)
+    message(STATUS "QSDF_BUILD_APP_BUNDLE = ${QSDF_BUILD_APP_BUNDLE}\n"
+        "  Forcing QSDF_BUILD_RELEASE_PACKAGE = ${QSDF_BUILD_RELEASE_PACKAGE}\n"
+        "  Forcing CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+endif()
 
 option(WITH_TESTS "Build Tests" OFF)
 option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
@@ -132,4 +147,10 @@ if(QSDF_BUILD_SDK)
         ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPIInternal.cmake
         DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
         COMPONENT Development)
+endif()
+
+if(QSDF_BUILD_RELEASE_PACKAGE)
+    include(CPackIFW)
+    cpack_ifw_configure_component(qsdf
+        FORCED_INSTALLATION REQUIRES_ADMIN_RIGHTS)
 endif()
