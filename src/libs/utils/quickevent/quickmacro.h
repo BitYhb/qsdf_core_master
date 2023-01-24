@@ -3,7 +3,7 @@
 
 #include <utils/quickevent/customquickevent.h>
 
-#define QSDF_QUICK_EVENT(PARENT_CLASS) \
+#define QSDF_QUICK_EVENT_SUPPORT(PARENT_CLASS) \
 public: \
     bool event(QEvent *e) override \
     { \

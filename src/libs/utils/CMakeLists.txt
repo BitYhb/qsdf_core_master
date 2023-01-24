@@ -11,7 +11,7 @@ set(UTILS_PUBLIC_HEADERS
     id.h
     mimetypes.h
     quickapplication.h
-    mipsassert.h
+        assert.h
     mipssettings.h
     stringutils.h
     stylehelper.h
@@ -28,7 +28,7 @@ set(UTILS_PUBLIC_SOURCES
     id.cpp
     mimetypes.cpp
     quickapplication.cpp
-    mipsassert.cpp
+        assert.cpp
     mipssettings.cpp
     stringutils.cpp
     stylehelper.cpp

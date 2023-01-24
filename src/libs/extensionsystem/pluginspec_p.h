@@ -27,7 +27,7 @@ public:
 
     bool read(const QString &strFileName);
     bool provides(const QString &strPluginName, const QString &strVersion) const;
-    bool resolveDependencies(const QVector<PluginSpec *> vPluginSpecs);
+    bool resolveDependencies(const QVector<PluginSpec *>& vPluginSpecs);
     bool loadLibrary();
     bool initializePlugin();
     bool initializeExtensions();

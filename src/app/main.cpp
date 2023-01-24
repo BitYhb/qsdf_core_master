@@ -282,7 +282,7 @@ int main(int argc, char **argv)
     qputenv("QT_MESSAGE_PATTERN",
             "[%{time yyyyMMdd h:mm:ss.zzz} "
             "%{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-critical}C%{endif}%{if-fatal}F%{endif}] "
-            "%{file}:%{line} - %{message}");
+            "%{message}");
 
     qputenv("QSG_RHI_BACKEND", "opengl");
     Utils::QuickApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
@@ -310,7 +310,7 @@ int main(int argc, char **argv)
     QThreadPool::globalInstance()->setMaxThreadCount(qMax(4, 2 * nThreadCount));
 
     PluginManager pluginManager;
-    PluginManager::setPluginIID(QLatin1String("org.quick.plugin"));
+    PluginManager::setPluginIID(QLatin1String("org.qsdf-core.plugin"));
     PluginManager::setSettings(settings);
     PluginManager::setGlobalSettings(globalSettings);
 
@@ -370,32 +370,32 @@ int main(int argc, char **argv)
 
     // check plugin for Core
     const auto plugins = PluginManager::plugins();
-    PluginSpec *coreplugin = nullptr;
+    PluginSpec *corePlugin = nullptr;
     for (PluginSpec *pSpec : plugins) {
         if (pSpec->name() == CORE_PLUGIN_NAME_C) {
-            coreplugin = pSpec;
+            corePlugin = pSpec;
             break;
         }
     }
-    if (nullptr == coreplugin) {
+    if (nullptr == corePlugin) {
         QString nativePaths = QDir::toNativeSeparators(lstPluginPaths.join(","));
         const QString reason = Utils::QuickApplication::translate("QuickApplication", "Could not find Core plugin in %1")
                                    .arg(nativePaths);
         displayError(msgCoreLoadFailure(reason));
         return 1;
     }
-    if (!coreplugin->isEffectivelyEnabled()) {
+    if (!corePlugin->isEffectivelyEnabled()) {
         const QString reason = Utils::QuickApplication::translate("QuickApplication", "Core plugin is disabled.");
         displayError(msgCoreLoadFailure(reason));
         return 1;
     }
-    if (coreplugin->hasError()) {
-        displayError(msgCoreLoadFailure(coreplugin->errorString()));
+    if (corePlugin->hasError()) {
+        displayError(msgCoreLoadFailure(corePlugin->errorString()));
         return 1;
     }
 
     if (foundAppOptions.contains(QLatin1String(VERSION_OPTION))) {
-        printVersion(coreplugin);
+        printVersion(corePlugin);
         return 0;
     }
 
@@ -406,13 +406,13 @@ int main(int argc, char **argv)
 
     PluginManager::checkForProblematicPlugins();
     PluginManager::loadPlugins();
-    if (coreplugin->hasError()) {
-        displayError(msgCoreLoadFailure(coreplugin->errorString()));
+    if (corePlugin->hasError()) {
+        displayError(msgCoreLoadFailure(corePlugin->errorString()));
         return 1;
     }
 
     QObject::connect(&app, &Utils::QuickApplication::messageReceived, &pluginManager, &PluginManager::remoteArguments);
-    QObject::connect(&app, SIGNAL(fileOpenRequest(QString)), coreplugin->plugin(), SLOT(fileOpenRequest(QString)));
+    QObject::connect(&app, SIGNAL(fileOpenRequest(QString)), corePlugin->plugin(), SLOT(fileOpenRequest(QString)));
 
     // shutdown plugin manager on the exit
     QObject::connect(&app, &QCoreApplication::aboutToQuit, &pluginManager, &PluginManager::shutdown);

@@ -1,17 +1,17 @@
-#include "mipsassert.h"
+#include "assert.h"
 
 #include <utils/macrodefinition.h>
 
 using namespace Utils;
 
-QUICK_UTILS_EXPORT void Utils::dumpBacktrace(int maxdepth)
+QSDF_UTILS_EXPORT void Utils::dumpBacktrace(int maxdepth)
 {
     if (maxdepth == -1)
         maxdepth = 1000;
     Q_UNUSED(maxdepth);
 }
 
-QUICK_UTILS_EXPORT void Utils::writeAssertLocation(const char *msg)
+QSDF_UTILS_EXPORT void Utils::writeAssertLocation(const char *msg)
 {
     static bool goBoom = qEnvironmentVariableIsSet("QSDF_FATAL_ASSERTS");
     if (goBoom)

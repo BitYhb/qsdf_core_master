@@ -51,6 +51,20 @@ function(qsdf_source_dir varName)
     endif()
 endfunction()
 
+function(qsdf_delay_add_compile_definitions_to_plugin_core)
+    set(options)
+    set(oneValueArgs)
+    set(multiValueArgs PUBLIC PRIVATE)
+    cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(_arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Invalid arguments: ${_arg_UNPARSED_ARGUMENTS}")
+    endif()
+
+    set_property(GLOBAL APPEND PROPERTY Core_DELAY_ADD_COMPILE_DEFINITIONS_PUBLIC ${_arg_PUBLIC})
+    set_property(GLOBAL APPEND PROPERTY Core_DELAY_ADD_COMPILE_DEFINITIONS_PRIVATE ${_arg_PRIVATE})
+endfunction()
+
 function(qsdf_copy_to_builddir custom_target_name)
     cmake_parse_arguments(_arg "CREATE_SUBDIRS" "DESTINATION" "FILES;DIRECTORIES" ${ARGN})
     set(timestampFiles)
@@ -133,15 +147,13 @@ function(add_qsdf_library target_name)
         set(_MSVC_SOLUTION_FOLDER "${_arg_MSVC_SOLUTION_FOLDER}")
     endif()
 
-    reset_msvc_output_path(${target_name})
-
     # export header file
     foreach(source ${_arg_SOURCES})
         if(${source} MATCHES "^.*\.h$" AND NOT ${source} MATCHES "^.*_p\.h$")
             list(APPEND _public_headers ${source})
         endif()
     endforeach()
-    generate_export_header(${target_name} PREFIX_NAME QUICK_)
+    generate_export_header(${target_name} PREFIX_NAME QSDF_)
     string(TOLOWER ${target_name} lower_target_name)
     target_sources(${target_name} PUBLIC
         FILE_SET export_headers
@@ -195,6 +207,8 @@ function(add_qsdf_library target_name)
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${QSDF_LIBRARY_ARCHIVE_PATH}"
         ${_arg_PROPERTIES})
 
+    reset_msvc_output_path(${target_name})
+
     if(QSDF_BUILD_SDK)
         install(TARGETS ${target_name} EXPORT QSDFTargets
             FILE_SET export_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
@@ -206,7 +220,8 @@ endfunction()
 function(add_qsdf_plugin target_name)
     set(options)
     set(oneValueArgs PLUGIN_PATH MSVC_SOLUTION_FOLDER)
-    set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS DEFINES PUBLIC_DEFINES PLUGIN_DEPENDS)
+    set(multiValueArgs SOURCES INCLUDES PUBLIC_INCLUDES EXPLICIT_MOC SKIP_AUTOMOC DEPENDS PUBLIC_DEPENDS
+        DEFINES PUBLIC_DEFINES PLUGIN_DEPENDS)
     cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(${_arg_UNPARSED_ARGUMENTS})
@@ -253,7 +268,7 @@ function(add_qsdf_plugin target_name)
 
     set_public_headers(${target_name} ${_arg_SOURCES})
 
-    generate_export_header(${target_name} PREFIX_NAME QUICK_PLUGIN_)
+    generate_export_header(${target_name} PREFIX_NAME QSDF_PLUGIN_)
     string(TOLOWER ${target_name} lower_target_name)
     target_sources(${target_name} PUBLIC
         FILE_SET HEADERS
@@ -275,12 +290,12 @@ function(add_qsdf_plugin target_name)
     file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
     target_include_directories(${target_name}
         PRIVATE
-        "${CMAKE_CURRENT_BINARY_DIR}"
-        "${CMAKE_BINARY_DIR}/src"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+            "${CMAKE_CURRENT_BINARY_DIR}"
+            "${CMAKE_BINARY_DIR}/src"
+            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
         PUBLIC
-        "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-        "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
+            "$<BUILD_INTERFACE:${public_build_interface_dir}>"
+            "$<INSTALL_INTERFACE:${QSDF_HEADER_INSTALL_PATH}/${include_dir_relative_path}>")
 
     set(plugin_dir "${QSDF_PLUGIN_PATH}")
     if(_arg_PLUGIN_PATH)

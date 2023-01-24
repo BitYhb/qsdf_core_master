@@ -9,7 +9,7 @@
 
 namespace Utils {
 
-class QUICK_UTILS_EXPORT Id
+class QSDF_UTILS_EXPORT Id
 {
 public:
     Id() = default;

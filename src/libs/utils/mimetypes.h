@@ -15,9 +15,9 @@ enum class StartupPhase {
     UpAndRunning
 };
 
-QUICK_UTILS_EXPORT void setMimeStartupPhase(StartupPhase startupPhase);
+QSDF_UTILS_EXPORT void setMimeStartupPhase(StartupPhase startupPhase);
 
-QUICK_UTILS_EXPORT void addMimeTypes(const QString &id, const QByteArray &data);
+QSDF_UTILS_EXPORT void addMimeTypes(const QString &id, const QByteArray &data);
 
 } // namespace Utils
 

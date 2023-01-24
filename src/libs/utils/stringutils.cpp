@@ -1,15 +1,15 @@
 #include "stringutils.h"
 
-#include <utils/mipsassert.h>
+#include <utils/assert.h>
 
 #include <QJsonArray>
 #include <QJsonValue>
 
 namespace Utils {
 
-QUICK_UTILS_EXPORT bool readMultiLineString(const QJsonValue &value, QString *out)
+QSDF_UTILS_EXPORT bool readMultiLineString(const QJsonValue &value, QString *out)
 {
-    QUICK_ASSERT(out, return false);
+    QSDF_ASSERT(out, return false);
     if (value.isString()) {
         *out = value.toString();
     } else if (value.isArray()) {

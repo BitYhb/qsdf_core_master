@@ -11,7 +11,7 @@ class PluginSpecPrivate;
 class PluginSpec;
 class IPluginPrivate;
 
-class QUICK_EXTENSIONSYSTEM_EXPORT IPlugin : public QObject
+class QSDF_EXTENSIONSYSTEM_EXPORT IPlugin : public QObject
 {
     Q_OBJECT
 public:
@@ -24,13 +24,9 @@ public:
     ~IPlugin() override;
 
     virtual bool initialize(const QStringList &arguments, QString *errorString) = 0;
-
     virtual void extensionsInitialized() {}
-
     virtual bool delayedInitialize() { return false; }
-
     virtual ShutdownFlag aboutToShutdown() { return ShutdownFlag::SynchronousShutdown; }
-
     virtual QObject *remoteCommand(const QStringList &options,
                                    const QString &workingDirectory,
                                    const QStringList &arguments)

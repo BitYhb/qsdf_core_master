@@ -1,23 +1,33 @@
-#ifndef QSDF_CORE_PLUGIN_CORE_FRAMELESSQUICKWINDOW_H
-#define QSDF_CORE_PLUGIN_CORE_FRAMELESSQUICKWINDOW_H
+#pragma once
 
 #include <QQuickWindow>
 
-namespace Core {
-namespace Internal {
+namespace Core::Internal {
 
-class FramelessQuickWindow : public QQuickWindow
+class FramelessQuickWindowPrivate;
+
+class FramelessQuickWindow : public QQuickWindow, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
+    Q_PROPERTY(QString domainViewURI READ domainViewURI NOTIFY domainViewURIChanged)
 public:
     explicit FramelessQuickWindow(QWindow *parent = nullptr);
     ~FramelessQuickWindow() override;
 
+    void classBegin() override;
+    void componentComplete() override;
+
+    [[nodiscard]] QString domainViewURI() const;
+
+signals:
+    void domainViewURIChanged();
+
 private slots:
     void eventUpdateFullScreenMode();
+
+private:
+    std::unique_ptr<FramelessQuickWindowPrivate> d;
 };
 
-} // namespace Internal
-} // namespace Core
-
-#endif // QSDF_CORE_PLUGIN_CORE_FRAMELESSQUICKWINDOW_H
+} // namespace Core::Internal

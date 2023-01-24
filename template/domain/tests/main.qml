@@ -1,11 +1,11 @@
-import QtQuick 2.15
-import EPDomain_okr 1.0
+import QtQuick
+import ${TM_TARGET_NAME}
 
 Window {
     width: 640
     height: 480
     visible: true
-    title: qsTr("Hello World")
+    title: qsTr("${TM_TARGET_NAME}")
 
     Viewer {
         anchors.fill: parent

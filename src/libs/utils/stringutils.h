@@ -5,6 +5,6 @@
 
 namespace Utils {
 
-QUICK_UTILS_EXPORT bool readMultiLineString(const QJsonValue &value, QString *out);
+QSDF_UTILS_EXPORT bool readMultiLineString(const QJsonValue &value, QString *out);
 
 }

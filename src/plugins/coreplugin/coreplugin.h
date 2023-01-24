@@ -13,7 +13,7 @@ class QmlApplicationEngine;
 class CorePlugin final : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.quick.plugin" FILE "Core.json")
+    Q_PLUGIN_METADATA(IID "org.qsdf-core.plugin" FILE "Core.json")
 public:
     CorePlugin();
     ~CorePlugin() override;
@@ -21,12 +21,13 @@ public:
     static CorePlugin *instance();
 
     bool initialize(const QStringList &arguments, QString *errorString) override;
-
     void extensionsInitialized() override;
-
     QObject *remoteCommand(const QStringList &options,
                            const QString &workingDirectory,
                            const QStringList &arguments) override;
+
+    [[nodiscard]] std::shared_ptr<QmlApplicationEngine> qmlEngine() const;
+    [[nodiscard]] QString domainViewerURI();
 
 public slots:
     void fileOpenRequest(const QString &strFile);
@@ -35,7 +36,8 @@ private:
     void checkSettings();
 
     ActionManager *m_actionManager = nullptr;
-    QmlApplicationEngine *m_mainQmlEngine = nullptr;
+    std::shared_ptr<QmlApplicationEngine> m_qmlEngine;
+    QString m_domainViewerURI;
 };
 
 } // namespace Internal

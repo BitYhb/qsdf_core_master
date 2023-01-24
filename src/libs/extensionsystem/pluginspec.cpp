@@ -87,7 +87,7 @@ bool PluginSpecPrivate::provides(const QString &strPluginName, const QString &st
     return (versionCompare(version, strVersion) >= 0) && (versionCompare(compatVersion, strVersion) <= 0);
 }
 
-bool PluginSpecPrivate::resolveDependencies(const QVector<PluginSpec *> vPluginSpecs)
+bool PluginSpecPrivate::resolveDependencies(const QVector<PluginSpec *>& vPluginSpecs)
 {
     if (hasError)
         return false;
@@ -144,7 +144,7 @@ bool PluginSpecPrivate::loadLibrary()
         errorString = QDir::toNativeSeparators(m_strPluginPath) + QString::fromLatin1(": ") + m_loader.errorString();
         return false;
     }
-    IPlugin *pluginObject = qobject_cast<IPlugin *>(m_loader.instance());
+    auto *pluginObject = qobject_cast<IPlugin *>(m_loader.instance());
     if (nullptr == pluginObject) {
         hasError = true;
         errorString = QCoreApplication::translate("PluginSpec", "Library load error (cannot derive from IPlugin)");
@@ -308,7 +308,7 @@ static inline QString metaValueIsNotBool(const char *key)
 
 bool PluginSpecPrivate::readMetaData(const QJsonObject &jsonMetaData)
 {
-    qCDebug(lcPlugin) << "plugin meta data:" << QJsonDocument(jsonMetaData).toJson();
+    qCDebug(lcPlugin) << "plugin meta data:" << QJsonDocument(jsonMetaData).toJson(QJsonDocument::Compact);
     QJsonValue value;
     value = jsonMetaData.value(QLatin1String("IID"));
     if (!value.isString()) {

@@ -97,20 +97,20 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorString)
 
     qmlRegisterType<FramelessQuickWindow>("qsdf.gui.window", 1, 0, "FramelessQuickWindow");
 
-    m_mainQmlEngine = new QmlApplicationEngine;
+    m_qmlEngine = std::make_shared<QmlApplicationEngine>(new QmlApplicationEngine);
     const QUrl url(u"qrc:/main.qml"_qs);
     connect(
-        m_mainQmlEngine,
+        m_qmlEngine.get(),
         &QmlApplicationEngine::objectCreated,
         quickApp,
         [url](const QObject *obj, const QUrl &objUrl) {
             if (!obj && url == objUrl) {
-                qCInfo(Core::lcCorePlugin, "Application failed to load, exit(-1)");
+                qCWarning(Core::lcCorePlugin, "Application failed to load, exit(-1)");
                 Utils::CustomEventApplication::publishEvent("QuitApplication", Qt::AutoConnection, -1);
             }
         },
         Qt::QueuedConnection);
-    m_mainQmlEngine->load(url);
+    m_qmlEngine->load(url);
     return true;
 }
 
@@ -143,5 +143,32 @@ void CorePlugin::fileOpenRequest(const QString &strFile)
 }
 
 void CorePlugin::checkSettings() {}
+
+std::shared_ptr<QmlApplicationEngine> CorePlugin::qmlEngine() const
+{
+    return m_qmlEngine;
+}
+QString CorePlugin::domainViewerURI()
+{
+    QDir domainProjPath(QCoreApplication::applicationDirPath());
+    domainProjPath.cd(QLatin1String(QSDF_CURRENT_DOMAIN_PROJ));
+    const QString domainDllPath = domainProjPath.absoluteFilePath(QSDF_CURRENT_DOMAIN_PROJ_DLL_NAME);
+
+    QPluginLoader loader(domainDllPath);
+    QSDF_ASSERT(loader.instance(), qCWarning(Core::lcCorePlugin, loader.errorString().toUtf8().constData()); return {});
+
+    QDirIterator iterator(QLatin1String(QSDF_CURRENT_DOMAIN_PROJ_QML_MODULE_PREFER), QDirIterator::Subdirectories);
+    const QString viewerURI(iterator.path() + "src/qml/Viewer.qml");
+    while(iterator.hasNext()) {
+        iterator.next();
+        if(iterator.filePath().compare(viewerURI) == 0) {
+            m_domainViewerURI = iterator.filePath();
+        }
+    }
+    if(m_domainViewerURI.startsWith(":/")) {
+        m_domainViewerURI.replace(":/", "qrc:/");
+    }
+    return m_domainViewerURI;
+}
 
 } // namespace Core::Internal

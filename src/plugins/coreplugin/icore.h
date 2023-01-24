@@ -21,7 +21,7 @@ class QmlApplicationEngine;
 /// ICore 类用于访问组成 MIP Software 系统基本功能的不同部分.
 /// 永远不要创建这个类的子类以及实例, 这个类唯一的实例由 Core Plugin 创建, 可以通过 ICore::instance() 获取.
 /// </summary>
-class QUICK_PLUGIN_CORE_EXPORT ICore : public QObject
+class QSDF_PLUGIN_CORE_EXPORT ICore : public QObject
 {
     Q_OBJECT
     explicit ICore(QObject *parent = nullptr);

@@ -1,0 +1,8 @@
+{
+    \"Name\": \"LuaSupport\",
+    \"Version\": \"$$QSDF_VERSION\",
+    \"Category\": \"LuaSupport\",
+    \"Events\": [
+    ],
+    $$dependencyList
+}

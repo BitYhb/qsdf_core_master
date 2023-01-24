@@ -16,12 +16,22 @@ if(WIN32)
 endif()
 
 find_program(Npm_EXECUTABLE NAMES ${Npm_NAMES}
-    HINTS ${Npm_ROOT_PATH}
+    PATHS ${Npm_ROOT_PATH}
     DOC ${_doc})
+mark_as_advanced(Npm_EXECUTABLE)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Npm
     FOUND_VAR Npm_FOUND
     REQUIRED_VARS Npm_EXECUTABLE)
+
+if(Npm_FOUND)
+    execute_process(COMMAND ${Npm_EXECUTABLE} --version OUTPUT_VARIABLE Npm_VERSION)
+    find_package_check_version(${Npm_VERSION} in_range HANDLE_VERSION_RANGE
+        RESULT_MESSAGE_VARIABLE reason)
+    if (NOT in_range)
+        message (FATAL_ERROR "${reason}")
+    endif()
+endif()
 
 unset(_doc)

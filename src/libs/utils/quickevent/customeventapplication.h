@@ -10,7 +10,7 @@ class QReadWriteLock;
 
 namespace Utils {
 
-class QUICK_UTILS_EXPORT CustomEventApplication : public QObject
+class QSDF_UTILS_EXPORT CustomEventApplication : public QObject
 {
     Q_DISABLE_COPY(CustomEventApplication)
 public:

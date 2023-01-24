@@ -1,5 +1,4 @@
-#ifndef QSDF_LIBS_UTILS_QUICK_EVENT_CUSTOM_QUICK_EVENT_H
-#define QSDF_LIBS_UTILS_QUICK_EVENT_CUSTOM_QUICK_EVENT_H
+#pragma once
 
 #include "utils_export.h"
 
@@ -15,7 +14,7 @@ namespace Internal {
 class CustomEventPrivate;
 }
 
-class QUICK_UTILS_EXPORT CustomQuickEvent final : public QEvent
+class QSDF_UTILS_EXPORT CustomQuickEvent final : public QEvent
 {
 public:
     explicit CustomQuickEvent(Type type = GenericEvent);
@@ -38,5 +37,3 @@ private:
 };
 
 } // namespace Utils
-
-#endif

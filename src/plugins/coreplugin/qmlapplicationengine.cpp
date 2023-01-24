@@ -6,12 +6,18 @@
 
 Q_LOGGING_CATEGORY(mainWindow, "mips.coreplugin", QtWarningMsg)
 
-using namespace Core::Internal;
+namespace Core::Internal {
+
+class QmlApplicationEnginePrivate
+{};
 
 QmlApplicationEngine::QmlApplicationEngine(QObject *parent)
     : QQmlApplicationEngine(parent)
+{}
+
+QmlApplicationEngine::~QmlApplicationEngine()
 {
-    // setWindowTitle(QLatin1String(Constants::QSDF_DISPLAY_NAME));
+
 }
 
-QmlApplicationEngine::~QmlApplicationEngine() = default;
+} // namespace Core::Internal

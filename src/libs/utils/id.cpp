@@ -1,6 +1,6 @@
 #include "id.h"
 
-#include <utils/mipsassert.h>
+#include <utils/assert.h>
 
 #include <QHash>
 #include <QVariant>
@@ -55,7 +55,7 @@ static IdCache idFromString;
 static quintptr theId(const char *str, int n = 0)
 {
     static quintptr firstUnusedId = 10 * 1000 * 1000;
-    QUICK_ASSERT(str && *str, return 0);
+    QSDF_ASSERT(str && *str, return 0);
     StringHolder sh(str, n);
     int res = idFromString.value(sh, 0);
     if (res == 0) {

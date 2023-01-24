@@ -1,6 +1,6 @@
 #include "theme_p.h"
 
-#include <utils/mipsassert.h>
+#include <utils/assert.h>
 
 #include <QApplication>
 #include <QMetaEnum>
@@ -129,7 +129,7 @@ void Theme::readSettings(QSettings *settings)
         QMetaEnum me = mo.enumerator(mo.indexOfEnumerator("Flag"));
         for (int i = 0, total = me.keyCount(); i < total; ++i) {
             const QString key = QLatin1String(me.key(i));
-            QUICK_ASSERT(settings->contains(key), return );
+            QSDF_ASSERT(settings->contains(key), return );
             d->flags[i] = settings->value(key).toBool();
         }
         settings->endGroup();
@@ -141,7 +141,7 @@ void Theme::readSettings(QSettings *settings)
         QMetaEnum me = mo.enumerator(mo.indexOfEnumerator("FontSize"));
         for (int i = 0, total = me.keyCount(); i < total; ++i) {
             const QString key = QLatin1String(me.key(i));
-            QUICK_ASSERT(settings->contains(key), return);
+            QSDF_ASSERT(settings->contains(key), return);
             d->fontSizes[i] = settings->value(key).toInt();
         }
         settings->endGroup();

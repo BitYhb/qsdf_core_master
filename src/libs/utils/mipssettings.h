@@ -7,7 +7,7 @@
 
 namespace Utils {
 
-class QUICK_UTILS_EXPORT MipsSettings : public QSettings
+class QSDF_UTILS_EXPORT MipsSettings : public QSettings
 {
     Q_OBJECT
 

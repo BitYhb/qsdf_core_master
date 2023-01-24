@@ -1,5 +1,5 @@
+#include <utils/assert.h>
 #include <utils/macrodefinition.h>
-#include <utils/mipsassert.h>
 #include <utils/quickevent/customquickevent.h>
 
 #include <QMetaMethod>
@@ -38,7 +38,7 @@ void Utils::CustomEventApplication::publishEvent(const QByteArray &eventName, Qt
     }
 
     auto count = sizeof...(args);
-    QUICK_ASSERT(count <= 10, qWarning("publishEvent() parameter-pack args cannot exceed 10"); return);
+    QSDF_ASSERT(count <= 10, qWarning("publishEvent() parameter-pack args cannot exceed 10"); return);
 
     QReadLocker locker(listLock());
     auto defaultQueue = defaultEventQueue();

@@ -258,7 +258,7 @@ function(_sb_append_to_cmake_args)
     endforeach()
 endfunction()
 
-function(_sb_get_domain_source_path domain_proj_var source_path)
+function(sb_get_domain_source_path domain_proj_var source_path)
     set(_domain_root_path "src/domains")
     cmake_path(ABSOLUTE_PATH _domain_root_path BASE_DIRECTORY ${CMAKE_SOURCE_DIR} NORMALIZE OUTPUT_VARIABLE _domain_root_path)
 

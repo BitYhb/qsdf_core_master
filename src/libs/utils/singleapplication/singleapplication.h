@@ -13,7 +13,7 @@ namespace Internal {
 class LocalPeer;
 }
 
-class QUICK_UTILS_EXPORT SingleApplication : public QApplication
+class QSDF_UTILS_EXPORT SingleApplication : public QApplication
 {
     Q_OBJECT
 

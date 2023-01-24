@@ -333,12 +333,11 @@ PluginManagerPrivate::PluginManagerPrivate(PluginManager *pPluginManager)
     : q(pPluginManager)
 {}
 
-PluginManagerPrivate::~PluginManagerPrivate() {}
+PluginManagerPrivate::~PluginManagerPrivate() = default;
 
 void PluginManagerPrivate::setSettings(Utils::MipsSettings *pSettings)
 {
-    if (m_settings != nullptr)
-        delete m_settings;
+    delete m_settings;
     m_settings = pSettings;
     if (m_settings != nullptr)
         m_settings->setParent(this);
@@ -346,8 +345,7 @@ void PluginManagerPrivate::setSettings(Utils::MipsSettings *pSettings)
 
 void PluginManagerPrivate::setGlobalSettings(Utils::MipsSettings *pGlobalSettings)
 {
-    if (m_globalSettings != nullptr)
-        delete m_globalSettings;
+    delete m_globalSettings;
     m_globalSettings = pGlobalSettings;
     if (m_globalSettings != nullptr)
         m_globalSettings->setParent(this);

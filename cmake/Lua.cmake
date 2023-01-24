@@ -36,6 +36,10 @@ target_sources(lua_header PUBLIC
 add_library(lua ${lua_source_files})
 target_link_libraries(lua INTERFACE lua_header)
 
+include(CMakePackageConfigHelpers)
+configure_package_config_file(LuaConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LuaConfig.cmake
+    INSTALL_DESTINATION "lib/cmake")
+
 install(TARGETS lua lua_header
     EXPORT LuaTargets FILE_SET HEADERS)
 
@@ -43,3 +47,7 @@ install(EXPORT LuaTargets
     DESTINATION "lib/cmake"
     FILE LuaTargets.cmake
     NAMESPACE Lua::)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LuaConfig.cmake
+    DESTINATION "lib/cmake")
+

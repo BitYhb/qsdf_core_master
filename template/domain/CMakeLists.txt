@@ -21,8 +21,10 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     QML_FILES src/qml/Viewer.qml)
 
-target_compile_definitions(${PROJECT_NAME}
-    PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+endif()
 target_link_libraries(${PROJECT_NAME}
     PRIVATE Qt6::Quick QSDF::Utils)
 

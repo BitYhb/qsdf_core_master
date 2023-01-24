@@ -11,7 +11,7 @@ namespace ExtensionSystem {
 class PluginSpecPrivate;
 class IPlugin;
 
-struct QUICK_EXTENSIONSYSTEM_EXPORT PluginDependency
+struct QSDF_EXTENSIONSYSTEM_EXPORT PluginDependency
 {
     enum Type { Required, Optional, Test };
 
@@ -29,7 +29,7 @@ struct QUICK_EXTENSIONSYSTEM_EXPORT PluginDependency
     QString toString() const;
 };
 
-class QUICK_EXTENSIONSYSTEM_EXPORT PluginSpec : public QObject
+class QSDF_EXTENSIONSYSTEM_EXPORT PluginSpec : public QObject
 {
     Q_OBJECT
 public:
