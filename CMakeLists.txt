@@ -103,6 +103,14 @@ if(NOT Npm_FOUND)
 endif()
 mark_as_superbuild(Npm_EXECUTABLE)
 
+if(QSDF_BUILD_RELEASE_PACKAGE)
+    include(CPack)
+    include(CPackIFW)
+    cpack_add_component(ReleasePackage)
+    cpack_ifw_configure_component(qsdf
+        FORCED_INSTALLATION REQUIRES_ADMIN_RIGHTS)
+endif()
+
 # SuperBuild script
 if(QSDF_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
