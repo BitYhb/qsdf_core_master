@@ -49,6 +49,10 @@ if(QSDF_BUILD_APP_BUNDLE)
         "  Forcing CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
 endif()
 
+set(QSDF_BUILD_APP_BUNDLE_GENERATOR IFW CACHE STRING "A generator that generates application bundles" FORCE)
+set_property(CACHE QSDF_BUILD_APP_BUNDLE_GENERATOR PROPERTY STRINGS IFW NSIS)
+mark_as_superbuild(QSDF_BUILD_APP_BUNDLE_GENERATOR)
+
 option(WITH_TESTS "Build Tests" OFF)
 option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
 
@@ -93,6 +97,14 @@ if(NOT Npm_FOUND)
     message(FATAL_ERROR "error: Npm not found, install Npm and try to re-configure")
 endif()
 mark_as_superbuild(Npm_EXECUTABLE)
+
+if(QSDF_BUILD_RELEASE_PACKAGE)
+    include(CPack)
+    include(CPackIFW)
+    cpack_add_component(ReleasePackage)
+    cpack_ifw_configure_component(qsdf
+        FORCED_INSTALLATION REQUIRES_ADMIN_RIGHTS)
+endif()
 
 # SuperBuild script
 if(QSDF_SUPERBUILD)
@@ -147,10 +159,4 @@ if(QSDF_BUILD_SDK)
         ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPIInternal.cmake
         DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
         COMPONENT Development)
-endif()
-
-if(QSDF_BUILD_RELEASE_PACKAGE)
-    include(CPackIFW)
-    cpack_ifw_configure_component(qsdf
-        FORCED_INSTALLATION REQUIRES_ADMIN_RIGHTS)
 endif()

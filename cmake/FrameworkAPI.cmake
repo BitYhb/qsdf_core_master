@@ -215,6 +215,10 @@ function(add_qsdf_library target_name)
             FILE_SET public_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
             COMPONENT Development)
     endif()
+
+    if(QSDF_BUILD_RELEASE_PACKAGE)
+        install(TARGETS ${target_name} DESTINATION bin COMPONENT ReleasePackage)
+    endif()
 endfunction()
 
 function(add_qsdf_plugin target_name)
