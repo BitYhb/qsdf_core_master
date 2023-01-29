@@ -217,7 +217,10 @@ function(add_qsdf_library target_name)
     endif()
 
     if(QSDF_BUILD_RELEASE_PACKAGE)
-        install(TARGETS ${target_name} DESTINATION bin COMPONENT ReleasePackage)
+        install(TARGETS ${target_name}
+            RUNTIME DESTINATION bin COMPONENT ReleasePackage
+            LIBRARY DESTINATION lib COMPONENT ReleasePackage
+            ARCHIVE DESTINATION lib COMPONENT Development)
     endif()
 endfunction()
 
@@ -321,6 +324,13 @@ function(add_qsdf_plugin target_name)
         ${_arg_PROPERTIES})
 
     reset_msvc_output_path(${target_name})
+
+    if(QSDF_BUILD_RELEASE_PACKAGE)
+        install(TARGETS ${target_name}
+            RUNTIME DESTINATION ${plugin_dir} COMPONENT ReleasePackage
+            LIBRARY DESTINATION lib COMPONENT ReleasePackage
+            ARCHIVE DESTINATION lib COMPONENT Development)
+    endif()
 endfunction()
 
 function(add_qsdf_executable target_name)

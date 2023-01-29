@@ -42,8 +42,13 @@ mark_as_superbuild(QSDF_BUILD_SDK)
 
 option(QSDF_BUILD_APP_BUNDLE "Build application package" OFF)
 if(QSDF_BUILD_APP_BUNDLE)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        message(FATAL_ERROR "QSDF_BUILD_APP_BUNDLE requires a build type of Release")
+    endif()
+
     set(QSDF_BUILD_RELEASE_PACKAGE ON)
-    mark_as_superbuild(QSDF_BUILD_RELEASE_PACKAGE)
+    set(CPACK_INSTALL_CMAKE_PROJECTS)
+    mark_as_superbuild(VARS QSDF_BUILD_RELEASE_PACKAGE:BOOL ALL_PROJECTS)
     message(STATUS "QSDF_BUILD_APP_BUNDLE = ${QSDF_BUILD_APP_BUNDLE}\n"
         "  Forcing QSDF_BUILD_RELEASE_PACKAGE = ${QSDF_BUILD_RELEASE_PACKAGE}\n"
         "  Forcing CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
@@ -98,17 +103,33 @@ if(NOT Npm_FOUND)
 endif()
 mark_as_superbuild(Npm_EXECUTABLE)
 
-if(QSDF_BUILD_RELEASE_PACKAGE)
-    include(CPack)
-    include(CPackIFW)
-    cpack_add_component(ReleasePackage)
-    cpack_ifw_configure_component(qsdf
-        FORCED_INSTALLATION REQUIRES_ADMIN_RIGHTS)
-endif()
-
 # SuperBuild script
 if(QSDF_SUPERBUILD)
     include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
+
+    # CPack - bundle install
+    if(QSDF_BUILD_RELEASE_PACKAGE)
+        if(NOT DEFINED CPACK_IFW_ROOT AND NOT DEFINED CACHE{CPACK_IFW_ROOT})
+            message(FATAL_ERROR "You probably need to set the CPACK_IFW_ROOT variable.")
+        endif()
+        set(CPACK_GENERATOR ${QSDF_BUILD_APP_BUNDLE_GENERATOR})
+
+        configure_file(${CMAKE_SOURCE_DIR}/cmake/BundleInstall.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/BundleInstall.cmake @ONLY)
+        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/BundleInstall.cmake COMPONENT ReleasePackage)
+
+        set(CPACK_IFW_PACKAGE_TITLE "Install")
+        set(CPACK_IFW_PACKAGE_NAME "Ex")
+
+        include(CPack)
+        include(CPackIFW)
+        cpack_add_component(ReleasePackage
+            DISPLAY_NAME core
+            DESCRIPTION "Software subject"
+            REQUIRED)
+        cpack_ifw_configure_component(qsdf
+            FORCED_INSTALLATION REQUIRES_ADMIN_RIGHTS)
+    endif()
+
     return()
 endif()
 

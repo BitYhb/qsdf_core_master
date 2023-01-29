@@ -9,6 +9,11 @@ macro(__FindQtAndCheckVersion_find_qt)
     if (Qt6_VERSION VERSION_LESS QSDF_REQUIRED_QT_VERSION)
         message("error: The required Qt version is at least ${QSDF_REQUIRED_QT_VERSION}, you cannot use Qt ${Qt6_VERSION}")
     endif ()
+
+    cmake_path(GET Qt6_DIR ROOT_PATH QTDIR)
+    cmake_path(APPEND QTDIR "Qt/Tools/QtInstallerFramework/4.5/bin" OUTPUT_VARIABLE QTDIR)
+    set(CPACK_IFW_ROOT ${QTDIR} CACHE STRING "" FORCE)
+    mark_as_advanced(CPACK_IFW_ROOT)
 endmacro()
 
 set(expected_defined_vars QSDF_REQUIRED_QT_VERSION QSDF_REQUIRED_QT_MODULES)

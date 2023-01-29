@@ -181,7 +181,7 @@ function(mark_as_superbuild)
     endif()
 
     if(_named_parameters_expected AND _arg_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR "error: " ${_arg_UNPARSED_ARGUMENTS} " should be associated with VARS parameter!")
+        message(FATAL_ERROR "error: \"${_arg_UNPARSED_ARGUMENTS}\" should be associated with VARS parameter!")
     endif()
 
     if(_arg_PROJECTS AND _arg_ALL_PROJECTS)
