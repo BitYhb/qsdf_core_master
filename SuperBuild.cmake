@@ -34,12 +34,6 @@ list(TRANSFORM core_defines REPLACE "\"" "\\\\\"" OUTPUT_VARIABLE core_defines)
 get_property(core_public_defines GLOBAL PROPERTY Core_DELAY_ADD_COMPILE_DEFINITIONS_PUBLIC)
 list(TRANSFORM core_public_defines REPLACE "\"" "\\\\\"" OUTPUT_VARIABLE core_public_defines)
 
-get_property(core_defines GLOBAL PROPERTY Core_DELAY_ADD_COMPILE_DEFINITIONS_PRIVATE)
-list(TRANSFORM core_defines REPLACE "\"" "\\\\\"" OUTPUT_VARIABLE core_defines)
-
-get_property(core_public_defines GLOBAL PROPERTY Core_DELAY_ADD_COMPILE_DEFINITIONS_PUBLIC)
-list(TRANSFORM core_public_defines REPLACE "\"" "\\\\\"" OUTPUT_VARIABLE core_public_defines)
-
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     DEPENDS ${qsdf-core_DEPENDENCIES}
