@@ -58,6 +58,13 @@ set(QSDF_BUILD_APP_BUNDLE_GENERATOR IFW CACHE STRING "A generator that generates
 set_property(CACHE QSDF_BUILD_APP_BUNDLE_GENERATOR PROPERTY STRINGS IFW NSIS)
 mark_as_superbuild(QSDF_BUILD_APP_BUNDLE_GENERATOR)
 
+# vcpkg
+option(QSDF_VCPKG_AUTO_INSTALL "Automatically download build pre-requisites with VCPKG" OFF)
+mark_as_superbuild(QSDF_VCPKG_AUTO_INSTALL)
+if(QSDF_VCPKG_AUTO_INSTALL)
+    include(AutoVcpkg)
+endif()
+
 option(WITH_TESTS "Build Tests" OFF)
 option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
 
