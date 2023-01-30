@@ -34,6 +34,13 @@ option(QSDF_BUILD_SDK "Build an SDK for app or domain development" OFF)
 mark_as_advanced(QSDF_BUILD_SDK)
 mark_as_superbuild(QSDF_BUILD_SDK)
 
+# vcpkg
+option(QSDF_VCPKG_AUTO_INSTALL "Automatically download build pre-requisites with VCPKG" OFF)
+mark_as_superbuild(QSDF_VCPKG_AUTO_INSTALL)
+if(QSDF_VCPKG_AUTO_INSTALL)
+    include(AutoVcpkg)
+endif()
+
 option(WITH_TESTS "Build Tests" OFF)
 option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
 
