@@ -32,6 +32,8 @@ if(Npm_FOUND)
     if (NOT in_range)
         message (FATAL_ERROR "${reason}")
     endif()
+
+    set(ENV{Path} "$ENV{Path};${Npm_ROOT_PATH}")
 endif()
 
 unset(_doc)

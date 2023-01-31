@@ -107,6 +107,10 @@ message(STATUS "Project current git branch name: ${PROJECT_GIT_BRANCH_NAME}")
 find_package(Npm)
 if(NOT Npm_FOUND)
     message(FATAL_ERROR "error: Npm not found, install Npm and try to re-configure")
+else()
+    execute_process(COMMAND ${Npm_EXECUTABLE} install --save-dev
+        ERROR_QUIET
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 endif()
 mark_as_superbuild(Npm_EXECUTABLE)
 

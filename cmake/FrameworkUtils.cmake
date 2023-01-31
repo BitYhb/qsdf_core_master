@@ -7,5 +7,5 @@ macro(check_git_branch_name)
             OUTPUT_STRIP_TRAILING_WHITESPACE
             ERROR_QUIET
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-        endif()
+    endif()
 endmacro()
