@@ -1,5 +1,4 @@
 set(UTILS_PUBLIC_HEADERS
-    singleapplication/singleapplication.h
     theme/theme.h
     quickevent/customquickevent.h
     quickevent/quickevent.h
@@ -19,7 +18,6 @@ set(UTILS_PUBLIC_HEADERS
 )
 
 set(UTILS_PUBLIC_SOURCES
-    singleapplication/singleapplication.cpp
     theme/theme.cpp
     quickevent/customquickevent.cpp
     quickevent/customeventapplication.cpp
@@ -37,8 +35,6 @@ set(UTILS_PUBLIC_SOURCES
 
 ### *** Internal ***
 set(UTILS_PRIVATE_HEADERS_AND_SOURCES
-    singleapplication/localpeer.h singleapplication/localpeer.cpp
-    singleapplication/lockedfile.h singleapplication/lockedfile.cpp
     theme/theme_p.h
 )
 

@@ -17,8 +17,22 @@ include(ExternalProject)
 include(ExternalProjectDependency)
 include(FrameworkAPI)
 
+# vcpkg
+option(QSDF_VCPKG_AUTO_INSTALL "Automatically download build pre-requisites with Vcpkg" OFF)
+if(QSDF_VCPKG_AUTO_INSTALL)
+    include(AutoVcpkg)
+endif()
+mark_as_superbuild(QSDF_VCPKG_AUTO_INSTALL)
+
+# Android
+option(QSDF_BUILD_ANDROID "The software will be compiled into Android program" OFF)
+if(QSDF_BUILD_ANDROID)
+    include(AutoAndroid)
+endif()
+mark_as_superbuild(QSDF_BUILD_ANDROID)
+
 # Quick Software Development Framework
-project(qsdf-core VERSION ${QSDF_VERSION})
+project(qsdf-core VERSION ${QSDF_VERSION} LANGUAGES CXX)
 
 # Force C++ standard, do not fall back, do not use compiler extensions
 set(CMAKE_CXX_STANDARD 20)
@@ -57,13 +71,6 @@ endif()
 set(QSDF_BUILD_APP_BUNDLE_GENERATOR IFW CACHE STRING "A generator that generates application bundles" FORCE)
 set_property(CACHE QSDF_BUILD_APP_BUNDLE_GENERATOR PROPERTY STRINGS IFW NSIS)
 mark_as_superbuild(QSDF_BUILD_APP_BUNDLE_GENERATOR)
-
-# vcpkg
-option(QSDF_VCPKG_AUTO_INSTALL "Automatically download build pre-requisites with VCPKG" OFF)
-mark_as_superbuild(QSDF_VCPKG_AUTO_INSTALL)
-if(QSDF_VCPKG_AUTO_INSTALL)
-    include(AutoVcpkg)
-endif()
 
 option(WITH_TESTS "Build Tests" OFF)
 option(WITH_DEBUG_CMAKE "Enabled CMake project debugging functionality" OFF)
@@ -107,10 +114,6 @@ message(STATUS "Project current git branch name: ${PROJECT_GIT_BRANCH_NAME}")
 find_package(Npm)
 if(NOT Npm_FOUND)
     message(FATAL_ERROR "error: Npm not found, install Npm and try to re-configure")
-else()
-    execute_process(COMMAND ${Npm_EXECUTABLE} install --save-dev
-        ERROR_QUIET
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 endif()
 mark_as_superbuild(Npm_EXECUTABLE)
 
@@ -178,17 +181,18 @@ if(QSDF_BUILD_SDK)
     file(GLOB cmake_files "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cmake")
     install(
         FILES ${cmake_files}
-        DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF COMPONENT Development)
+        DESTINATION sdk/${QSDF_CMAKE_INSTALL_PATH}/QSDF COMPONENT DevelopmentKit)
 
     install(EXPORT QSDFTargets
-        DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
-        COMPONENT Development
+        DESTINATION sdk/${QSDF_CMAKE_INSTALL_PATH}/QSDF
+        COMPONENT DevelopmentKit
         NAMESPACE QSDF::
         FILE QSDFTargets.cmake)
-    install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/cmake/QSDFConfig.cmake
-        ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPI.cmake
-        ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPIInternal.cmake
-        DESTINATION ${QSDF_CMAKE_INSTALL_PATH}/QSDF
-        COMPONENT Development)
+    install(
+        FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/cmake/QSDFConfig.cmake
+            ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPI.cmake
+            ${PROJECT_SOURCE_DIR}/cmake/FrameworkAPIInternal.cmake
+        DESTINATION sdk/${QSDF_CMAKE_INSTALL_PATH}/QSDF
+        COMPONENT DevelopmentKit)
 endif()

@@ -2,9 +2,9 @@
 
 #include <utils/macrodefinition.h>
 #include <utils/quickevent/quickevent.h>
-#include <utils/singleapplication/singleapplication.h>
 
 #include <QScopedPointer>
+#include <QApplication>
 
 namespace Utils {
 
@@ -18,10 +18,10 @@ class QuickApplicationPrivate;
 #endif
 #define quickApp dynamic_cast<Utils::QuickApplication *>(Utils::QuickApplication::instance())
 
-class QSDF_UTILS_EXPORT QuickApplication final : public SingleApplication
+class QSDF_UTILS_EXPORT QuickApplication final : public QApplication
 {
     Q_OBJECT
-    QSDF_QUICK_EVENT_SUPPORT(SingleApplication)
+    QSDF_QUICK_EVENT_SUPPORT(QApplication)
 public:
     QuickApplication(const QString &appId, int &argc, char **argv);
     ~QuickApplication() override;

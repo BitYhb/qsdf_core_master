@@ -155,7 +155,7 @@ QString CorePlugin::domainViewerURI()
     const QString domainDllPath = domainProjPath.absoluteFilePath(QSDF_CURRENT_DOMAIN_PROJ_DLL_NAME);
 
     QPluginLoader loader(domainDllPath);
-    QSDF_ASSERT(loader.instance(), qCWarning(Core::lcCorePlugin, loader.errorString().toUtf8().constData()); return {});
+    QSDF_ASSERT(loader.instance(), qCWarning(Core::lcCorePlugin, "%s", loader.errorString().toUtf8().data()); return {});
 
     QDirIterator iterator(QLatin1String(QSDF_CURRENT_DOMAIN_PROJ_QML_MODULE_PREFER), QDirIterator::Subdirectories);
     const QString viewerURI(iterator.path() + "src/qml/Viewer.qml");

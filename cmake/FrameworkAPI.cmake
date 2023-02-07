@@ -19,9 +19,9 @@ set(SHARED_SOLUTION_FOLDER "${_SHARED_SOLUTION_FOLDER}")
 set(TOOLS_SOLUTION_FOLDER "${_TOOLS_SOLUTION_FOLDER}")
 set(OTHER_SOLUTION_FOLDER "${_OTHER_SOLUTION_FOLDER}")
 
-file(RELATIVE_PATH RELATIVE_DATA_PATH "/${QSDF_BIN_PATH}" "/${QSDF_DATA_PATH}")
-file(RELATIVE_PATH RELATIVE_LIBRARY_PATH "/${QSDF_BIN_PATH}" "/${QSDF_LIBRARY_PATH}")
-file(RELATIVE_PATH RELATIVE_PLUGIN_PATH "/${QSDF_BIN_PATH}" "/${QSDF_PLUGIN_PATH}")
+cmake_path(RELATIVE_PATH QSDF_DATA_PATH BASE_DIRECTORY "${QSDF_BIN_PATH}" OUTPUT_VARIABLE RELATIVE_DATA_PATH)
+cmake_path(RELATIVE_PATH QSDF_LIBRARY_PATH BASE_DIRECTORY "${QSDF_BIN_PATH}" OUTPUT_VARIABLE RELATIVE_LIBRARY_PATH)
+cmake_path(RELATIVE_PATH QSDF_PLUGIN_PATH BASE_DIRECTORY "${QSDF_BIN_PATH}" OUTPUT_VARIABLE RELATIVE_PLUGIN_PATH)
 
 list(APPEND DEFAULT_DEFINES
     RELATIVE_DATA_PATH="${RELATIVE_DATA_PATH}"
@@ -183,13 +183,17 @@ function(add_qsdf_library target_name)
     if(NOT _arg_SOURCES_PREFIX)
         get_filename_component(public_build_interface_dir "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
         file(RELATIVE_PATH include_dir_relative_path ${PROJECT_SOURCE_DIR} "${public_build_interface_dir}")
+
+        set(_true_string $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}>)
+        set(_false_string $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
         target_include_directories(${target_name}
             PRIVATE
                 "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
             PUBLIC
                 "$<BUILD_INTERFACE:${public_build_interface_dir}>"
-                "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}>"
-                "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+                "$<INSTALL_INTERFACE:$<IF:$<BOOL:${QSDF_BUILD_RELEASE_PACKAGE}>,${_true_string},${_false_string}>>")
+        unset(_true_string)
+        unset(_false_string)
     endif()
 
     string(REGEX MATCH "^[0-9]*" QSDF_VERSION_MAJOR ${QSDF_VERSION})
@@ -209,18 +213,21 @@ function(add_qsdf_library target_name)
 
     reset_msvc_output_path(${target_name})
 
+    include(GNUInstallDirs)
     if(QSDF_BUILD_SDK)
         install(TARGETS ${target_name} EXPORT QSDFTargets
-            FILE_SET export_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
-            FILE_SET public_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name}
-            COMPONENT Development)
+            FILE_SET export_headers DESTINATION sdk/${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name} COMPONENT DevelopmentKit
+            FILE_SET public_headers DESTINATION sdk/${CMAKE_INSTALL_INCLUDEDIR}/${lower_target_name} COMPONENT DevelopmentKit
+            RUNTIME DESTINATION sdk/${CMAKE_INSTALL_BINDIR} COMPONENT DevelopmentKit
+            LIBRARY DESTINATION sdk/${CMAKE_INSTALL_LIBDIR} COMPONENT DevelopmentKit
+            ARCHIVE DESTINATION sdk/${CMAKE_INSTALL_LIBDIR} COMPONENT DevelopmentKit)
     endif()
 
     if(QSDF_BUILD_RELEASE_PACKAGE)
         install(TARGETS ${target_name}
-            RUNTIME DESTINATION bin COMPONENT ReleasePackage
-            LIBRARY DESTINATION lib COMPONENT ReleasePackage
-            ARCHIVE DESTINATION lib COMPONENT Development)
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT ReleasePackage
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage)
     endif()
 endfunction()
 
@@ -325,11 +332,12 @@ function(add_qsdf_plugin target_name)
 
     reset_msvc_output_path(${target_name})
 
+    include(GNUInstallDirs)
     if(QSDF_BUILD_RELEASE_PACKAGE)
         install(TARGETS ${target_name}
-            RUNTIME DESTINATION ${plugin_dir} COMPONENT ReleasePackage
-            LIBRARY DESTINATION lib COMPONENT ReleasePackage
-            ARCHIVE DESTINATION lib COMPONENT Development)
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT ReleasePackage
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage)
     endif()
 endfunction()
 

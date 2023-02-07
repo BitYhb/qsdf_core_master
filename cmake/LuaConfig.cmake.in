@@ -1,8 +1,0 @@
-
-@PACKAGE_INIT@
-
-check_required_components(Lua)
-
-if(Lua_FOUND)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/LuaTargets.cmake)
-endif()
