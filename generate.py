@@ -1,6 +1,8 @@
+import argparse
 import os
 import string
-import argparse
+import shutil
+import urllib.request
 
 
 def parse_args(destination, name, type):
@@ -14,6 +16,27 @@ parser.add_argument("-n", "--name", help="target project name. eg: EPDomain_okr"
 parser.add_argument("-t", "--type", help="target project type", choices=["domain", "app", "plugin"], required=True)
 parser.add_argument("-d", "--destination", help="target generated path", default=r'..\template_generate')
 args = parser.parse_args()
+
+
+def download_gitignore():
+    url = "https://www.toptal.com/developers/gitignore/api/c++,qt,qml"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/110.0.0.0 Safari/537.36',
+    }
+
+    request = urllib.request.Request(url, headers=headers)
+    gitignore_text = urllib.request.urlopen(request).read()
+
+    try:
+        gitignore_file_path = os.path.join(args.destination, args.name, '.gitignore')
+        with open(gitignore_file_path, 'w', encoding='utf-8') as gitignore_file:
+            gitignore_file.write(gitignore_text.decode())
+            gitignore_file.close()
+    except IOError:
+        shutil.rmtree(args.destination)
+        exit(1)
+
 
 if __name__ == '__main__':
     try:
@@ -30,8 +53,9 @@ if __name__ == '__main__':
             files.append(filename)
 
     for file in files:
-        template_file = open(file, 'r')
-        template = string.Template(template_file.read())
+        with open(file, 'r') as f:
+            template = string.Template(f.read())
+            f.close()
 
         file = file.replace(template_files_path, '')
         target_file_path = args.destination + '\\' + args.name + '\\' + file
@@ -39,5 +63,8 @@ if __name__ == '__main__':
         if not os.path.exists(target_file_path_dirname):
             os.makedirs(target_file_path_dirname)
 
-        target_file = open(os.path.realpath(target_file_path), 'x', encoding='utf-8')
-        target_file.write(template.safe_substitute(TM_TARGET_NAME=args.name))
+        with open(os.path.realpath(target_file_path), 'x', encoding='utf-8') as f:
+            f.write(template.safe_substitute(TM_TARGET_NAME=args.name))
+            f.close()
+
+    download_gitignore()
