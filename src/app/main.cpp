@@ -13,17 +13,17 @@
 #include <QFileInfo>
 #include <QFontDatabase>
 #include <QLibraryInfo>
+#include <QLoggingCategory>
 #include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QThreadPool>
 #include <QTranslator>
-#include <QLoggingCategory>
 
 using namespace ExtensionSystem;
 
-Q_LOGGING_CATEGORY(lcLaunch, "quick.launch")
+Q_LOGGING_CATEGORY(lcLaunch, "logging.launch")
 
 enum { OptionIndent = 4, DescriptionIndent = 34 };
 
@@ -99,8 +99,8 @@ static void printVersion(const PluginSpec *corePlugin)
 
 static QStringList getPluginPaths()
 {
-    QStringList lstPluginPaths(QDir::cleanPath(QApplication::applicationDirPath() + '/' + RELATIVE_PLUGIN_PATH));
-
+    QStringList lstPluginPaths{QDir::cleanPath(QApplication::applicationDirPath()),
+                               QDir::cleanPath(QApplication::applicationDirPath() + '/' + RELATIVE_PLUGIN_PATH)};
     QString strPluginPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
     strPluginPath += QLatin1Char('/') + Core::Constants::QSDF_SETTINGSVARIANT_STR + QLatin1Char('/');
     strPluginPath += Core::Constants::QSDF_ID;
@@ -411,7 +411,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-//    QObject::connect(&app, &Utils::QuickApplication::messageReceived, &pluginManager, &PluginManager::remoteArguments);
+    //    QObject::connect(&app, &Utils::QuickApplication::messageReceived, &pluginManager, &PluginManager::remoteArguments);
     QObject::connect(&app, SIGNAL(fileOpenRequest(QString)), corePlugin->plugin(), SLOT(fileOpenRequest(QString)));
 
     // shutdown plugin manager on the exit

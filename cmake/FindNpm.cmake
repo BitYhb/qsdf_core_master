@@ -49,9 +49,9 @@ if(Npm_FOUND)
     set(ENV{Path} "$ENV{Path};${Npm_ROOT_PATH}")
     set(Npm_EXECUTABLE "${Npm_EXECUTABLE}" CACHE STRING "" FORCE)
 
-    #    execute_process(COMMAND ${Npm_EXECUTABLE} install --save-dev
-    #        ERROR_QUIET
-    #        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+    execute_process(COMMAND ${Npm_EXECUTABLE} install --save-dev
+        ERROR_QUIET
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 endif()
 
 unset(_doc)

@@ -5,12 +5,13 @@ include(${CMAKE_CURRENT_LIST_DIR}/FrameworkAPIInternal.cmake)
 set(QSDF_HEADER_INSTALL_PATH ${_QSDF_HEADER_INSTALL_PATH})
 set(QSDF_CMAKE_INSTALL_PATH ${_QSDF_CMAKE_INSTALL_PATH})
 
+if(ANDROID)
+    set(QSDF_ANDROID_PACKAGE_ROOT "android")
+    set(QSDF_ANDROID_LIB_INSTALL_PATH "${QSDF_ANDROID_PACKAGE_ROOT}/libs/${ANDROID_ABI}")
+endif()
+
 set(QSDF_DATA_PATH ${_QSDF_DATA_PATH})
-set(QSDF_LIBRARY_PATH "${_QSDF_LIBRARY_PATH}")
 set(QSDF_PLUGIN_PATH "${_QSDF_PLUGIN_PATH}")
-set(QSDF_BIN_PATH ${_QSDF_BIN_PATH})
-set(QSDF_LIBRARY_ARCHIVE_PATH ${_QSDF_LIBRARY_ARCHIVE_PATH})
-set(QSDF_LIBEXEC_PATH ${_QSDF_LIBEXEC_PATH})
 
 set(APP_SOLUTION_FOLDER "${_APP_SOLUTION_FOLDER}")
 set(PLUGINS_SOLUTION_FOLDER "${_PLUGINS_SOLUTION_FOLDER}")
@@ -19,13 +20,15 @@ set(SHARED_SOLUTION_FOLDER "${_SHARED_SOLUTION_FOLDER}")
 set(TOOLS_SOLUTION_FOLDER "${_TOOLS_SOLUTION_FOLDER}")
 set(OTHER_SOLUTION_FOLDER "${_OTHER_SOLUTION_FOLDER}")
 
-cmake_path(RELATIVE_PATH QSDF_DATA_PATH BASE_DIRECTORY "${QSDF_BIN_PATH}" OUTPUT_VARIABLE RELATIVE_DATA_PATH)
-cmake_path(RELATIVE_PATH QSDF_LIBRARY_PATH BASE_DIRECTORY "${QSDF_BIN_PATH}" OUTPUT_VARIABLE RELATIVE_LIBRARY_PATH)
-cmake_path(RELATIVE_PATH QSDF_PLUGIN_PATH BASE_DIRECTORY "${QSDF_BIN_PATH}" OUTPUT_VARIABLE RELATIVE_PLUGIN_PATH)
+cmake_path(RELATIVE_PATH QSDF_DATA_PATH BASE_DIRECTORY "${CMAKE_INSTALL_PREFIX}" OUTPUT_VARIABLE RELATIVE_DATA_PATH)
+
+set(RELATIVE_PLUGIN_PATH ${QSDF_PLUGIN_PATH})
+if(WIN32)
+    cmake_path(RELATIVE_PATH QSDF_PLUGIN_PATH BASE_DIRECTORY "${CMAKE_INSTALL_PREFIX}" OUTPUT_VARIABLE RELATIVE_PLUGIN_PATH)
+endif()
 
 list(APPEND DEFAULT_DEFINES
     RELATIVE_DATA_PATH="${RELATIVE_DATA_PATH}"
-    RELATIVE_LIBRARY_PATH="${RELATIVE_LIBRARY_PATH}"
     RELATIVE_PLUGIN_PATH="${RELATIVE_PLUGIN_PATH}")
 
 option(BUILD_TESTS_BY_DEFAULT "Build tests by default. This can be used to build all tests by default, or none." ON)
@@ -36,7 +39,7 @@ function(reset_msvc_output_path target_name)
     foreach(config DEBUG RELEASE)
         foreach(flag RUNTIME LIBRARY ARCHIVE)
             get_target_property(target_property ${target_name} "${flag}_OUTPUT_DIRECTORY")
-            if(NOT target_property STREQUAL "")
+            if(NOT target_property STREQUAL "" AND NOT STREQUAL "target_property-NOTFOUND")
                 set_target_properties(${target_name} PROPERTIES "${flag}_OUTPUT_DIRECTORY_${config}" ${target_property})
             endif()
         endforeach()
@@ -137,7 +140,11 @@ function(add_qsdf_library target_name)
     add_library(${target_name} ${library_type})
     add_library(QSDF::${target_name} ALIAS ${target_name})
 
-    set(_DESTINATION ${QSDF_BIN_PATH})
+    if(ANDROID)
+        qt_android_apply_arch_suffix(${target_name})
+    endif()
+
+    set(_DESTINATION ${CMAKE_INSTALL_PREFIX})
     if(_arg_DESTINATION)
         set(_DESTINATION ${_arg_DESTINATION})
     endif()
@@ -206,9 +213,6 @@ function(add_qsdf_library target_name)
         FOLDER "${_MSVC_SOLUTION_FOLDER}"
         BUILD_RPATH "${_LIB_RPATH};${CMAKE_BUILD_RPATH}"
         INSTALL_RPATH "${_LIB_RPATH};${CMAKE_INSTALL_RPATH}"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${_DESTINATION}"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${QSDF_LIBRARY_PATH}"
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${QSDF_LIBRARY_ARCHIVE_PATH}"
         ${_arg_PROPERTIES})
 
     reset_msvc_output_path(${target_name})
@@ -228,6 +232,10 @@ function(add_qsdf_library target_name)
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT ReleasePackage
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage)
+    endif()
+
+    if(ANDROID)
+        install(TARGETS ${target_name} DESTINATION ${QSDF_ANDROID_LIB_INSTALL_PATH})
     endif()
 endfunction()
 
@@ -280,6 +288,10 @@ function(add_qsdf_plugin target_name)
     add_library(${target_name} SHARED ${_arg_SOURCES})
     add_library(QSDF::${target_name} ALIAS ${target_name})
 
+    if(ANDROID)
+        qt_android_apply_arch_suffix(${target_name})
+    endif()
+
     set_public_headers(${target_name} ${_arg_SOURCES})
 
     generate_export_header(${target_name} PREFIX_NAME QSDF_PLUGIN_)
@@ -322,9 +334,6 @@ function(add_qsdf_plugin target_name)
         CXX_EXTENSIONS OFF
         BUILD_RPATH "${_PLUGIN_RPATH};${CMAKE_BUILD_RPATH}"
         INSTALL_RPATH "${_PLUGIN_RPATH};${CMAKE_INSTALL_RPATH}"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${plugin_dir}"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${plugin_dir}"
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${plugin_dir}"
         FOLDER "${_MSVC_SOLUTION_FOLDER}"
         _arg_DEPENDS "${_arg_PUBLIC_DEPENDS}"
         _arg_VERSION "${_arg_VERSION}"
@@ -338,6 +347,10 @@ function(add_qsdf_plugin target_name)
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT ReleasePackage
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ReleasePackage)
+    endif()
+
+    if(ANDROID)
+        install(TARGETS ${target_name} DESTINATION ${QSDF_ANDROID_LIB_INSTALL_PATH})
     endif()
 endfunction()
 
@@ -356,7 +369,21 @@ function(add_qsdf_executable target_name)
         set(_MSVC_SOLUTION_FOLDER "${_arg_MSVC_SOLUTION_FOLDER}")
     endif()
 
-    add_executable(${target_name} ${_arg_SOURCES})
+    if(ANDROID)
+        add_library(${target_name} MODULE ${_arg_SOURCES})
+        # On our qmake builds we do don't compile the executables with
+        # visibility=hidden. Not having this flag set will cause the
+        # executable to have main() hidden and can then no longer be loaded
+        # through dlopen()
+        set_property(TARGET ${target_name} PROPERTY C_VISIBILITY_PRESET default)
+        set_property(TARGET ${target_name} PROPERTY CXX_VISIBILITY_PRESET default)
+        set_property(TARGET ${target_name} PROPERTY OBJC_VISIBILITY_PRESET default)
+        set_property(TARGET ${target_name} PROPERTY OBJCXX_VISIBILITY_PRESET default)
+        qt_android_apply_arch_suffix(${target_name})
+        set_property(TARGET ${target_name} PROPERTY _qt_is_android_executable True)
+    else()
+        qt_add_executable(${target_name} ${_arg_SOURCES})
+    endif()
 
     extend_qsdf_target(${target_name}
         INCLUDES "${CMAKE_BINARY_DIR}/src" ${_arg_INCLUDES}
@@ -365,13 +392,13 @@ function(add_qsdf_executable target_name)
         DEPENDS ${_arg_DEPENDS}
         PUBLIC_DEPENDS ${_arg_PUBLIC_DEPENDS})
 
-    set(_DESTINATION ${QSDF_LIBEXEC_PATH})
+    set(_DESTINATION ${CMAKE_INSTALL_PREFIX})
     if(_arg_DESTINATION)
         set(_DESTINATION ${_arg_DESTINATION})
     endif()
 
     set(_EXECUTABLE_PATH ${_DESTINATION})
-    file(RELATIVE_PATH relative_lib_path "/${_EXECUTABLE_PATH}" "/${QSDF_LIBRARY_PATH}")
+    file(RELATIVE_PATH relative_lib_path "/${_EXECUTABLE_PATH}" "/${CMAKE_INSTALL_PREFIX}")
 
     set(build_rpath "${_RPATH_BASE}/${relative_lib_path};${CMAKE_BUILD_RPATH}")
     set(install_rpath "${_RPATH_BASE}/${relative_lib_path};${CMAKE_INSTALL_RPATH}")
@@ -380,12 +407,17 @@ function(add_qsdf_executable target_name)
         LINK_DEPENDS_NO_SHARED ON
         BUILD_RPATH "${build_rpath}"
         INSTALL_RPATH "${install_rpath}"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${_DESTINATION}"
         CXX_EXTENSIONS OFF
         FOLDER "${_MSVC_SOLUTION_FOLDER}"
+        WIN32_EXECUTABLE TRUE
         ${_arg_PROPERTIES})
 
     reset_msvc_output_path(${target_name})
+
+    if(ANDROID)
+        install(TARGETS ${target_name}
+            LIBRARY DESTINATION ${QSDF_ANDROID_LIB_INSTALL_PATH})
+    endif()
 endfunction()
 
 function(add_qsdf_test target_name)
@@ -430,7 +462,7 @@ function(add_qsdf_test target_name)
     set(default_defines_copy ${DEFAULT_DEFINES})
     list(REMOVE_ITEM default_defines_copy QT_NO_CAST_TO_ASCII QT_RESTRICTED_CAST_FROM_ASCII)
 
-    file(RELATIVE_PATH _RPATH "/${QSDF_BIN_PATH}" "/${QSDF_LIBRARY_PATH}")
+    file(RELATIVE_PATH _RPATH "/${CMAKE_INSTALL_PREFIX}" "/${CMAKE_INSTALL_PREFIX}")
 
     add_executable(${target_name} ${_arg_SOURCES})
 

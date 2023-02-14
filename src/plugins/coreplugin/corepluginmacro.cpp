@@ -2,6 +2,6 @@
 
 namespace Core {
 
-Q_LOGGING_CATEGORY(lcCorePlugin, "quick.plugin.core")
+Q_LOGGING_CATEGORY(lcCorePlugin, "logging.plugin.core")
 
 }

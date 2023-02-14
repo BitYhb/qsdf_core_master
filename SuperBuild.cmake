@@ -25,7 +25,7 @@ if(QSDF_DOMAIN_NAME)
 endif()
 
 set(proj ${PROJECT_NAME})
-set(${proj}_INSTALL_PREFIX $<IF:$<BOOL:${QSDF_BUILD_RELEASE_PACKAGE}>,${CMAKE_INSTALL_PREFIX},${CMAKE_CURRENT_BINARY_DIR}/${proj}-install>)
+set(${proj}_INSTALL_PREFIX ${QSDF_INSTALL_ROOT})
 set(${proj}_BINARY_DIR ${CMAKE_BINARY_DIR}/${QSDF_BINARY_INNER_SUBDIR})
 
 get_property(core_defines GLOBAL PROPERTY Core_DELAY_ADD_COMPILE_DEFINITIONS_PRIVATE)
@@ -33,7 +33,7 @@ list(TRANSFORM core_defines REPLACE "\"" "\\\\\"" OUTPUT_VARIABLE core_defines)
 
 get_property(core_public_defines GLOBAL PROPERTY Core_DELAY_ADD_COMPILE_DEFINITIONS_PUBLIC)
 list(TRANSFORM core_public_defines REPLACE "\"" "\\\\\"" OUTPUT_VARIABLE core_public_defines)
-
+message("${${proj}_EP_ARGS}")
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     DEPENDS ${qsdf-core_DEPENDENCIES}
@@ -42,12 +42,15 @@ ExternalProject_Add(${proj}
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     CMAKE_CACHE_ARGS
+        -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+        -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+        -DCMAKE_MAKE_PROGRAM:FILEPATH=${CMAKE_MAKE_PROGRAM}
         -DQSDF_SUPERBUILD:BOOL=OFF
         -DQSDF_BUILD_SDK:BOOL=${QSDF_BUILD_SDK}
         -DCore_DELAY_ADD_COMPILE_DEFINITIONS_PRIVATE:STRING=${core_defines}
         -DCore_DELAY_ADD_COMPILE_DEFINITIONS_PUBLIC:STRING=${core_public_defines}
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX=${${proj}_INSTALL_PREFIX})
+        -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_INSTALL_PREFIX})
 
 ExternalProject_Get_Property(${proj} BINARY_DIR)
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${BINARY_DIR};${proj};ReleasePackage;/")

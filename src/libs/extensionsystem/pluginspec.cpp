@@ -14,7 +14,7 @@
 
 namespace ExtensionSystem {
 
-Q_LOGGING_CATEGORY(lcPlugin, "mips.extensionsystem")
+Q_LOGGING_CATEGORY(lcPlugin, "logging.extensionsystem")
 
 size_t qHash(const PluginDependency &value)
 {

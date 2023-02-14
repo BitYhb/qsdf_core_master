@@ -4,7 +4,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(mainWindow, "mips.coreplugin", QtWarningMsg)
+Q_LOGGING_CATEGORY(mainWindow, "logging.coreplugin", QtWarningMsg)
 
 namespace Core::Internal {
 

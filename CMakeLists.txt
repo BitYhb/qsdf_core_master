@@ -11,11 +11,11 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/super_build")
 
 set(SUPERBUILD_TOPLEVEL_PROJECT "qsdf-core")
+
 include(FeatureSummary)
 include(GenerateExportHeader)
 include(ExternalProject)
 include(ExternalProjectDependency)
-include(FrameworkAPI)
 
 # vcpkg
 option(QSDF_VCPKG_AUTO_INSTALL "Automatically download build pre-requisites with Vcpkg" OFF)
@@ -32,7 +32,9 @@ endif()
 mark_as_superbuild(QSDF_BUILD_ANDROID)
 
 # Quick Software Development Framework
-project(qsdf-core VERSION ${QSDF_VERSION} LANGUAGES CXX)
+project(qsdf-core LANGUAGES CXX)
+
+include(FrameworkAPI)
 
 # Force C++ standard, do not fall back, do not use compiler extensions
 set(CMAKE_CXX_STANDARD 20)
@@ -50,7 +52,11 @@ option(QSDF_SUPERBUILD "Build the projects that ${PROJECT_NAME} depends on." ON)
 mark_as_advanced(QSDF_SUPERBUILD)
 set(QSDF_BINARY_INNER_SUBDIR ${PROJECT_NAME}-build)
 
-option(QSDF_BUILD_SDK "Build an SDK for app or domain development" OFF)
+# Because the SDK Path will be used when compiling EPDomain_*, it is enabled by default.
+option(QSDF_BUILD_SDK "Build an SDK for app or domain development" ON)
+if(QSDF_BUILD_SDK AND NOT DEFINED QSDF_INSTALL_ROOT)
+    set(QSDF_INSTALL_ROOT ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 mark_as_advanced(QSDF_BUILD_SDK)
 mark_as_superbuild(QSDF_BUILD_SDK)
 

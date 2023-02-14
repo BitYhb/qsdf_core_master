@@ -2,6 +2,6 @@
 
 namespace Utils {
 
-Q_LOGGING_CATEGORY(lcUtils, "quick.utils")
+Q_LOGGING_CATEGORY(lcUtils, "logging.utils")
 
 }

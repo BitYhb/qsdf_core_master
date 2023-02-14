@@ -4,7 +4,7 @@
 #include <QLoggingCategory>
 #include <QTimer>
 
-static Q_LOGGING_CATEGORY(benchmarksLog, "qtc.benchmark", QtWarningMsg);
+static Q_LOGGING_CATEGORY(benchmarksLog, "logging.benchmark", QtWarningMsg);
 
 namespace Utils {
 

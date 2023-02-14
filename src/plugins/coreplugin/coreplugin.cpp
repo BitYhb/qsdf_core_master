@@ -84,16 +84,16 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorString)
         }
     }
 
-    // About theme
-    if (ThemeEntry::availableThemes().isEmpty()) {
-        *errorString = tr("No themes found in installation.");
-        return false;
-    }
-    const CoreArguments args = parseArguments(arguments);
-    const auto themeFromArg = ThemeEntry::createTheme(args.themeId);
-    const auto theme = themeFromArg ? themeFromArg : ThemeEntry::createTheme(ThemeEntry::themeSetting());
-    Utils::Theme::setInitialPalette(theme);
-    setApplicationTheme(theme);
+//    // About theme
+//    if (ThemeEntry::availableThemes().isEmpty()) {
+//        *errorString = tr("No themes found in installation.");
+//        return false;
+//    }
+//    const CoreArguments args = parseArguments(arguments);
+//    const auto themeFromArg = ThemeEntry::createTheme(args.themeId);
+//    const auto theme = themeFromArg ? themeFromArg : ThemeEntry::createTheme(ThemeEntry::themeSetting());
+//    Utils::Theme::setInitialPalette(theme);
+//    setApplicationTheme(theme);
 
     qmlRegisterType<FramelessQuickWindow>("qsdf.gui.window", 1, 0, "FramelessQuickWindow");
 

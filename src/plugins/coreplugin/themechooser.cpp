@@ -54,10 +54,10 @@ QString ThemeEntry::filePath() const
 
 QList<ThemeEntry> ThemeEntry::availableThemes()
 {
-    QList<ThemeEntry> themes;
-
     static const QFileInfo installThemeDir = ICore::resourcePath("themes");
     static const QFileInfo userThemeDir = ICore::userResourcePath("themes");
+
+    QList<ThemeEntry> themes;
     addThemesFromPath(installThemeDir.absoluteFilePath(), &themes);
     if (themes.isEmpty())
         qWarning() << "Warning: No themes found in installation:" << installThemeDir.absoluteFilePath();
