@@ -1,4 +1,4 @@
-. "$PSScriptRoot/Helpers.ps1"
+. "$PSScriptRoot/helpers.ps1"
 
 Set-Location $projectDir
 
