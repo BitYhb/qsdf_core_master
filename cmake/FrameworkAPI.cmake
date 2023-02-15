@@ -55,10 +55,7 @@ function(qsdf_source_dir varName)
 endfunction()
 
 function(qsdf_delay_add_compile_definitions_to_plugin_core)
-    set(options)
-    set(oneValueArgs)
-    set(multiValueArgs PUBLIC PRIVATE)
-    cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    cmake_parse_arguments(_arg "" "" "PUBLIC;PRIVATE" ${ARGN})
 
     if(_arg_UNPARSED_ARGUMENTS)
         message(FATAL_ERROR "Invalid arguments: ${_arg_UNPARSED_ARGUMENTS}")
