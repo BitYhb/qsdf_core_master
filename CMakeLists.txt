@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.21)
+﻿cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -18,11 +18,10 @@ include(ExternalProject)
 include(ExternalProjectDependency)
 
 # vcpkg
-option(QSDF_VCPKG_AUTO_INSTALL "Automatically download build pre-requisites with Vcpkg" OFF)
+option(QSDF_VCPKG_AUTO_INSTALL "Enable vcpkg as a package management tool." OFF)
 if(QSDF_VCPKG_AUTO_INSTALL)
     include(AutoVcpkg)
 endif()
-mark_as_superbuild(QSDF_VCPKG_AUTO_INSTALL)
 
 # Android
 option(QSDF_BUILD_ANDROID "The software will be compiled into Android program" OFF)
