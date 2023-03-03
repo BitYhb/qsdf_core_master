@@ -34,8 +34,9 @@ set(_install_prefix $<IF:$<BOOL:ANDROID>,${QSDF_INSTALL_ROOT}/${QSDF_ANDROID_LIB
 
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    GIT_REPOSITORY git@deepliver-H470-HD:qt/qsdf_domains/epdomain_ikpas.git
-    GIT_TAG master
+#    GIT_REPOSITORY git@deepliver-H470-HD:qt/qsdf_domains/epdomain_ikpas.git
+#    GIT_TAG master
+    SOURCE_DIR "C:\\Users\\zjczh\\Desktop\\JZCODE\\qsdf_domains\\EPDomain_IKPAS"
     CMAKE_CACHE_ARGS
         -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}

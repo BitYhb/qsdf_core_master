@@ -67,6 +67,11 @@ function Find-NpmCommand {
     }
 }
 
+class ChilkatInfo {
+    [string]$dllpath
+}
+$chilkatInfo = [ChilkatInfo]::new()
+
 function DownloadChilkat {
     param (
         $downloadPath
@@ -88,15 +93,15 @@ function DownloadChilkat {
     }
 
     # unzip
-    $dllpath = "$downloadPath\ChilkatDotNet$donetVersion-$version-x64\ChilkatDotNet$donetVersion.dll"
-    if (-not (Test-Path $dllpath)) {
+    $chilkatInfo.dllpath = "$downloadPath\ChilkatDotNet$donetVersion-$version-x64\ChilkatDotNet$donetVersion.dll"
+    if (-not (Test-Path $chilkatInfo.dllpath)) {
         Expand-Archive -Path $localFilePath -DestinationPath $downloadPath
     }
     
-    if (-not (Test-Path $dllpath)) {
-        Write-Failure "$dllpath not found."
+    if (-not (Test-Path $chilkatInfo.dllpath)) {
+        Write-Failure "$chilkatInfo.dllpath not found."
         SafeExit 1
     }
     
-    Add-Type -Path $dllpath
+    Add-Type -Path $chilkatInfo.dllpath
 }
